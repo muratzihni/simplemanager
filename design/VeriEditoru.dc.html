@@ -198,6 +198,14 @@ select.fld option:checked{background:var(--td-accent,#C8102E);color:#FFFFFF}
 </div>
 </div>
 
+<sc-if value="{{hasSecs}}" hint-placeholder-val="{{ true }}">
+<div role="tablist" aria-label="Kategoriler" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{secs}}" as="sc" hint-placeholder-count="6">
+<button role="tab" onClick="{{sc.pick}}" aria-selected="{{sc.pressed}}" style="display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid {{sc.border}}; background: {{sc.bg}}; color: {{sc.fg}}; font: 700 12px 'Manrope', sans-serif; letter-spacing: 0.04em; cursor: pointer">{{sc.label}}</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{showFields}}" hint-placeholder-val="{{ true }}">
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 16px">
 <sc-for list="{{fields}}" as="f" hint-placeholder-count="9">
 <div style="grid-column: {{f.span}}; display: flex; flex-direction: column; gap: 6px; min-width: 0">
@@ -253,6 +261,7 @@ select.fld option:checked{background:var(--td-accent,#C8102E);color:#FFFFFF}
 </div>
 </sc-for>
 </div>
+</sc-if>
 
 <sc-if value="{{hasAttrs}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 10px">
@@ -2032,7 +2041,12 @@ class Component extends DCLogic {
       return { label: f[1], count: cnt[f[0]], pressed: on ? 'true' : 'false', bg: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.04)', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.16)', fg: on ? '#FFFFFF' : 'var(--td-text3,#C9D0E2)', pick: () => this.setState({ filter: f[0] }) };
     });
     const curSt = cur ? status(cur) : 'hazir';
-    const fields = cur ? ent.fields.map(f => {
+    const secDefs = []; ent.fields.forEach(f => { if (f.type === 'heading') secDefs.push({ label: f.label, fields: [] }); else { if (!secDefs.length) secDefs.push({ label: 'GENEL', fields: [] }); secDefs[secDefs.length - 1].fields.push(f); } });
+    if (ent.attrs) secDefs.push({ label: 'ÖZELLİKLER', attrs: true, fields: [] });
+    const secIdx = Math.max(0, Math.min(secDefs.length - 1, (this.state.secBy || {})[tab] || 0));
+    const curSec = secDefs[secIdx] || { fields: [] };
+    const secs = secDefs.map((d, i) => { const on = i === secIdx; return { label: d.label, pressed: on ? 'true' : 'false', bg: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.04)', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.16)', fg: on ? '#FFFFFF' : 'var(--td-text3,#C9D0E2)', pick: () => this.setState({ secBy: Object.assign({}, this.state.secBy || {}, { [tab]: i }) }) }; });
+    const fields = cur ? curSec.fields.map(f => {
       const base = { label: f.label, isHeading: false, isInput: false, isSelect: false, isMulti: false, isClub: false, isClubs: false, noChips: false, addCol: '', addBorder: 'rgba(var(--td-fg-rgb,255,255,255),0.16)', country: '', countryOpts: [], setCountry: null, addPick: null, span: 'auto', hint: f.hint || '', inputType: 'text', value: '', opts: [], chips: [], change: null, isArea: false, genHist: null };
       if (f.type === 'heading') return Object.assign(base, { isHeading: true, span: '1 / -1' });
       if (f.type === 'club' || f.type === 'clubs') {
@@ -2129,7 +2143,7 @@ class Component extends DCLogic {
       add: () => { const nb = ent.blank(); nb.src = 'ozel'; const list = data[tab].concat([nb]); this.setState({ data: Object.assign({}, data, { [tab]: list }), sel: Object.assign({}, sel, { [tab]: list.length - 1 }), q: '', filter: 'tum' }); },
       remove: () => { const list = data[tab].slice(); list.splice(sel[tab], 1); this.setState({ data: Object.assign({}, data, { [tab]: list }), sel: Object.assign({}, sel, { [tab]: list.length ? Math.max(0, sel[tab] - 1) : null }) }); },
       hasCur: !!cur, noCur: !cur,
-      hasAttrs: !!(cur && ent.attrs),
+      hasAttrs: !!(cur && ent.attrs && curSec.attrs), hasSecs: !!cur && secDefs.length > 1, secs, showFields: !!cur && !curSec.attrs,
       kind: ent.kind, curTitle: cur ? cur[ent.titleKey] : ''
     };
   }
