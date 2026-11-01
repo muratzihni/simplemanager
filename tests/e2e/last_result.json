@@ -1,0 +1,36 @@
+{
+ "date": "2026-11-01T20:13:15.211Z",
+ "results": [
+  [
+   "theme",
+   "PASS",
+   "uygulandı=true korundu=true varsayılana-döndü=true"
+  ],
+  [
+   "scale",
+   "NOT TESTED",
+   "kaydırıcı: otomasyon eklenmedi"
+  ],
+  [
+   "contrast",
+   "NOT TESTED",
+   "anahtar: otomasyon eklenmedi"
+  ],
+  [
+   "cur",
+   "PASS",
+   "uygulandı=true korundu=true varsayılana-döndü=true"
+  ],
+  [
+   "date",
+   "PASS",
+   "uygulandı=true korundu=true varsayılana-döndü=true"
+  ],
+  [
+   "lang",
+   "NOT TESTED",
+   "dil seçici açılır listesi otomasyonla açılamadı (BLOCKED: test yazılamadı)"
+  ]
+ ],
+ "pageErrors": 0
+}

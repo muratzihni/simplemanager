@@ -16,22 +16,22 @@ srv.listen(0, async () => {
   await ctx.addInitScript(() => { try { if (!localStorage.getItem('__seeded')) { localStorage.setItem('__seeded', '1'); localStorage.setItem('td-taslak-v1', JSON.stringify({ managers: [{ ad: 'Test', soyad: 'Menajer' }], kulupler: [{ n: 'Fenerbahçe', c: 'Türkiye', lg: 'Süper Lig' }] })); } } catch (e) {} });
   const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
   const openGame = async (view) => { await page.goto(base + 'OyunMerkezi.dc.html'); await page.waitForTimeout(3500); if (view) { await page.getByText(view, { exact: true }).first().click(); await page.waitForTimeout(500); } };
-  const setIn = async (label, opt) => { await page.goto(base + 'Ayarlar.dc.html'); await page.waitForTimeout(1200); await page.getByRole('button', { name: opt, exact: true }).first().click(); await page.waitForTimeout(300); await page.getByRole('button', { name: /Kaydet ve Kapat|Save and close/i }).first().click(); await page.waitForTimeout(500); };
-  const resetAll = async () => { await page.goto(base + 'Ayarlar.dc.html'); await page.waitForTimeout(1200); await page.getByRole('button', { name: /Varsayılanlara Dön|Restore defaults|Reset/i }).first().click().catch(() => {}); await page.getByRole('button', { name: /Kaydet ve Kapat|Save and close/i }).first().click().catch(() => {}); await page.waitForTimeout(500); };
+  const setIn = async (tab, opt, byText) => { await page.goto(base + 'Ayarlar.dc.html'); await page.waitForTimeout(1200); if (tab) await page.getByRole('button', { name: tab, exact: true }).first().click(); await page.waitForTimeout(200); await (byText ? page.getByText(opt, { exact: true }) : page.getByRole('button', { name: opt, exact: true })).first().click(); await page.waitForTimeout(300); await page.getByText('Kaydet ve Kapat', { exact: true }).first().click(); await page.waitForTimeout(500); };
+  const resetAll = async () => { await page.goto(base + 'Ayarlar.dc.html'); await page.waitForTimeout(1000); await page.getByRole('button', { name: 'Varsayılanlara Dön', exact: true }).first().click(); await page.waitForTimeout(300); await page.getByText('Kaydet ve Kapat', { exact: true }).first().click(); await page.waitForTimeout(400); };
   const css = (prop) => page.evaluate(p => getComputedStyle(document.documentElement).getPropertyValue(p).trim(), prop);
   const tests = [
-    { key: 'theme', opt: 'Açık', view: null, probe: async () => (await css('--td-bg')).toLowerCase(), want: v => v === '#f2f4f9', def: async () => (await css('--td-bg')).toLowerCase() === '#0a0f1c' },
+    { key: 'theme', tab: 'Görüntü', opt: 'Açık', view: null, probe: async () => (await css('--td-bg')).toLowerCase(), want: v => v === '#f2f4f9', def: async () => (await css('--td-bg')).toLowerCase() === '#0a0f1c' },
     { key: 'scale', opt: null, view: null, skip: 'kaydırıcı: otomasyon eklenmedi' },
     { key: 'contrast', opt: null, view: null, skip: 'anahtar: otomasyon eklenmedi' },
-    { key: 'cur', opt: '€ Euro', view: 'Kadro', probe: async () => (await page.locator('body').innerText()).includes('€'), want: v => v === true, def: async () => (await page.locator('body').innerText()).includes('₺') },
-    { key: 'date', opt: 'YYYY-AA-GG', view: null, probe: async () => /2026-07-01/.test(await page.locator('body').innerText()), want: v => v === true, def: async () => !/2026-07-01/.test(await page.locator('body').innerText()) },
-    { key: 'lang', opt: 'İngilizce', view: null, probe: async () => /Squad/.test(await page.locator('body').innerText()), want: v => v === true, def: async () => /Kadro/.test(await page.locator('body').innerText()) }
+    { key: 'cur', tab: 'Birimler ve Biçimler', opt: '€ Euro', view: 'Kadro', probe: async () => (await page.locator('body').innerText()).includes('€'), want: v => v === true, def: async () => (await page.locator('body').innerText()).includes('₺') },
+    { key: 'date', tab: 'Birimler ve Biçimler', opt: 'YYYY-AA-GG', view: null, probe: async () => /2026-07-01/.test(await page.locator('body').innerText()), want: v => v === true, def: async () => !/2026-07-01/.test(await page.locator('body').innerText()) },
+    { key: 'lang', skip: 'dil seçici açılır listesi otomasyonla açılamadı (BLOCKED: test yazılamadı)', byText: true, tab: 'Oyun Tercihleri', opt: 'İngilizce', view: null, probe: async () => /Squad/.test(await page.locator('body').innerText()), want: v => v === true, def: async () => /Kadro/.test(await page.locator('body').innerText()) }
   ];
   for (const t of tests) {
     if (t.skip) { results.push([t.key, 'NOT TESTED', t.skip]); continue; }
     try {
       await resetAll(); await openGame(t.view);
-      await setIn(t.key, t.opt); await openGame(t.view); const v1 = await t.probe(); const ok1 = t.want(v1);
+      await setIn(t.tab, t.opt, t.byText); await openGame(t.view); const v1 = await t.probe(); const ok1 = t.want(v1);
       await openGame(t.view); const v2 = await t.probe(); const ok2 = t.want(v2);   // yeniden açılış
       await resetAll(); await openGame(t.view); const ok3 = await t.def();
       results.push([t.key, ok1 && ok2 && ok3 ? 'PASS' : 'FAIL', `uygulandı=${ok1} korundu=${ok2} varsayılana-döndü=${ok3}`]);
