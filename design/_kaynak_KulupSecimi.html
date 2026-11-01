@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Yeni Kariyer: Kulüp Seçimi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:var(--td-bg,#0A0F1C);overflow:hidden}
+a{color:var(--td-text3,#C9D0E2);text-decoration:none}a:hover{color:var(--td-strong,#FFFFFF)}
+.ghost:hover{background:rgba(var(--td-fg-rgb,255,255,255),0.08) !important}
+.go:hover{background:var(--td-accent-h,#DD1838) !important}
+.row:hover{background:rgba(var(--td-fg-rgb,255,255,255),0.06) !important}
+.lg:hover{border-color:rgba(var(--td-fg-rgb,255,255,255),0.32) !important}
+.seg:hover{filter:brightness(1.15)}
+.fld{width:100%;box-sizing:border-box;min-height:38px;padding:0 12px;border-radius:9px;border:1px solid rgba(var(--td-fg-rgb,255,255,255),0.14);background:rgba(var(--td-deep-rgb,5,8,15),0.6);color:var(--td-text,#F4F6FB);font:500 13px 'Manrope',sans-serif}
+.fld:focus{outline:2px solid var(--td-accent,#C8102E);outline-offset:1px;border-color:transparent}
+.scroll{overflow-y:auto;min-height:0}
+.scroll > *{flex-shrink:0}
+.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:rgba(var(--td-fg-rgb,255,255,255),0.15);border-radius:4px}
+.dis{opacity:.45;cursor:not-allowed !important;pointer-events:none}
+</style>
+</helmet>
+<div style="height: 100vh; min-height: 760px; position: relative; overflow: hidden; background: var(--td-bg,#0A0F1C); color: var(--td-text,#F4F6FB); font-family: 'Manrope', system-ui, sans-serif">
+<img src="/_blob/37d3311d36b777efbeea9c38beb02667" alt="" aria-hidden="true" style="position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(18px) var(--td-img-f,brightness(0.3) saturate(0.85))">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(var(--td-bg-rgb,10,15,28),0.6)"></div>
+
+<div style="position: relative; z-index: 1; height: 100%; box-sizing: border-box; padding: 18px 40px; display: flex; flex-direction: column; gap: 12px">
+
+<!-- Başlık + menajerler -->
+<header style="flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px">
+<div style="display: flex; align-items: center; gap: 14px">
+<a href="LigPiramidi.dc.html" class="ghost" aria-label="Menajer profiline dön" style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.14); display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--td-text,#F4F6FB)"><path d="M15 6l-6 6 6 6"></path></svg>
+</a>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: var(--td-accent2,#FF6B76)">YENİ KARİYER · ADIM 3 / 3</span>
+<h1 style="margin: 0; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 32px; line-height: 1; letter-spacing: 0.04em">KULÜP SEÇİMİ</h1>
+</div>
+</div>
+<div role="group" aria-label="Menajerler" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<sc-for list="{{managers}}" as="m" hint-placeholder-count="2">
+<button class="seg" onClick="{{m.pick}}" aria-pressed="{{m.pressed}}" style="display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 4px 14px 4px 6px; border-radius: 12px; border: 1px solid {{m.border}}; background: {{m.bg}}; color: var(--td-text,#F4F6FB); text-align: left; cursor: pointer; font-family: 'Manrope', sans-serif">
+<span style="flex: none; width: 34px; height: 34px; border-radius: 9px; background: {{m.color}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font: 800 14px 'Saira Condensed', sans-serif; letter-spacing: 0.04em">{{m.initials}}</span>
+<span style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
+<span style="font-size: 13px; font-weight: 700; white-space: nowrap">{{m.name}}</span>
+<span style="font-size: 11px; color: {{m.clubColor}}; white-space: nowrap">{{m.club}}</span>
+</span>
+</button>
+</sc-for>
+</div>
+</header>
+
+<!-- Ana alan: 3 sütun -->
+<div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 250px minmax(0, 1fr) 430px; gap: 12px">
+
+<!-- Ligler -->
+<nav aria-label="Kontrol edilen ligler" class="scroll" style="display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 16px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.12); background: rgba(var(--td-bg-rgb,10,15,28),0.62); backdrop-filter: blur(10px)">
+<span style="padding: 2px 4px 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; color: var(--td-accent2,#FF6B76)">KONTROL EDİLEN LİGLER</span>
+<sc-for list="{{leagues}}" as="l" hint-placeholder-count="4">
+<span style="display: {{l.headDisplay}}; padding: 8px 4px 2px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: var(--td-text2,#DCE2F0)">{{l.country}}</span>
+<button class="lg" onClick="{{l.pick}}" aria-pressed="{{l.pressed}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 46px; padding: 6px 10px; border-radius: 10px; border: 1px solid {{l.border}}; background: {{l.bg}}; color: var(--td-text,#F4F6FB); text-align: left; cursor: pointer; font-family: 'Manrope', sans-serif">
+<span style="display: flex; flex-direction: column; min-width: 0"><span translate="no" style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{l.name}}</span><span style="font-size: 11px; color: var(--td-mut2,#8C96B2)">{{l.count}}</span></span>
+<span style="display: {{l.dotDisplay}}; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--td-green,#4FB286)"></span>
+</button>
+</sc-for>
+<sc-if value="{{noLeagues}}" hint-placeholder-val="{{ false }}">
+<span style="padding: 10px; border-radius: 10px; background: rgba(var(--td-fg-rgb,255,255,255),0.04); font-size: 13px; line-height: 1.5; color: var(--td-text3,#C9D0E2)">Kontrol edilen lig bulunamadı. Önce ülke ve lig seç.</span>
+<a href="UlkeSecimi.dc.html" class="go" style="display: flex; align-items: center; justify-content: center; min-height: 40px; margin-top: 6px; border-radius: 10px; background: var(--td-accent,#C8102E); color: #FFFFFF; font-size: 13px; font-weight: 700">Ülke ve Lig Seçimi</a>
+</sc-if>
+</nav>
+
+<!-- Kulüp listesi -->
+<section aria-label="Kulüpler" style="min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.12); background: rgba(var(--td-bg-rgb,10,15,28),0.62); backdrop-filter: blur(10px)">
+<div style="flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<input class="fld" type="search" aria-label="Kulüp ara" placeholder="Kulüp ara…" value="{{q}}" onChange="{{search}}" style="flex: 1 1 180px; width: auto">
+<div role="group" aria-label="Sırala" style="display: flex; border-radius: 8px; overflow: hidden; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.16)">
+<button class="seg" onClick="{{sortRep}}" aria-pressed="{{sortRepPressed}}" style="min-height: 38px; padding: 0 12px; border: none; background: {{sortRepBg}}; color: {{sortRepFg}}; font: 700 12px 'Manrope', sans-serif; cursor: pointer">İtibara göre</button>
+<button class="seg" onClick="{{sortName}}" aria-pressed="{{sortNamePressed}}" style="min-height: 38px; padding: 0 12px; border: none; border-left: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.16); background: {{sortNameBg}}; color: {{sortNameFg}}; font: 700 12px 'Manrope', sans-serif; cursor: pointer">Ada göre</button>
+</div>
+</div>
+<button class="seg" role="switch" aria-checked="{{limitPressed}}" onClick="{{toggleLimit}}" style="flex: none; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.14); background: transparent; color: var(--td-text2,#DCE2F0); text-align: left; cursor: pointer; font: 600 12px 'Manrope', sans-serif">
+<span style="flex: none; position: relative; width: 36px; height: 20px; border-radius: 999px; background: {{limitTrack}}"><span style="position: absolute; top: 2px; left: {{limitKnob}}; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF"></span></span>
+<span>Gerçekçi başlangıç: yalnızca itibarına yakın kulüpler</span>
+</button>
+<div class="scroll" role="listbox" aria-label="Kulüpler" style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{clubs}}" as="c" hint-placeholder-count="8">
+<button class="row {{c.cls}}" role="option" aria-selected="{{c.selected}}" onClick="{{c.pick}}" style="display: grid; grid-template-columns: 40px minmax(0, 1fr) 150px 110px; align-items: center; gap: 12px; min-height: 56px; padding: 6px 12px; border-radius: 12px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: var(--td-text,#F4F6FB); text-align: left; cursor: pointer; font-family: 'Manrope', sans-serif">
+<span style="width: 38px; height: 38px; border-radius: 50%; background: {{c.crest}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font: 800 14px 'Saira Condensed', sans-serif; letter-spacing: 0.04em; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.22)">{{c.initials}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="display: flex; align-items: center; gap: 8px; min-width: 0"><span translate="no" style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 20px; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.name}}</span><span style="display: {{c.favDisplay}}; flex: none; font-size: 11px; font-weight: 800; color: var(--td-green,#4FB286)">♥</span><span style="display: {{c.hateDisplay}}; flex: none; font-size: 11px; font-weight: 800; color: var(--td-accent2,#FF6B76)">✕</span></span>
+<span style="font-size: 11px; color: {{c.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.note}}</span>
+</span>
+<span style="display: flex; flex-direction: column; gap: 5px">
+<span style="font-size: 11px; font-weight: 700; color: var(--td-text3,#C9D0E2)">{{c.repText}}</span>
+<span style="height: 6px; border-radius: 3px; background: rgba(var(--td-fg-rgb,255,255,255),0.10); overflow: hidden; display: block"><span style="display: block; height: 100%; width: {{c.repPct}}; background: {{c.repColor}}"></span></span>
+</span>
+<span style="justify-self: end; padding: 3px 10px; border-radius: 999px; background: {{c.expBg}}; border: 1px solid {{c.expBorder}}; color: {{c.expFg}}; font-size: 11px; font-weight: 800; letter-spacing: 0.04em; white-space: nowrap">{{c.exp}}</span>
+</button>
+</sc-for>
+<sc-if value="{{noClubs}}" hint-placeholder-val="{{ false }}">
+<span style="padding: 14px; font-size: 13px; line-height: 1.5; color: var(--td-text3,#C9D0E2)">{{noClubsText}}</span>
+</sc-if>
+</div>
+</section>
+
+<!-- Kulüp detayı -->
+<aside aria-label="Kulüp bilgisi" class="scroll" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; border: 1px solid {{detailBorder}}; background: rgba(var(--td-bg-rgb,10,15,28),0.7); backdrop-filter: blur(10px)">
+<sc-if value="{{noSel}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 30px 14px; text-align: center">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 0.06em; color: var(--td-text2,#DCE2F0)">KULÜP BİLGİSİ</span>
+<span style="max-width: 280px; font-size: 13px; line-height: 1.5; color: var(--td-mut2,#8C96B2)">Ayrıntıları görmek için soldan bir kulüp seç.</span>
+</div>
+</sc-if>
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 14px">
+<span style="flex: none; width: 64px; height: 64px; border-radius: 50%; background: {{d.crest}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font: 800 24px 'Saira Condensed', sans-serif; letter-spacing: 0.04em; box-shadow: inset 0 0 0 3px rgba(255,255,255,0.25)">{{d.initials}}</span>
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<span style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--td-accent2,#FF6B76)">{{d.where}}</span>
+<span translate="no" style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 32px; line-height: 1; letter-spacing: 0.03em">{{d.name}}</span>
+<span style="font-size: 12px; color: var(--td-mut,#A7B0C8)">{{d.nick}}</span>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.10); background: rgba(var(--td-fg-rgb,255,255,255),0.03)"><span style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; color: var(--td-mut2,#8C96B2)">İTİBAR</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 28px; line-height: 1">{{d.rep}}<span style="font-size: 14px; color: var(--td-mut2,#8C96B2)"> / 20</span></span></div>
+<div style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.10); background: rgba(var(--td-fg-rgb,255,255,255),0.03)"><span style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; color: var(--td-mut2,#8C96B2)">TANINIRLIK</span><span style="font-size: 16px; font-weight: 700; line-height: 1.2; padding-top: 4px">{{d.fame}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.10); background: rgba(var(--td-fg-rgb,255,255,255),0.03)"><span style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; color: var(--td-mut2,#8C96B2)">YÖNETİM BEKLENTİSİ</span><span style="font-size: 16px; font-weight: 700; line-height: 1.2; padding-top: 4px">{{d.exp}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.10); background: rgba(var(--td-fg-rgb,255,255,255),0.03)"><span style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; color: var(--td-mut2,#8C96B2)">YÖNETİM SABRI</span><span style="font-size: 16px; font-weight: 700; line-height: 1.2; padding-top: 4px">{{d.patience}}</span></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: var(--td-accent2,#FF6B76)">STADYUM</span>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.10)">
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: var(--td-mut2,#8C96B2)">STADYUM</span><span style="font-weight: 700; text-align: right">{{d.stadium}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: var(--td-mut2,#8C96B2)">KAPASİTE</span><span style="font-weight: 700">{{d.capacity}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: var(--td-mut2,#8C96B2)">ŞEHİR</span><span style="font-weight: 700">{{d.city}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: var(--td-mut2,#8C96B2)">EZELİ RAKİP</span><span style="font-weight: 700; text-align: right">{{d.rival}}</span></div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: var(--td-accent2,#FF6B76)">FİNANS</span>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.10)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px"><span style="color: var(--td-mut2,#8C96B2)">MALİ DURUM</span><span style="padding: 2px 10px; border-radius: 999px; border: 1px solid {{d.finColor}}; color: {{d.finColor}}; font-size: 12px; font-weight: 800">{{d.finance}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: var(--td-mut2,#8C96B2)">TRANSFER BÜTÇESİ</span><span style="font-weight: 700">{{d.transfer}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: var(--td-mut2,#8C96B2)">MAAŞ BÜTÇESİ (AYLIK)</span><span style="font-weight: 700">{{d.wages}}</span></div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: var(--td-accent2,#FF6B76)">TESİSLER</span>
+<sc-for list="{{d.facilities}}" as="f" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 28px; align-items: center; gap: 10px; font-size: 12px"><span style="color: var(--td-text3,#C9D0E2)">{{f.label}}</span><span style="height: 6px; border-radius: 3px; background: rgba(var(--td-fg-rgb,255,255,255),0.10); overflow: hidden; display: block"><span style="display: block; height: 100%; width: {{f.pct}}; background: var(--td-accent,#C8102E)"></span></span><span style="font-weight: 800; text-align: right">{{f.v}}</span></div>
+</sc-for>
+</div>
+
+<span style="font-size: 11px; line-height: 1.5; color: var(--td-mut3,#6F7A99)">Değerler tahminidir; gerçek veriler Veri Editörü'nde düzenlenebilir.</span>
+
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; line-height: 1.4; color: {{d.msgColor}}">{{d.msg}}</span>
+<button class="go {{d.pickCls}}" onClick="{{d.pick}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border: none; border-radius: 12px; background: var(--td-accent,#C8102E); color: #FFFFFF; font: 700 14px 'Manrope', sans-serif; cursor: pointer">{{d.pickLabel}}</button>
+<button class="ghost" onClick="{{d.clear}}" style="display: {{d.clearDisplay}}; align-items: center; justify-content: center; min-height: 40px; border-radius: 10px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.16); background: transparent; color: var(--td-text,#F4F6FB); font: 600 13px 'Manrope', sans-serif; cursor: pointer">Seçimi kaldır</button>
+</div>
+</sc-if>
+</aside>
+</div>
+
+<!-- Alt bar -->
+<footer style="flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; padding: 12px 16px; border-radius: 16px; border: 1px solid rgba(var(--td-accent-rgb,200,16,46),0.45); background: rgba(var(--td-bg-rgb,10,15,28),0.8); backdrop-filter: blur(10px)">
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 19px; letter-spacing: 0.03em">{{summary}}</span>
+<span style="font-size: 12px; color: {{hintColor}}">{{hint}}</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<a href="LigPiramidi.dc.html" class="ghost" style="display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 16px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.16); font: 600 14px 'Manrope', sans-serif; color: var(--td-text,#F4F6FB)">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--td-text,#F4F6FB)"><path d="M15 6l-6 6 6 6"></path></svg>Menajer profili</a>
+<a href="KayitliOyunlar.dc.html" onClick="{{finish}}" class="go {{goCls}}" style="display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 22px; border-radius: 12px; background: var(--td-accent,#C8102E); color: #FFFFFF; font: 700 14px 'Manrope', sans-serif">Kariyeri Başlat
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke="#FFFFFF"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+</footer>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+/*__PREFS__*/
+/*__DATA__*/
+function tdRaw() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } return r || '{}'; }
+function tdRead() { try { const s = (window.__tdReadPrefs ? window.__tdReadPrefs() : JSON.parse(tdRaw())); return (s && typeof s === 'object') ? s : {}; } catch (e) { return {}; } }
+function tdStore(key) { let r = null; try { r = localStorage.getItem(key); } catch (e) {} if (!r) { try { r = (window.top.__tdStore || {})[key] || null; } catch (e) {} } if (!r) { try { r = (window.__tdStore || {})[key] || null; } catch (e) {} } return r; }
+function tdLoad(key, def) { try { const r = tdStore(key); return r ? JSON.parse(r) : def; } catch (e) { return def; } }
+function tdSave(key, obj) { const raw = JSON.stringify(obj); try { localStorage.setItem(key, raw); } catch (e) {} try { window.top.__tdStore = window.top.__tdStore || {}; window.top.__tdStore[key] = raw; } catch (e) {} try { window.__tdStore = window.__tdStore || {}; window.__tdStore[key] = raw; } catch (e) {} try { const bc = new BroadcastChannel('td-store'); bc.postMessage(key); bc.close(); } catch (e) {} }
+const SAVES_KEY = 'td-kayitlar-v1', DRAFT_KEY = 'td-taslak-v1';
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+const rnd01 = (s, salt) => (hash(salt + '|' + s) % 10000) / 10000;
+const MGR_COLORS = ['#C8102E', '#2E5AAC', '#2EAD6B', '#B5651D', '#7A3FB5', '#1F8A9E', '#B8336A', '#6B7280'];
+const EUR = { '₺ TL': ['TRY', 55.93], '€ Euro': ['EUR', 1], '$ Dolar': ['USD', 1.08], '£ Sterlin': ['GBP', 0.85] };
+const LOC = { 'İngilizce': 'en-GB', 'Almanca': 'de-DE', 'Fransızca': 'fr-FR', 'İspanyolca': 'es-ES', 'Portekizce': 'pt-PT', 'İtalyanca': 'it-IT', 'Hollandaca': 'nl-NL', 'İsveççe': 'sv-SE', 'Rusça': 'ru-RU', 'Ukraynaca': 'uk-UA', 'Lehçe': 'pl-PL', 'Romence': 'ro-RO', 'Azerice': 'az-AZ', 'Arapça': 'ar', 'Farsça': 'fa-IR', 'Çince': 'zh-CN', 'Japonca': 'ja-JP', 'Korece': 'ko-KR' };
+function money(eur) {
+  const set = tdRead(); const cur = EUR[set.cur] || EUR['₺ TL']; const loc = LOC[set.lang] || 'tr-TR';
+  try { return new Intl.NumberFormat(loc, { style: 'currency', currency: cur[0], notation: 'compact', maximumFractionDigits: 1 }).format(eur * cur[1]); } catch (e) { return Math.round(eur * cur[1]).toLocaleString(); }
+}
+function initialsOf(n) { const w = n.replace(/[^\p{L}0-9 ]/gu, ' ').split(' ').filter(x => x.length > 1 && !/^(FC|SC|CF|AC|CD|SK|FK|AS|SV|CA|CS|AFC|SD|UD|JK|BK|IF|IK|AFC)$/i.test(x)); const s = w.length >= 2 ? w[0][0] + w[1][0] : (w[0] || n).slice(0, 2); return s.toLocaleUpperCase('tr-TR'); }
+const crestOf = n => 'hsl(' + (hash(n) % 360) + ' 52% 34%)';
+const FIN = ['Çok güçlü', 'Güçlü', 'Dengeli', 'Sıkıntılı', 'İflasın eşiğinde'];
+const FIN_COLOR = ['var(--td-green,#4FB286)', 'var(--td-green,#4FB286)', 'var(--td-blue,#8FB8FF)', 'var(--td-gold,#F2C14E)', 'var(--td-accent2,#FF6B76)'];
+const FIN_MUL = [1.4, 1.1, 0.8, 0.4, 0.1];
+function fameOf(r) { return r >= 17 ? 'Dünya çapında' : r >= 14 ? 'Kıtasal' : r >= 11 ? 'Ulusal' : r >= 6 ? 'Bölgesel' : 'Yerel'; }
+const clubCache = {};
+function leagueClubs(country, li) {
+  const key = country + '|' + li; if (clubCache[key]) return clubCache[key];
+  const lg = (DB[country] || [])[li]; if (!lg) return (clubCache[key] = []);
+  const ul = ULKE[country] === undefined ? 6 : ULKE[country];
+  const caps = lg[1].map(n => STAD[n] ? STAD[n][1] : null); const have = caps.filter(x => x != null).sort((a, b) => a - b);
+  const list = lg[1].map((n, idx) => {
+    const base = Math.round(ul - 2.4 * li - 4); const h = rnd01(n, 'r');
+    const pct = caps[idx] != null && have.length > 1 ? have.filter(x => x < caps[idx]).length / (have.length - 1) : 0.35 + 0.3 * h;
+    const score = 0.7 * pct + 0.3 * h;
+    const rep = clamp(base - 1 + Math.round(Math.pow(score, 1.4) * 6), 1, 20);
+    return { n: n, c: country, li: li, lg: lg[0], rep: rep };
+  });
+  const sorted = list.slice().sort((a, b) => b.rep - a.rep || a.n.localeCompare(b.n, 'tr'));
+  sorted.forEach((x, i) => {
+    const fr = i / Math.max(1, sorted.length); x.exp = fr < 0.12 ? 0 : fr < 0.35 ? 1 : fr < 0.7 ? 2 : 3;
+    const h2 = rnd01(x.n, 'p'); x.pat = h2 < 0.3 ? 0 : h2 < 0.8 ? 1 : 2;
+    const sc = x.rep + (rnd01(x.n, 'f') - 0.5) * 6 + 2; x.fin = sc >= 16 ? 0 : sc >= 12 ? 1 : sc >= 6 ? 2 : sc >= 3 ? 3 : 4;
+    const st = STAD[x.n]; x.stad = st ? st[0] : '—'; x.cap = st ? st[1] : (Math.round((x.rep * x.rep * 190 + 800) / 100) * 100); x.city = st ? st[2] : '—'; x.estCap = !st;
+    x.tr = Math.round(50000 * Math.pow(1.46, x.rep) * FIN_MUL[x.fin]); x.wg = Math.round(20000 * Math.pow(1.48, x.rep));
+    const f = k => clamp(Math.round(x.rep * 0.85 + (rnd01(x.n, k) - 0.5) * 4), 1, 20); x.f1 = f('t'); x.f2 = f('a'); x.f3 = clamp(f('g') - 1, 1, 20);
+  });
+  return (clubCache[key] = list);
+}
+const EXP_LABEL = ['Şampiyonluk', 'Üst sıralar', 'Orta sıra', 'Ligde kal'];
+const EXP_TONE = [['rgba(232,193,90,0.18)', 'var(--td-gold,#E8C15A)'], ['rgba(143,184,255,0.16)', 'var(--td-blue,#8FB8FF)'], ['rgba(var(--td-fg-rgb,255,255,255),0.08)', 'var(--td-text3,#C9D0E2)'], ['rgba(var(--td-fg-rgb,255,255,255),0.05)', 'var(--td-mut2,#8C96B2)']];
+const PAT_LABEL = ['Sabırlı', 'Normal', 'Acımasız'];
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const dr = tdLoad(DRAFT_KEY, null) || {}; const saves = tdLoad(SAVES_KEY, []);
+    const rec = (Array.isArray(saves) ? saves : []).find(x => x.id === dr.kayitId) || null;
+    const dm = Array.isArray(dr.managers) ? dr.managers : [];
+    const rm = rec && Array.isArray(rec.menajerler) ? rec.menajerler : [];
+    const n = Math.max(1, dm.length || rm.length);
+    this.mgrs = Array.from({ length: n }, (_, i) => {
+      const a = dm[i] || {}, b = rm[i] || {};
+      return { name: (((a.ad || b.ad || '') + ' ' + (a.soyad || b.soyad || '')).trim()) || ('Menajer ' + (i + 1)), rep: b.itibar || 1, fav: (a.fav || []).map(t => t.c + '|' + t.n), hate: (a.hate || []).map(t => t.c + '|' + t.n) };
+    });
+    // kontrol edilen ligler
+    const lig = [];
+    const kontrol = dr.kontrol || (dr.depth ? Object.keys(dr.depth).reduce((o, u) => { o[u] = Array.from({ length: (dr.depth[u] | 0) + 1 }, (_, k) => k); return o; }, {}) : { 'Türkiye': [0] });
+    Object.keys(kontrol).sort((a, b) => a.localeCompare(b, 'tr')).forEach(u => {
+      const names = (dr.ligListesi && typeof dr.ligListesi[u] === 'string') ? dr.ligListesi[u].split(' · ') : [];
+      kontrol[u].forEach((idx, k) => { const by = (DB[u] || []).findIndex(l => l[0] === names[k]); const use = by >= 0 ? by : (idx < (DB[u] || []).length ? idx : -1); lig.push({ c: u, li: use, label: use >= 0 ? DB[u][use][0] : (names[k] || '—') }); });
+    });
+    this.lig = lig;
+    const picks = Array.isArray(dr.kulupler) ? dr.kulupler.slice(0, n) : [];
+    while (picks.length < n) picks.push(null);
+    this.dr = dr; this.rec = rec;
+    this.state = { mi: 0, lgi: 0, q: '', sort: 'rep', limit: false, sel: null, picks: picks };
+  }
+  save(picks) { const dr = Object.assign({}, tdLoad(DRAFT_KEY, null) || this.dr, { kulupler: picks }); tdSave(DRAFT_KEY, dr); }
+  renderVals() {
+    const st = this.state; const mgrs = this.mgrs; const cur = mgrs[st.mi]; const lig = this.lig;
+    const lgSel = lig[st.lgi] || null;
+    const allClubs = lgSel && lgSel.li >= 0 ? leagueClubs(lgSel.c, lgSel.li) : [];
+    const picks = st.picks; const taken = {}; picks.forEach((p, i) => { if (p) taken[p.c + '|' + p.n] = i; });
+    const managers = mgrs.map((m, i) => { const p = picks[i]; const on = i === st.mi; return { name: m.name, initials: m.name.split(' ').filter(Boolean).slice(0, 2).map(x => x[0]).join('').toLocaleUpperCase('tr-TR'), color: MGR_COLORS[i % MGR_COLORS.length], club: p ? p.n : 'Kulüp seçilmedi', clubColor: p ? 'var(--td-green,#4FB286)' : 'var(--td-mut2,#8C96B2)', pressed: on ? 'true' : 'false', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.14)', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.16)' : 'rgba(var(--td-bg-rgb,10,15,28),0.7)', pick: () => this.setState({ mi: i }) }; });
+    let lastC = null;
+    const leagues = lig.map((l, i) => { const head = l.c !== lastC; lastC = l.c; const cl = l.li >= 0 ? leagueClubs(l.c, l.li) : []; const has = picks.some(p => p && p.c === l.c && p.lg === l.label);
+      const on = i === st.lgi; return { country: l.c, headDisplay: head ? 'block' : 'none', name: l.label, count: cl.length + ' kulüp', dotDisplay: has ? 'block' : 'none', pressed: on ? 'true' : 'false', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.10)', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.14)' : 'transparent', pick: () => this.setState({ lgi: i, sel: null, q: '' }) }; });
+    const q = st.q.toLocaleLowerCase('tr-TR').trim();
+    let list = allClubs.filter(c => !q || c.n.toLocaleLowerCase('tr-TR').indexOf(q) >= 0);
+    list = list.slice().sort(st.sort === 'ad' ? (a, b) => a.n.localeCompare(b.n, 'tr') : (a, b) => b.rep - a.rep || a.n.localeCompare(b.n, 'tr'));
+    const lockOf = c => st.limit && c.rep > cur.rep + 5;
+    const clubs = list.map(c => {
+      const key = c.c + '|' + c.n; const by = taken[key]; const lock = lockOf(c); const other = by !== undefined && by !== st.mi; const mine = by === st.mi; const on = st.sel && st.sel.n === c.n && st.sel.c === c.c;
+      const nick = NICK[c.n]; const tone = EXP_TONE[c.exp];
+      const note = other ? 'Başka menajer seçti · ' + mgrs[by].name : lock ? 'İtibarın bu kulüp için yetersiz' : (nick ? nick + ' · ' : '') + (STAD[c.n] ? STAD[c.n][2] : c.lg);
+      return { name: c.n, initials: initialsOf(c.n), crest: crestOf(c.n), note: note, noteColor: other || lock ? 'var(--td-accent2,#FF6B76)' : 'var(--td-mut2,#8C96B2)', repText: 'İtibar ' + c.rep, repPct: Math.round(c.rep / 20 * 100) + '%', repColor: c.rep >= 14 ? 'var(--td-gold,#E8C15A)' : 'var(--td-accent,#C8102E)',
+        exp: EXP_LABEL[c.exp], expBg: tone[0], expFg: tone[1], expBorder: tone[1],
+        favDisplay: cur.fav.indexOf(key) >= 0 ? 'inline' : 'none', hateDisplay: cur.hate.indexOf(key) >= 0 ? 'inline' : 'none',
+        cls: (other || lock) ? 'dis' : '', selected: on ? 'true' : 'false', border: mine ? 'var(--td-green,#4FB286)' : on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.08)', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.14)' : mine ? 'rgba(79,178,134,0.10)' : 'rgba(var(--td-fg-rgb,255,255,255),0.03)',
+        pick: () => this.setState({ sel: c }) };
+    });
+    const sc = st.sel; let d = {}; const hasSel = !!sc;
+    if (sc) {
+      const key = sc.c + '|' + sc.n; const by = taken[key]; const lock = lockOf(sc); const other = by !== undefined && by !== st.mi; const mine = by === st.mi;
+      const rivalName = RIVAL[sc.n]; const nick = NICK[sc.n];
+      const pickable = !lock && !other;
+      d = { crest: crestOf(sc.n), initials: initialsOf(sc.n), where: sc.c.toLocaleUpperCase('tr-TR') + ' · ' + sc.lg, name: sc.n, nick: nick ? nick : ' ',
+        rep: String(sc.rep), fame: fameOf(sc.rep), exp: EXP_LABEL[sc.exp], patience: PAT_LABEL[sc.pat],
+        stadium: sc.stad, capacity: sc.estCap ? '~' + sc.cap.toLocaleString() : sc.cap.toLocaleString(), city: sc.city, rival: rivalName || '—',
+        finance: FIN[sc.fin], finColor: FIN_COLOR[sc.fin], transfer: money(sc.tr), wages: money(sc.wg),
+        facilities: [{ label: 'Antrenman tesisi', v: String(sc.f1), pct: Math.round(sc.f1 / 20 * 100) + '%' }, { label: 'Altyapı', v: String(sc.f2), pct: Math.round(sc.f2 / 20 * 100) + '%' }, { label: 'Gözlemci ağı', v: String(sc.f3), pct: Math.round(sc.f3 / 20 * 100) + '%' }],
+        msg: other ? 'Başka menajer seçti · ' + mgrs[by].name : lock ? 'İtibarın bu kulüp için yetersiz' : (mine ? 'Seçili kulüp' : ' '), msgColor: other || lock ? 'var(--td-accent2,#FF6B76)' : 'var(--td-green,#4FB286)',
+        pickLabel: mine ? 'Seçili kulüp' : 'Bu kulübü seç', pickCls: pickable && !mine ? '' : 'dis', clearDisplay: mine ? 'flex' : 'none',
+        pick: () => { if (!pickable || mine) return; const np = st.picks.slice(); np[st.mi] = { n: sc.n, c: sc.c, lg: sc.lg }; this.save(np); const nxt = np.findIndex(p => !p); this.setState({ picks: np, mi: nxt >= 0 ? nxt : st.mi }); },
+        clear: () => { const np = st.picks.slice(); np[st.mi] = null; this.save(np); this.setState({ picks: np }); } };
+    }
+    const done = picks.filter(Boolean).length; const all = done === mgrs.length;
+    const finish = () => {
+      if (!all) return;
+      const dr = tdLoad(DRAFT_KEY, null) || this.dr; let saves = tdLoad(SAVES_KEY, []); if (!Array.isArray(saves)) saves = [];
+      const kul = picks.map((p, i) => ({ menajer: mgrs[i].name, kulup: p.n, ulke: p.c, lig: p.lg }));
+      saves = saves.map(x => x.id === dr.kayitId ? Object.assign({}, x, { kulup: picks[0].n, kulupler: kul, adim: 'oyun', kaydetme: new Date().toISOString(), taslak: Object.assign({}, x.taslak || {}, { kulupler: picks }) }) : x);
+      tdSave(SAVES_KEY, saves); tdSave(DRAFT_KEY, Object.assign({}, dr, { kulupler: picks }));
+    };
+    return {
+      managers, leagues, noLeagues: lig.length === 0, clubs, noClubs: clubs.length === 0,
+      noClubsText: allClubs.length === 0 ? 'Bu lig için kulüp verisi yok. Veri Editörü\'nden ekleyebilirsin.' : 'Aramayla eşleşen kulüp yok.',
+      q: st.q, search: (e) => this.setState({ q: e.target.value }),
+      sortRep: () => this.setState({ sort: 'rep' }), sortName: () => this.setState({ sort: 'ad' }),
+      sortRepPressed: st.sort === 'rep' ? 'true' : 'false', sortNamePressed: st.sort === 'ad' ? 'true' : 'false',
+      sortRepBg: st.sort === 'rep' ? 'rgba(var(--td-fg-rgb,255,255,255),0.14)' : 'transparent', sortNameBg: st.sort === 'ad' ? 'rgba(var(--td-fg-rgb,255,255,255),0.14)' : 'transparent',
+      sortRepFg: st.sort === 'rep' ? 'var(--td-strong,#FFFFFF)' : 'var(--td-mut2,#8C96B2)', sortNameFg: st.sort === 'ad' ? 'var(--td-strong,#FFFFFF)' : 'var(--td-mut2,#8C96B2)',
+      limitPressed: st.limit ? 'true' : 'false', toggleLimit: () => this.setState({ limit: !st.limit }),
+      limitTrack: st.limit ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.22)', limitKnob: st.limit ? '18px' : '2px',
+      hasSel: hasSel, noSel: !hasSel, d: d, detailBorder: hasSel ? 'rgba(var(--td-accent-rgb,200,16,46),0.45)' : 'rgba(var(--td-fg-rgb,255,255,255),0.12)',
+      summary: done + ' / ' + mgrs.length + ' menajer kulüp seçti',
+      hint: all ? ' ' : 'Her menajer bir kulüp seçmeli.', hintColor: 'var(--td-mut2,#8C96B2)',
+      finish, goCls: all ? '' : 'dis'
+    };
+  }
+}
+</script>
+</body>
+</html>
