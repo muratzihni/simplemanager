@@ -2484,21 +2484,18 @@ function loadWorld(done0) {
 emekliDefaults(); applyRegenDefaults();
 convertPickers();
 let OP_STATE = 'loading'; let OP_FAIL = false; const OP_WAIT = []; const OP_EXPECT = 72930;
+const OP_IDS = ["5f16cd71b73ba32a70043c19bfd0a8e1","a3e0cfd7c082b7101b75389bd477fd7d","8f44cdc44000cd5745f9835d5212219d","efbefb1e75b2730cb9b6d550c462ade3","ac261abc09a9d4a40a19eaa4acbec7ff"];
 function loadOP(done) {
-  const base = (() => { try { return document.baseURI || location.href; } catch (e) { return ''; } })();
-  const find = (f0) => { const rels = [f0, './' + f0, 'project/' + f0, '/project/' + f0, '../project/' + f0];
-    try { rels.unshift(new URL(f0, base).href); } catch (e) {}
-    try { performance.getEntriesByType('resource').forEach(en => { const m = String(en.name).match(/^(.*\/)[^\/]*\.dc\.html/); if (m) rels.unshift(m[1] + f0); }); } catch (e) {}
-    return rels; };
-  let i = 1;
+  const host = document.head || document.documentElement; let i = 0;
   const next = () => {
-    if (i > 12) return done();
-    const f0 = 've-op-' + i + '.json'; const rels = find(f0); let r = 0; const n = i;
-    const tryOne = () => {
-      if (r >= rels.length) { if (n === 1) OP_FAIL = true; return done(); }
-      fetch(rels[r++]).then(res => { if (!res.ok) throw new Error('http'); return res.json(); }).then(arr => { if (!Array.isArray(arr)) throw new Error('biçim'); (window.VE_OP = window.VE_OP || []).push(arr); i = n + 1; next(); }).catch(() => tryOne());
-    };
-    tryOne();
+    if (i >= OP_IDS.length) return done();
+    const n = i + 1, url = '/_blob/' + OP_IDS[i];
+    const got = () => { const arr = (window.__opChunks || {})[n]; if (!Array.isArray(arr)) return false; (window.VE_OP = window.VE_OP || []).push(arr); i++; next(); return true; };
+    const fail = () => { if (n === 1) OP_FAIL = true; done(); };
+    const s = document.createElement('script'); s.async = true;
+    s.onload = () => { if (!got()) fail(); };
+    s.onerror = () => { fetch(url).then(r => { if (!r.ok) throw new Error('http'); return r.text(); }).then(t => { const e = document.createElement('script'); e.text = t; host.appendChild(e); if (!got()) fail(); }).catch(fail); };
+    s.src = url; host.appendChild(s);
   };
   next();
 }

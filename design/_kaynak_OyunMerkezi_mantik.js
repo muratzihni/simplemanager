@@ -11,17 +11,29 @@ function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^=
 const u01 = (s) => (hash(s) % 100000) / 100000;
 function initialsOf(n) { const w = n.replace(/[^\p{L}0-9 ]/gu, ' ').split(' ').filter(x => x.length > 1 && !/^(FC|SC|CF|AC|CD|SK|FK|AS|SV|CA|CS|AFC|SD|UD|JK|BK|IF|IK)$/i.test(x)); const s = w.length >= 2 ? w[0][0] + w[1][0] : (w[0] || n).slice(0, 2); return s.toLocaleUpperCase('tr-TR'); }
 function slugOf(s) { return String(s).replace(/ı/g, 'i').replace(/İ/g, 'I').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
-function fetchJson(f0, done) {
-  const rels = [f0, './' + f0, 'project/' + f0, '/project/' + f0, '../project/' + f0]; let base = ''; try { base = document.baseURI || location.href; } catch (e) {}
-  try { rels.unshift(new URL(f0, base).href); } catch (e) {}
-  try { performance.getEntriesByType('resource').forEach(en => { const m = String(en.name).match(/^(.*\/)[^\/]*\.dc\.html/); if (m) rels.unshift(m[1] + f0); }); } catch (e) {}
-  let r = 0; const next = () => { if (r >= rels.length) return done(null); fetch(rels[r++]).then(res => { if (!res.ok) throw new Error('http'); return res.json(); }).then(d => done(d)).catch(() => next()); }; next();
+const KD_IDS = ["1a8c52684b1c26e2345ba0f054d4185d", "4ac19c9d815b38577bf75043b838c3b5", "ce161f9b80ae913b301435bfe06f0e5e", "5576e995c0b65c31a060120152cdf363", "d8e365875c02f1d4b1c669fa64eeef00"];
+const KD_MAP = {"ingiltere":0,"arjantin":0,"italya":0,"brezilya":0,"meksika":0,"fransa":0,"ozbekistan":0,"urdun":0,"portekiz":1,"ispanya":1,"polonya":1,"turkiye":1,"abd":1,"hollanda":1,"almanya":1,"cekya":1,"romanya":1,"macaristan":1,"suudi-arabistan":1,"sirbistan":1,"rusya":1,"norvec":1,"sudan":1,"bulgaristan":2,"isvec":2,"uruguay":2,"danimarka":2,"hirvatistan":2,"kolombiya":2,"isvicre":2,"ukrayna":2,"belcika":2,"sili":2,"avusturya":2,"israil":2,"japonya":2,"kibris":2,"peru":2,"yunanistan":2,"slovakya":2,"finlandiya":2,"endonezya":2,"paraguay":2,"_turnuvalar":2,"slovenya":2,"nijerya":2,"guney-kore":2,"lubnan":2,"malta":3,"tayland":3,"esvatini":3,"cin":3,"iran":3,"iskocya":3,"fildisi-sahili":3,"ekvador":3,"cezayir":3,"izlanda":3,"azerbaycan":3,"gana":3,"gurcistan":3,"birlesik-arap-emirlikleri":3,"estonya":3,"misir":3,"guney-afrika":3,"ermenistan":3,"avustralya":3,"venezuela":3,"belarus":3,"senegal":3,"kanada":3,"kazakistan":3,"luksemburg":3,"vietnam":3,"benin":3,"letonya":3,"namibya":3,"hindistan":3,"kenya":3,"karadag":3,"tunus":3,"tanzanya":3,"galler":3,"irak":3,"zambiya":3,"gine-bissau":3,"burkina-faso":3,"botsvana":3,"ruanda":3,"guatemala":3,"kongo-dc":3,"arnavutluk":3,"fas":3,"irlanda":3,"libya":3,"kamerun":3,"nijer":3,"angola":3,"faroe-adalari":3,"gambiya":3,"lesotho":3,"komorlar":3,"liberya":3,"curacao":3,"el-salvador":3,"kosova":3,"kuzey-irlanda":3,"ekvator-ginesi":3,"lihtenstayn":3,"bosna-hersek":4,"kuzey-makedonya":4,"malezya":4,"antigua-ve-barbuda":4,"guney-sudan":4,"litvanya":4,"bahreyn":4,"cayman-adalari":4,"saint-kitts-ve-nevis":4,"gabon":4,"aruba":4,"bolivya":4,"uganda":4,"surinam":4,"zimbabve":4,"mali":4,"cibuti":4,"eritre":4,"andorra":4,"madagaskar":4,"moritanya":4,"yeni-zelanda":4,"kuba":4,"myanmar":4,"san-marino":4,"kongo":4,"jamaika":4,"malavi":4,"etiyopya":4,"burundi":4,"mozambik":4,"panama":4,"honduras":4,"gine":4,"saint-vincent-ve-grenadinler":4,"katar":4,"kosta-rika":4,"orta-afrika-cumhuriyeti":4,"cad":4,"britanya-virjin-adalari":4,"trinidad-ve-tobago":4,"bahamalar":4,"cebelitarik":4,"nikaragua":4,"porto-riko":4,"kambocya":4,"hong-kong":4,"dominik-cumhuriyeti":4,"laos":4,"guyana":4,"mauritius":4,"barbados":4,"dominika":4,"grenada":4,"anguilla":4,"bermuda":4,"filipinler":4,"turks-ve-caicos-adalari":4,"moldova":4,"abd-virjin-adalari":4,"singapur":4,"belize":4,"haiti":4};
+const KD_CH = {}, KD_WAIT = {};
+function injectJs(url, ok, fail) {
+  const host = document.head || document.documentElement; const s = document.createElement('script'); s.async = true;
+  s.onload = () => ok();
+  s.onerror = () => { fetch(url).then(r => { if (!r.ok) throw new Error('http'); return r.text(); }).then(t => { const e = document.createElement('script'); e.text = t; host.appendChild(e); ok(); }).catch(() => fail()); };
+  s.src = url; host.appendChild(s);
+}
+function getChunk(i, cb) {
+  const have = () => (window.__kdChunks || {})[i];
+  if (have()) return cb(have());
+  if (KD_WAIT[i]) return KD_WAIT[i].push(cb);
+  KD_WAIT[i] = [cb];
+  const done = () => { const w = KD_WAIT[i]; KD_WAIT[i] = null; w.forEach(f => f(have() || null)); };
+  injectJs('/_blob/' + KD_IDS[i], done, done);
 }
 function loadKD(country, done) {
   window.VE_KD = window.VE_KD || {}; let left = 2, ok = true;
   const fin = () => { if (--left === 0) done(ok); };
-  if (window.VE_KD[country]) fin(); else fetchJson('kd/' + slugOf(country) + '.json', d => { if (d) window.VE_KD[country] = d; else ok = false; fin(); });
-  if (window.VE_TUR) fin(); else fetchJson('kd/_turnuvalar.json', d => { if (d) window.VE_TUR = d; fin(); });
+  const slug = slugOf(country);
+  if (window.VE_KD[country]) fin(); else if (KD_MAP[slug] == null) { ok = false; fin(); } else getChunk(KD_MAP[slug], c => { if (c && c[slug]) window.VE_KD[country] = c[slug]; else ok = false; fin(); });
+  if (window.VE_TUR) fin(); else getChunk(KD_MAP['_turnuvalar'], c => { if (c && c['_turnuvalar']) window.VE_TUR = c['_turnuvalar']; fin(); });
 }
 const AT_TECH = ['Bitiricilik', 'Dribbling', 'İlk dokunuş', 'Orta', 'Pas', 'Uzaktan şut', 'Top kesme', 'Markaj', 'Kafa', 'Teknik', 'Korner', 'Serbest vuruş', 'Penaltı', 'Uzun taç atışı'];
 const AT_MENT = ['Karar alma', 'Önsezi', 'Pozisyon alma', 'Liderlik', 'Soğukkanlılık', 'Çalışkanlık', 'Takım oyunu', 'Agresiflik', 'Cesaret', 'Konsantrasyon', 'Kararlılık', 'Yaratıcılık', 'Topsuz hareket', 'Vizyon'];
