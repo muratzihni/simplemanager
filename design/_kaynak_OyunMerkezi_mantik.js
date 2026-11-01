@@ -107,7 +107,7 @@ class Component extends DCLogic {
     const dr = tdLoad(DRAFT_KEY, null) || {};
     const picks = Array.isArray(dr.kulupler) ? dr.kulupler.filter(Boolean) : []; const dm = Array.isArray(dr.managers) ? dr.managers : [];
     this.sample = picks.length === 0;
-    this.items = this.sample ? [{ name: 'Menajer', pick: SAMPLE }] : picks.map((p, i) => { const a = dm[i] || {}; const nm = ((a.ad || '') + ' ' + (a.soyad || '')).trim() || ('Menajer ' + (i + 1)); return { name: nm, first: (a.ad || '').trim() || nm, pick: p }; });
+    this.items = this.sample ? [{ name: 'Menajer', pick: SAMPLE }] : picks.map((p, i) => { const a = dm[i] || {}; const nm = ((a.ad || '') + ' ' + (a.soyad || '')).trim() || ('Menajer ' + (i + 1)); return { name: nm, first: (a.ad || '').trim() || nm, m: a, pick: p }; });
     this.game = tdLoad(GAME_KEY, null) || {}; this.game.k = this.game.k || {};
     this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
     this.loadFor(0);
@@ -223,7 +223,9 @@ class Component extends DCLogic {
     const neutral = 'rgba(var(--td-fg-rgb,255,255,255),0.08)', fg = 'var(--td-text,#F4F6FB)';
     const stad = (kd && kd.stad && kd.stad[p.n]) || {}; const fin = (x) => x ? money(x / 55.93) : null;
     const ROLE = ['Başkan', 'Sportif direktör', 'Teknik direktör', 'Yardımcı antrenör', 'Kaleci antrenörü', 'Kondisyoner', 'Analist', 'Fizyoterapist', 'Doktor', 'Gözlemci', 'Altyapı sorumlusu'];
-    const staffSorted = ((kd && kd.staff && kd.staff[p.n]) || []).slice().sort((a, b) => (ROLE.indexOf(a[3]) < 0 ? 99 : ROLE.indexOf(a[3])) - (ROLE.indexOf(b[3]) < 0 ? 99 : ROLE.indexOf(b[3])) || b[6] - a[6]);
+    const mg = this.items[st.mi]; const ma = (mg && mg.m) || {}; const myear = parseInt(String(ma.dogum || ma.dogumTarihi || '').slice(-4), 10);
+    const meRow = [mg ? mg.name : 'Menajer', myear > 1900 ? myear : 0, ma.uyruk || ma.ulke || '—', 'Teknik direktör', '', ma.lisans || '—', ma.itibar || '—', ''];
+    const staffSorted = [meRow].concat(((kd && kd.staff && kd.staff[p.n]) || []).filter(q => q[3] !== 'Teknik direktör')).sort((a, b) => (ROLE.indexOf(a[3]) < 0 ? 99 : ROLE.indexOf(a[3])) - (ROLE.indexOf(b[3]) < 0 ? 99 : ROLE.indexOf(b[3])) || b[6] - a[6]);
     const lineBars = c.lines.map(l => bar(l[0], l[1].toFixed(1), 20, powCol(l[1])));
     const lgRec = tur.find(t => t.ad === p.lg && t.ulke === p.c) || null;
     const lgIdx = lgRec ? tur.indexOf(lgRec) : -1;
@@ -294,7 +296,7 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
     } else if (v === 'heyet') {
       const hteam = st.hteam || 'club'; const hlist = hteam === 'free' ? ((kd && kd.sfree) || []).slice().sort((a, b) => b[6] - a[6]) : staffSorted;
       out.hTabs = [['club', 'Kulüp personeli', staffSorted.length], ['free', 'Serbest personel', ((kd && kd.sfree) || []).length]].map(t => ({ label: t[1], cnt: String(t[2]), bg: hteam === t[0] ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: hteam === t[0] ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: () => this.setState({ hteam: t[0] }) }));
-      out.staffRows = hlist.map(q => ({ name: q[0], role: q[3], age: 2026 - q[1], nat: q[2], lic: q[5], rep: q[6], col: powCol(q[6]), end: q[4] || '—' })); out.noStaff = !out.staffRows.length;
+      out.staffRows = hlist.map(q => ({ name: q[0], role: q[3], age: q[1] ? 2026 - q[1] : '—', nat: q[2], lic: q[5], rep: q[6], col: powCol(q[6]), end: q[4] || '—' })); out.noStaff = !out.staffRows.length;
     } else if (v === 'oyuncu') {
       const x = poolOf(kd, p, st.psrc || 'A').find(z => z[0] === st.psel) || allPools(kd, p).find(z => z[0] === st.psel) || null;
       if (x) {
