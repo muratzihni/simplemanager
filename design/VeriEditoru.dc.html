@@ -1887,7 +1887,7 @@ function sharedSections(milli) {
   return f;
 }
 ENT.kulup.fields.push(...sharedSections(false));
-ENT.kulup.fields.splice(ENT.kulup.fields.findIndex(f => f.k === 'rakip') + 1, 0, { k: 'kadroBtn', label: 'KADRO', type: 'btn', btn: 'Kadroyu Oyuncular sekmesinde aç', act: 'kadro', span: true });
+ENT.kulup.fields.splice(ENT.kulup.fields.findIndex(f => f.k === 'rakip') + 1, 0, { k: 'kadroBtn', label: 'KADRO', type: 'btn', btn: 'Kadroyu Oyuncular sekmesinde aç', act: 'kadro', span: true }, { k: 'personelBtn', label: 'PERSONEL', type: 'btn', btn: 'Personeli Personel sekmesinde aç', act: 'personel', span: true });
 ENT.milli.fields.push(...sharedSections(true));
 ENT.stadyum.fields.push(H('SAHA VE SEYİRCİ'),
   { k: 'sponsorAd', label: 'SPONSORLU ADI', type: 'text' }, { k: 'isitma', label: 'ZEMİN ISITMASI', type: 'select', opts: ['Bilinmiyor', 'Var', 'Yok'] },
@@ -2048,16 +2048,34 @@ function squadFor(club) {
   let n = 2; out.forEach(o => { if (!o[8]) { while (n === 12 || n === 25 || n === 1) n++; o[8] = n++; } });
   return out;
 }
+function mkStaff(o) {
+  const [ad, dogum, uyruk, gorev, kulup, sozlesme, lisans, itibar, tanin, gercek] = o;
+  const r = ENT.personel.blank(); Object.assign(r, { ad, dogum, uyruk, gorev, kulup, sozlesme, lisans, itibar, tanin, maas: Math.round(Math.pow(1.3, itibar) * 12000 / 100) * 100 });
+  r.a = genStaffAttrs(r); r.kaynakNot = (gercek ? 'Bellekten yazıldı (gerçek kişi; 2025/26 bilgisi), doğrulanmadı' : 'Kurgusal personel: kulüp itibarına göre otomatik üretildi (gerçek kişi değil)') + ' · maaş tahminidir';
+  return r;
+}
+const STAFF_PLAN = [['Teknik direktör', 0], ['Yardımcı antrenör', 0], ['Yardımcı antrenör', 0], ['Kaleci antrenörü', 0], ['Kondisyoner', 0], ['Fizyoterapist', 0], ['Doktor', 0], ['Gözlemci', 0], ['Gözlemci', 5], ['Gözlemci', 10], ['Analist', 6], ['Sportif direktör', 4], ['Altyapı sorumlusu', 3], ['Başkan', 0]];
+function staffFor(club) {
+  const it = Math.max(1, Math.min(20, Number(club.itibar) || 4)); const key = club.ad + '|' + club.ulke + '|st'; const out = []; const used = {};
+  STAFF_PLAN.forEach(([gorev, minIt], i) => {
+    if (it < minIt) return; const R = (k) => kHash(key + '|' + i + '|' + k);
+    const foreign = (gorev === 'Teknik direktör' ? R('fr') < 0.15 + 0.01 * it : R('fr') < 0.04); let nat = club.ulke;
+    if (foreign) { const sib = (CULT_MEMBERS[NAT_CULT[club.ulke]] || []).filter(c => c !== club.ulke); nat = sib.length && R('fs') < 0.5 ? sib[Math.floor(R('fsi') * sib.length)] : EXPORTERS[Math.floor(R('fe') * EXPORTERS.length)]; }
+    let ad = ''; for (let t = 0; t < 6; t++) { ad = personName(nat, key + '|' + i + '|' + t); if (!used[ad]) break; } used[ad] = 1;
+    const age = gorev === 'Başkan' ? 50 + Math.floor(R('a') * 20) : gorev === 'Teknik direktör' ? 38 + Math.floor(R('a') * 28) : 30 + Math.floor(R('a') * 32);
+    const dogum = pad2(1 + Math.floor(R('bd') * 28)) + '.' + pad2(1 + Math.floor(R('bm') * 12)) + '.' + (2026 - age);
+    const lic = gorev === 'Teknik direktör' ? (it >= 8 ? 'UEFA Pro' : it >= 4 ? 'UEFA A' : 'UEFA B') : /antrenör|Kondisyoner/.test(gorev) ? (R('l') < 0.4 + it * 0.02 ? 'UEFA A' : 'UEFA B') : 'Yok';
+    const iti = Math.max(1, Math.min(20, Math.round(it + (R('i') - 0.5) * 4 - (gorev === 'Başkan' || gorev === 'Doktor' ? 1 : 0))));
+    out.push([ad, dogum, nat, gorev, club.ad, '30.06.' + (2027 + Math.floor(R('c') * 3)), lic, iti, iti >= 17 ? 'Dünya çapında' : iti >= 14 ? 'Kıtasal' : iti >= 10 ? 'Ulusal' : iti >= 6 ? 'Bölgesel' : 'Yerel', 0]);
+  });
+  return out;
+}
+try { window.__veGen = { squadFor: squadFor, staffFor: staffFor, ENT: ENT }; } catch (e) {}
 function applyReal2() {
   if (REAL2.done) return; REAL2.done = true;
   const have = {}; ENT.oyuncu.recs.forEach(r => { have[r.ad + '|' + r.kulup] = 1; });
   REAL2.oyuncu.forEach(o => { if (have[o[0] + '|' + o[18]]) return; ENT.oyuncu.recs.push(mkPlayer(o)); });
-  REAL2.personel.forEach(o => {
-    const [ad, dogum, uyruk, gorev, kulup, sozlesme, lisans, itibar, tanin, gercek] = o;
-    const r = ENT.personel.blank(); Object.assign(r, { ad, dogum, uyruk, gorev, kulup, sozlesme, lisans, itibar, tanin, maas: Math.round(Math.pow(1.3, itibar) * 12000 / 100) * 100 });
-    r.a = genStaffAttrs(r); r.kaynakNot = (gercek ? 'Bellekten yazıldı (gerçek kişi; 2025/26 bilgisi), doğrulanmadı' : 'Kurgusal dolgu personel (gerçek kişi değil)') + ' · maaş tahminidir';
-    ENT.personel.recs.push(r);
-  });
+  REAL2.personel.forEach(o => { ENT.personel.recs.push(mkStaff(o)); });
   const hv = {}; ENT.temsilci.recs.forEach(r => { hv[r.ad] = 1; });
   REAL2.temsilci.forEach(o => { const [ad, ulke, ajans, itibar, komisyon, ag, sertlik, musteri, not, gercek] = o; if (hv[ad]) return; ENT.temsilci.recs.push({ ad, ulke, ajans, itibar, komisyon, ag, sertlik, musteri, not: (gercek ? '' : '(kurgusal) ') + not }); });
   // temsilci atama: aynı ülkeden, yoksa uluslararası; deterministik
@@ -2405,14 +2423,18 @@ class Component extends DCLogic {
       } else throw new Error('Dosya biçimi tanınmadı.');
     } catch (err) { this.setState({ ioMsg: 'İçe aktarılamadı: ' + (err && err.message ? err.message : 'dosya okunamadı') , ioOk: false }); }
   }
-  materialize(names) {
-    const data = this.state.data; const have = {}, cnt = {}; data.oyuncu.forEach(r => { have[r.ad + '|' + r.kulup] = 1; cnt[r.kulup] = (cnt[r.kulup] || 0) + 1; });
+  openClub(k, c, names) {
+    const tab = this.state.tab; const tk = tab === 'personel' ? 'personel' : 'oyuncu'; const nd = this.materialize(names, tk); const first = nd[tk].findIndex(r => r.kulup === k);
+    this.setState({ data: nd, sqC: c, sqK: k, clubFilter: k, sel: Object.assign({}, this.state.sel, first >= 0 ? { [tk]: first } : {}), q: '', listOpen: false });
+  }
+  materialize(names, tabKey) {
+    const tk = tabKey || 'oyuncu'; const staff = tk === 'personel'; const data = this.state.data; const have = {}, cnt = {}; data[tk].forEach(r => { have[r.ad + '|' + r.kulup] = 1; cnt[r.kulup] = (cnt[r.kulup] || 0) + 1; });
     const clubs = {}; data.kulup.forEach(r => { clubs[r.ad] = clubs[r.ad] || r; });
     const add = [];
-    names.forEach(n => { if ((cnt[n] || 0) >= 15 || !clubs[n]) return; squadFor(clubs[n]).forEach(o => { if (have[o[0] + '|' + n]) return; have[o[0] + '|' + n] = 1; const r = mkPlayer(o); r.src = 'hazir'; r._orig = JSON.stringify(clean(r)); add.push(r); }); });
+    names.forEach(n => { if ((cnt[n] || 0) >= (staff ? 5 : 15) || !clubs[n]) return; (staff ? staffFor : squadFor)(clubs[n]).forEach(o => { if (have[o[0] + '|' + n]) return; have[o[0] + '|' + n] = 1; const r = staff ? mkStaff(o) : mkPlayer(o); r.src = 'hazir'; r._orig = JSON.stringify(clean(r)); add.push(r); }); });
     if (!add.length) return data;
-    this.base.oyuncu = this.base.oyuncu.concat(add.map(r => JSON.parse(JSON.stringify(r))));
-    return Object.assign({}, data, { oyuncu: data.oyuncu.concat(add) });
+    this.base[tk] = this.base[tk].concat(add.map(r => JSON.parse(JSON.stringify(r))));
+    return Object.assign({}, data, { [tk]: data[tk].concat(add) });
   }
   patch(fn) {
     const { tab, data, sel } = this.state;
@@ -2431,7 +2453,7 @@ class Component extends DCLogic {
     const navGroups = GROUPS.map(g => ({ label: g.label, items: g.keys.map(k => ({ label: ENT[k].label, count: data[k].length, pressed: k === tab ? 'true' : 'false', fg: k === tab ? '#FFFFFF' : 'var(--td-text3,#C9D0E2)', bg: k === tab ? 'rgba(var(--td-accent-rgb,200,16,46),0.16)' : 'transparent', bar: k === tab ? 'var(--td-accent,#C8102E)' : 'transparent', pick: () => this.setState({ tab: k, q: '', listOpen: false, filter: 'tum', cp: {}, pick: {} }) })) }));
     const ql = q.toLocaleLowerCase('tr-TR');
     const LIMIT = 150;
-    const allRows = recs.map((r, i) => ({ r, i })).filter(x => inCf(x.r)).filter(x => !ql || String(x.r[ent.titleKey]).toLocaleLowerCase('tr-TR').indexOf(ql) >= 0).filter(x => tab !== 'oyuncu' || !this.state.clubFilter || x.r.kulup === this.state.clubFilter).filter(x => filter === 'tum' || (filter === 'kontrol' ? x.r.veri === 'Kontrol et' : filter === 'hazir' ? x.r.src === 'hazir' : status(x.r) === filter));
+    const allRows = recs.map((r, i) => ({ r, i })).filter(x => inCf(x.r)).filter(x => !ql || String(x.r[ent.titleKey]).toLocaleLowerCase('tr-TR').indexOf(ql) >= 0).filter(x => (tab !== 'oyuncu' && tab !== 'personel') || !this.state.clubFilter || x.r.kulup === this.state.clubFilter).filter(x => filter === 'tum' || (filter === 'kontrol' ? x.r.veri === 'Kontrol et' : filter === 'hazir' ? x.r.src === 'hazir' : status(x.r) === filter));
     const rows = allRows.slice(0, LIMIT).map(x => {
       const on = x.i === sel[tab];
       const st = status(x.r);
@@ -2456,6 +2478,7 @@ class Component extends DCLogic {
       const base = { label: f.label, isHeading: false, isInput: false, isSelect: false, isMulti: false, isClub: false, isClubs: false, noChips: false, addCol: '', addBorder: 'rgba(var(--td-fg-rgb,255,255,255),0.16)', country: '', countryOpts: [], setCountry: null, addPick: null, span: 'auto', hint: f.hint || '', inputType: 'text', value: '', opts: [], chips: [], change: null, isArea: false, genHist: null, btn: '', isBtn: false, doBtn: null, hasGen: false };
       if (f.type === 'heading') return Object.assign(base, { isHeading: true, span: '1 / -1' });
       if (f.type === 'btn') return Object.assign(base, { isBtn: true, span: '1 / -1', btn: f.btn, doBtn: () => {
+        if (f.act === 'personel') { const nd = this.materialize([cur.ad], 'personel'); const first = nd.personel.findIndex(r => r.kulup === cur.ad); this.setState({ data: nd, tab: 'personel', clubFilter: cur.ad, sqC: cur.ulke, sqK: cur.ad, sel: Object.assign({}, sel, first >= 0 ? { personel: first } : {}), q: '', listOpen: false }); return; }
         if (f.act === 'kadro') { const nd = this.materialize([cur.ad]); const first = nd.oyuncu.findIndex(r => r.kulup === cur.ad); this.setState({ data: nd, tab: 'oyuncu', clubFilter: cur.ad, sqC: cur.ulke, sqK: cur.ad, sel: Object.assign({}, sel, first >= 0 ? { oyuncu: first } : {}), q: '', listOpen: false }); return; }
         const tgt = cur.swapHedef; const i = sel[tab]; const j = data.kulup.findIndex(r => r.ad === tgt);
         if (j < 0 || j === i) return;
@@ -2543,12 +2566,12 @@ class Component extends DCLogic {
         this.setState({ data: nd, sel: nsel, resetOpen: false, filter: 'tum', resetDone: scope === 'all' ? 'Tüm veritabanı oyunla gelen hâline döndü.' : ent.label + ' oyunla gelen hâline döndü.' }); },
       resetDoneShow: !!this.state.resetDone && !this.state.resetOpen, resetDone: this.state.resetDone,
       closeResetDone: () => this.setState({ resetDone: '' }),
-      isOyuncu: tab === 'oyuncu', hasClubFilter: tab === 'oyuncu' && !!this.state.clubFilter, clubFilter: this.state.clubFilter || '',
+      isOyuncu: tab === 'oyuncu' || tab === 'personel', hasClubFilter: (tab === 'oyuncu' || tab === 'personel') && !!this.state.clubFilter, clubFilter: this.state.clubFilter || '',
       sqC: this.state.sqC || 'Türkiye', sqK: this.state.sqK || clubsIn(this.state.sqC || 'Türkiye')[0] || '', sqCOpts: CLUB_COUNTRIES.map(x => ({ v: x })), sqKOpts: clubsIn(this.state.sqC || 'Türkiye').map(x => ({ v: x })),
-      setSqC: (e) => { const c = e.target.value; this.setState({ sqC: c, sqK: clubsIn(c)[0] || '' }); },
-      setSqK: (e) => this.setState({ sqK: e.target.value }),
-      openSquad: () => { const k = this.state.sqK || clubsIn(this.state.sqC || 'Türkiye')[0]; if (!k) return; const nd = this.materialize([k]); const first = nd.oyuncu.findIndex(r => r.kulup === k); this.setState({ data: nd, clubFilter: k, sel: Object.assign({}, sel, first >= 0 ? { oyuncu: first } : {}), q: '', listOpen: false }); },
-      openLeague: () => { const k = this.state.sqK || clubsIn(this.state.sqC || 'Türkiye')[0]; const info = CLUB_INFO[k]; if (!info) return; const lg = (CLUBDB[info.ulke] || []).find(l => l[0] === info.lig); const names = lg ? lg[2] : [k]; const nd = this.materialize(names); const first = nd.oyuncu.findIndex(r => r.kulup === k); this.setState({ data: nd, clubFilter: k, sel: Object.assign({}, sel, first >= 0 ? { oyuncu: first } : {}), q: '', listOpen: false }); },
+      setSqC: (e) => { const c = e.target.value; const k = clubsIn(c)[0] || ''; this.openClub(k, c, [k]); },
+      setSqK: (e) => { const k = e.target.value; this.openClub(k, this.state.sqC || 'Türkiye', [k]); },
+      openSquad: () => { const k = this.state.sqK || clubsIn(this.state.sqC || 'Türkiye')[0]; if (k) this.openClub(k, this.state.sqC || 'Türkiye', [k]); },
+      openLeague: () => { const k = this.state.sqK || clubsIn(this.state.sqC || 'Türkiye')[0]; const info = CLUB_INFO[k]; if (!info) return; const lg = (CLUBDB[info.ulke] || []).find(l => l[0] === info.lig); this.openClub(k, this.state.sqC || 'Türkiye', lg ? lg[2] : [k]); },
       clearSquad: () => this.setState({ clubFilter: '' }),
       isKulup: !!COUNTRY_TABS[tab], cf, cfOpts: ['Tüm ülkeler'].concat(tab === 'lig' || tab === 'odul' ? ['Uluslararası'] : []).concat(tab === 'kulup' ? CLUB_COUNTRIES : ALL_COUNTRIES).map(x => ({ v: x })),
       setCf: (e) => { const c = e.target.value; const first = recs.findIndex(r => c === 'Tüm ülkeler' || (c === 'Uluslararası' ? !r.ulke : r.ulke === c)); this.setState({ cfBy: Object.assign({}, this.state.cfBy, { [tab]: c }), q: '', sel: Object.assign({}, sel, first >= 0 ? { [tab]: first } : {}) }); },
