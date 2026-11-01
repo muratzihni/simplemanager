@@ -1,0 +1,280 @@
+[
+ {
+  "ad": "Borussia Dortmund",
+  "kaynaklar": [
+   "wikipedia.org",
+   "bvb.de",
+   "footyheadlines.com",
+   "soccerbible.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Michael Zorc · 572",
+  "rkGolOyuncu": "Alfred Preissler · 168",
+  "rkTransferAlinan": "Ousmane Dembélé · 31,5 milyon £ · 2016",
+  "e_ana": "#FDE100",
+  "e_ikinci": "#000000",
+  "e_desen": "Düz",
+  "d_ana": "#FFFFFF",
+  "d_ikinci": "#000000",
+  "d_desen": "Düz"
+ },
+ {
+  "ad": "Bayer Leverkusen",
+  "kaynaklar": [
+   "wikipedia.org",
+   "bundesliga.com",
+   "bayer04.de",
+   "footyheadlines.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Rüdiger Vollborn · 401",
+  "rkGolOyuncu": "Ulf Kirsten · 182",
+  "e_ana": "#000000",
+  "e_ikinci": "#E32219",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#FFFFFF",
+  "d_desen": "Düz",
+  "a_ana": "#1E6FD9",
+  "a_ikinci": "#00B7EB",
+  "a_desen": "Desenli"
+ },
+ {
+  "ad": "Inter Milan",
+  "kaynaklar": [
+   "wikipedia.org",
+   "inter.it",
+   "footyheadlines.com",
+   "90min.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkGalibiyet": "16-0 · ACIVI Vicenza · 1915",
+  "rkMacOyuncu": "Javier Zanetti · 858",
+  "rkGolOyuncu": "Giuseppe Meazza · 284",
+  "rkSeri": 17,
+  "e_ana": "#0066B3",
+  "e_ikinci": "#000000",
+  "e_sort": "#000000",
+  "e_corap": "#000000",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#FFFFFF",
+  "d_ikinci": "#40E0D0",
+  "d_desen": "Desenli",
+  "a_ana": "#808080",
+  "a_ikinci": "#FF7F00"
+ },
+ {
+  "ad": "Juventus",
+  "kaynaklar": [
+   "wikipedia.org",
+   "juventus.com",
+   "uefa.com",
+   "footyheadlines.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Alessandro Del Piero · 705",
+  "rkGolOyuncu": "Alessandro Del Piero · 290",
+  "e_ana": "#FFFFFF",
+  "e_ikinci": "#000000",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#A5C8E4",
+  "d_desen": "Düz",
+  "a_ana": "#000000",
+  "a_ikinci": "#2F5D3A",
+  "a_desen": "Desenli"
+ },
+ {
+  "ad": "AC Milan",
+  "kaynaklar": [
+   "wikipedia.org",
+   "acmilan.com",
+   "90min.com",
+   "nss-sports.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Paolo Maldini · 902",
+  "rkGolOyuncu": "Gunnar Nordahl · 221",
+  "e_ana": "#FB090B",
+  "e_ikinci": "#000000",
+  "d_ana": "#FFFFFF",
+  "a_ana": "#FFD700",
+  "a_ikinci": "#006400"
+ },
+ {
+  "ad": "Napoli",
+  "kaynaklar": [
+   "football-italia.net",
+   "si.com",
+   "90min.com",
+   "footyheadlines.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Marek Hamšík · 520",
+  "a_ana": "#6F4E37",
+  "a_ikinci": "#87CEEB",
+  "a_desen": "Desenli"
+ },
+ {
+  "ad": "Roma",
+  "kaynaklar": [
+   "wikipedia.org",
+   "asroma.com",
+   "footyheadlines.com",
+   "cbssports.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Francesco Totti · 786",
+  "rkGolOyuncu": "Francesco Totti · 307",
+  "rkSezonGol": 87,
+  "e_ana": "#8B1A1A",
+  "e_ikinci": "#FFD200",
+  "d_ana": "#FF7F00",
+  "d_ikinci": "#000000",
+  "a_ana": "#FFFFFF",
+  "a_ikinci": "#006400"
+ },
+ {
+  "ad": "Paris Saint-Germain",
+  "kaynaklar": [
+   "sportskeeda.com",
+   "footyheadlines.com",
+   "goal.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkTransferAlinan": "Neymar · 222 milyon € · 2017",
+  "e_ana": "#001F5B",
+  "e_ikinci": "#DA291C",
+  "e_desen": "Düz",
+  "d_ana": "#FFFFFF",
+  "d_ikinci": "#001F5B",
+  "a_ana": "#DA291C",
+  "a_ikinci": "#001F5B",
+  "a_sort": "#DA291C",
+  "a_corap": "#DA291C"
+ },
+ {
+  "ad": "Marseille",
+  "kaynaklar": [
+   "footyheadlines.com",
+   "soccerbible.com",
+   "om.fr"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "e_ana": "#FFFFFF",
+  "e_ikinci": "#87CEEB",
+  "d_ana": "#0A1F44",
+  "d_ikinci": "#6CA0DC",
+  "d_desen": "Desenli",
+  "a_ana": "#1E90FF"
+ },
+ {
+  "ad": "Lyon",
+  "kaynaklar": [
+   "wikipedia.org",
+   "uefa.com",
+   "footballkitarchive.com",
+   "footyheadlines.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Serge Chiesa · 542",
+  "rkGolOyuncu": "Fleury Di Nallo · 222",
+  "rkTransferAlinan": "Jeff Reine-Adélaïde · 22,5 milyon £ · 2019",
+  "e_sort": "#FFFFFF",
+  "a_ana": "#D3D3D3",
+  "a_ikinci": "#E32219"
+ },
+ {
+  "ad": "Ajax",
+  "kaynaklar": [
+   "wikipedia.org",
+   "english.ajax.nl",
+   "footyheadlines.com",
+   "jetpunk.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Sjaak Swart · 603",
+  "rkTransferSatilan": "Antony · 82,2 milyon £ · 2022",
+  "e_ana": "#FFFFFF",
+  "e_ikinci": "#D2122E",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#0B1F3F",
+  "d_ikinci": "#39FF14",
+  "a_ana": "#F5EBD7",
+  "a_ikinci": "#800000"
+ },
+ {
+  "ad": "PSV Eindhoven",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footyheadlines.com",
+   "eindhovennews.com",
+   "sportsdirect.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "Willy van der Kuijlen · 528",
+  "rkGolOyuncu": "Willy van der Kuijlen · 308",
+  "rkSeyirci": 35292,
+  "e_ana": "#E2001A",
+  "e_ikinci": "#FFFFFF",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#0A1F44",
+  "a_ana": "#F5F5DC",
+  "a_ikinci": "#6B8E23",
+  "a_sort": "#4A5D23",
+  "a_corap": "#4A5D23",
+  "stadyum": {
+   "ad": "Philips Stadion",
+   "kapasite": 35119,
+   "rekSeyirci": 35292
+  }
+ },
+ {
+  "ad": "Celtic",
+  "kaynaklar": [
+   "wikipedia.org",
+   "thecelticwiki.com",
+   "footyheadlines.com",
+   "90min.com"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkGalibiyet": "11-0 · Dundee · 1895",
+  "rkMacOyuncu": "Billy McNeill · 822",
+  "rkGolOyuncu": "Jimmy McGrory · 397",
+  "ku_lig": 56,
+  "ku_kupa": 43,
+  "e_ana": "#00A650",
+  "e_ikinci": "#FFFFFF",
+  "e_desen": "Yatay şeritli",
+  "d_ana": "#000000",
+  "d_ikinci": "#39FF14",
+  "d_desen": "Yatay şeritli",
+  "a_ana": "#F5F5DC",
+  "a_ikinci": "#98FB98",
+  "a_sort": "#98FB98",
+  "a_corap": "#98FB98",
+  "a_desen": "Desenli"
+ },
+ {
+  "ad": "Rangers",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footyheadlines.com",
+   "soccerbible.com",
+   "gersnet.co.uk"
+  ],
+  "tarih": "2025/26 sezon (arama sonuçları, 2026)",
+  "rkMacOyuncu": "John Greig · 755",
+  "rkGolOyuncu": "Ally McCoist · 355",
+  "ku_lig": 55,
+  "e_ana": "#1B458F",
+  "e_ikinci": "#FFFFFF",
+  "e_desen": "Düz",
+  "d_ana": "#FFFFFF",
+  "d_ikinci": "#D32F2F",
+  "d_sort": "#FFFFFF",
+  "d_corap": "#FFFFFF",
+  "d_desen": "Yatay şeritli",
+  "a_ana": "#36454F",
+  "a_ikinci": "#1B6FE0",
+  "a_desen": "Düz"
+ }
+]

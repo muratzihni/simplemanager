@@ -1,0 +1,141 @@
+[
+ {
+  "ad": "Süper Lig",
+  "kaynaklar": [
+   "tff.org",
+   "goal.com",
+   "en.wikipedia.org"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Galatasaray · 26",
+  "trk_enCokGolAtan": "Hakan Şükür · 249",
+  "trk_enCokMac": "Umut Bulut · 504",
+  "gecmisKazananlar": "1959 · Fenerbahçe\n2024-25 · Galatasaray\n2025-26 · Galatasaray"
+ },
+ {
+  "ad": "Türkiye Kupası",
+  "kaynaklar": [
+   "goal.com",
+   "fanatik.com.tr"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Galatasaray · 18",
+  "gecmisKazananlar": "2018-19 · Galatasaray\n2019-20 · Trabzonspor\n2020-21 · Beşiktaş\n2021-22 · Sivasspor"
+ },
+ {
+  "ad": "Süper Kupa",
+  "kaynaklar": [
+   "en.wikipedia.org",
+   "goal.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Galatasaray · 17",
+  "gecmisKazananlar": "2024 · Beşiktaş · Galatasaray (5-0)\n2025 · Fenerbahçe · Galatasaray (2-0)"
+ },
+ {
+  "ad": "UEFA Şampiyonlar Ligi",
+  "kaynaklar": [
+   "rsssf.org",
+   "uefa.com",
+   "theanalyst.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokGolAtan": "Cristiano Ronaldo · 140",
+  "trk_enCokMac": "Cristiano Ronaldo · 183",
+  "trk_enBuyukGalibiyet": "8-0 · Liverpool - Beşiktaş · 2007",
+  "gecmisKazananlar": "2020-21 · Chelsea · Manchester City (1-0)\n2021-22 · Real Madrid · Liverpool (1-0)\n2022-23 · Manchester City · Inter (1-0)\n2023-24 · Real Madrid · Borussia Dortmund (2-0)\n2024-25 · Paris Saint-Germain · Inter (5-0)"
+ },
+ {
+  "ad": "UEFA Avrupa Ligi",
+  "kaynaklar": [
+   "uefa.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Sevilla · 7"
+ },
+ {
+  "ad": "UEFA Konferans Ligi",
+  "kaynaklar": [
+   "flashscore.com",
+   "en.wikipedia.org"
+  ],
+  "tarih": "2026-11-01",
+  "gecmisKazananlar": "2021-22 · Roma · Feyenoord (1-0)\n2022-23 · West Ham United · Fiorentina (2-1)\n2023-24 · Olympiacos · Fiorentina (1-0)\n2024-25 · Chelsea · Real Betis (4-1)\n2025-26 · Crystal Palace"
+ },
+ {
+  "ad": "FIFA Dünya Kupası",
+  "kaynaklar": [
+   "worldcupranking.com",
+   "topendsports.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Brezilya · 5",
+  "trk_enBuyukGalibiyet": "10-1 · Macaristan - El Salvador · 1982"
+ },
+ {
+  "ad": "UEFA Avrupa Şampiyonası",
+  "kaynaklar": [
+   "uefa.com",
+   "theanalyst.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "İspanya · 4",
+  "trk_enCokGolAtan": "Cristiano Ronaldo · 14"
+ },
+ {
+  "ad": "Copa América",
+  "kaynaklar": [
+   "copaamerica.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Arjantin · 16",
+  "trk_enCokGolAtan": "Norberto Méndez ve Zizinho · 17"
+ },
+ {
+  "ad": "Premier League",
+  "kaynaklar": [
+   "theanalyst.com",
+   "guinnessworldrecords.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_sezonPuan": 100
+ },
+ {
+  "ad": "LaLiga",
+  "kaynaklar": [
+   "en.wikipedia.org",
+   "fcbarcelona.com"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Real Madrid · 36",
+  "trk_enCokGolAtan": "Lionel Messi · 474"
+ },
+ {
+  "ad": "Serie A",
+  "kaynaklar": [
+   "guinnessworldrecords.com",
+   "thescore.com"
+  ],
+  "tarih": "2026-11-01"
+ },
+ {
+  "ad": "Bundesliga",
+  "kaynaklar": [
+   "bundesliga.com",
+   "en.wikipedia.org"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokGolAtan": "Gerd Müller · 365"
+ },
+ {
+  "ad": "Ligue 1",
+  "kaynaklar": [
+   "en.wikipedia.org"
+  ],
+  "tarih": "2026-11-01",
+  "trk_enCokSampiyon": "Paris Saint-Germain · 14",
+  "trk_enCokGolAtan": "Delio Onnis · 299",
+  "trk_enCokMac": "Mickaël Landreau · 618",
+  "trk_sezonPuan": 96
+ }
+]

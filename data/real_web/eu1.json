@@ -1,0 +1,264 @@
+[
+ {
+  "ad": "Real Madrid",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footyheadlines.com",
+   "realmadrid.com",
+   "laliga.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkGalibiyet": "11-1 · Barcelona · 1943 (Copa del Rey)",
+  "rkYenilgi": "1-8 · Espanyol · 1930",
+  "rkMacOyuncu": "Raúl · 741",
+  "rkGolOyuncu": "Cristiano Ronaldo · 450",
+  "rkSezonPuan": 100,
+  "e_ana": "#FFFFFF",
+  "e_desen": "Düz",
+  "a_ana": "#1E90FF",
+  "a_desen": "Düz",
+  "ku_lig": 36,
+  "ku_kupa": 20,
+  "ku_superkupa": 13,
+  "tf_sosyal": 488,
+  "stadyum": {
+   "ad": "Santiago Bernabéu",
+   "kapasite": 81044
+  }
+ },
+ {
+  "ad": "Barcelona",
+  "kaynaklar": [
+   "fcbarcelona.com",
+   "footyheadlines.com",
+   "footballkitarchive.com",
+   "beinsports.com",
+   "uefa.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkMacOyuncu": "Lionel Messi · 778",
+  "rkGolOyuncu": "Lionel Messi · 672",
+  "rkSezonPuan": 100,
+  "e_ana": "#A50044",
+  "e_ikinci": "#004D98",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#FFD700",
+  "a_ana": "#FFA500",
+  "a_ikinci": "#000080",
+  "a_desen": "Düz",
+  "ku_lig": 28,
+  "ku_kupa": 32,
+  "tf_sosyal": 442,
+  "stadyum": {
+   "ad": "Spotify Camp Nou",
+   "kapasite": 62652
+  }
+ },
+ {
+  "ad": "Atlético Madrid",
+  "kaynaklar": [
+   "uefa.com",
+   "footballkitarchive.com",
+   "nss-sports.com",
+   "soccerbible.com",
+   "atleticodemadrid.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "e_ana": "#FF0000",
+  "e_ikinci": "#FFFFFF",
+  "e_sort": "#00008B",
+  "e_corap": "#00008B",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#000080",
+  "d_ikinci": "#FFFF00",
+  "d_desen": "Düz",
+  "a_ana": "#87CEEB",
+  "a_ikinci": "#FF0000",
+  "a_desen": "Düz",
+  "kupaGecmisi": "Avrupa Ligi · 2010, 2012, 2018",
+  "stadyum": {
+   "ad": "Metropolitano"
+  }
+ },
+ {
+  "ad": "Manchester United",
+  "kaynaklar": [
+   "manutd.com",
+   "wikipedia.org",
+   "footyheadlines.com",
+   "goal.com",
+   "cies.ch"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkMacOyuncu": "Ryan Giggs · 963",
+  "rkGolOyuncu": "Wayne Rooney · 253",
+  "rkTransferSatilan": "Cristiano Ronaldo · 80 milyon £ · 2009",
+  "e_ana": "#FF0000",
+  "e_desen": "Düz",
+  "d_ana": "#FFFFFF",
+  "d_ikinci": "#C8A2C8",
+  "d_desen": "Düz",
+  "a_ana": "#000000",
+  "a_ikinci": "#FFFF00",
+  "a_desen": "Düz",
+  "ku_lig": 20,
+  "ku_kupa": 13,
+  "tf_sosyal": 239,
+  "stadyum": {
+   "ad": "Old Trafford",
+   "kapasite": 74310,
+   "acilis": 1910
+  }
+ },
+ {
+  "ad": "Manchester City",
+  "kaynaklar": [
+   "mancity.com",
+   "footballkitarchive.com",
+   "footyheadlines.com",
+   "breakingnews.ie",
+   "gulfnews.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkGolOyuncu": "Sergio Agüero · 260",
+  "e_ana": "#87CEEB",
+  "e_desen": "Düz",
+  "d_ana": "#000000",
+  "d_ikinci": "#C0C0C0",
+  "d_desen": "Düz",
+  "stadyum": {
+   "ad": "Etihad Stadium",
+   "kapasite": 53400,
+   "acilis": 2003
+  }
+ },
+ {
+  "ad": "Liverpool",
+  "kaynaklar": [
+   "liverpoolfc.com",
+   "wikipedia.org",
+   "footyheadlines.com",
+   "flashscore.com",
+   "stadiumdb.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkGalibiyet": "11-0 · Strømsgodset · 1974",
+  "rkGolOyuncu": "Ian Rush · 346",
+  "rkSezonGol": 47,
+  "e_ana": "#C8102E",
+  "e_desen": "Düz",
+  "d_ana": "#F5F5F0",
+  "d_sort": "#000000",
+  "d_corap": "#FFFFFF",
+  "d_desen": "Düz",
+  "a_ana": "#3CB371",
+  "a_sort": "#FFFFFF",
+  "a_corap": "#3CB371",
+  "a_desen": "Düz",
+  "kupaGecmisi": "Avrupa Kupası / Şampiyonlar Ligi · 1977, 1978, 1981, 1984, 2005, 2019",
+  "stadyum": {
+   "ad": "Anfield"
+  }
+ },
+ {
+  "ad": "Arsenal",
+  "kaynaklar": [
+   "wikipedia.org",
+   "90min.com",
+   "footyheadlines.com",
+   "flashscore.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkGalibiyet": "12-0 · Ashford United · 1893",
+  "rkGolOyuncu": "Thierry Henry · 228",
+  "e_ana": "#EF0107",
+  "e_ikinci": "#FFFFFF",
+  "e_desen": "Düz",
+  "d_ana": "#000080",
+  "d_desen": "Desenli",
+  "a_ana": "#FFFFFF",
+  "a_ikinci": "#800000",
+  "a_desen": "Düz",
+  "stadyum": {
+   "ad": "Emirates Stadium",
+   "kapasite": 60704,
+   "acilis": 2006
+  }
+ },
+ {
+  "ad": "Chelsea",
+  "kaynaklar": [
+   "wikipedia.org",
+   "90min.com",
+   "goal.com",
+   "footyheadlines.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkSezonGol": 103,
+  "rkSezonPuan": 95,
+  "e_ana": "#4169E1",
+  "e_desen": "Düz",
+  "d_ana": "#F5F5F0",
+  "d_ikinci": "#4B5320",
+  "d_desen": "Düz",
+  "a_ana": "#000000",
+  "a_ikinci": "#C0C0C0",
+  "a_desen": "Düz",
+  "ku_dunya": 2,
+  "stadyum": {
+   "ad": "Stamford Bridge"
+  }
+ },
+ {
+  "ad": "Tottenham Hotspur",
+  "kaynaklar": [
+   "uefa.com",
+   "wikipedia.org",
+   "footballkitarchive.com",
+   "soccerbible.com",
+   "footballhistory.org"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkTransferSatilan": "Gareth Bale · 100 milyon € · 2013",
+  "e_ana": "#FFFFFF",
+  "e_desen": "Düz",
+  "a_ana": "#FFFF00",
+  "a_ikinci": "#001C58",
+  "a_desen": "Düz",
+  "ku_lig": 2,
+  "ku_kupa": 8,
+  "stadyum": {
+   "ad": "Tottenham Hotspur Stadium",
+   "kapasite": 62850,
+   "acilis": 2019,
+   "rekSeyirci": 62027
+  }
+ },
+ {
+  "ad": "Bayern Munich",
+  "kaynaklar": [
+   "bundesliga.com",
+   "fcbayern.com",
+   "footyheadlines.com",
+   "footballkitarchive.com",
+   "stadiumdb.com"
+  ],
+  "tarih": "2025/26 sezonu (arama sonuçları)",
+  "rkGalibiyet": "11-1 · Borussia Dortmund",
+  "rkGolOyuncu": "Gerd Müller · 365 (Bundesliga)",
+  "rkSezonGol": 109,
+  "e_ana": "#DC052D",
+  "e_ikinci": "#FFFFFF",
+  "e_desen": "Düz",
+  "d_ana": "#FFFFFF",
+  "d_desen": "Düz",
+  "a_ana": "#000000",
+  "a_ikinci": "#DC052D",
+  "a_desen": "Desenli",
+  "stadyum": {
+   "ad": "Allianz Arena",
+   "kapasite": 75000,
+   "acilis": 2005
+  }
+ }
+]

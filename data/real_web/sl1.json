@@ -1,0 +1,151 @@
+[
+ {
+  "ad": "Galatasaray",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footyheadlines.com",
+   "footballkitarchive.com",
+   "uefa.com",
+   "footballhistory.org",
+   "fanatik.com.tr"
+  ],
+  "tarih": "2025/26 sezonu (Kasım 2026'da erişilen kaynaklar)",
+  "rkGalibiyet": "8-0 · Ankaragücü · 1992/93 (deplasman)",
+  "rkGolOyuncu": "Metin Oktay · 348",
+  "rkSezonPuan": 102,
+  "rkSeri": 17,
+  "e_ana": "#FF6A00",
+  "e_ikinci": "#C8102E",
+  "e_desen": "Yarı yarıya",
+  "d_ana": "#FFFFFF",
+  "d_ikinci": "#C8102E",
+  "d_desen": "Düz",
+  "a_ana": "#800020",
+  "a_ikinci": "#FFD700",
+  "a_sort": "#000000",
+  "a_desen": "Desenli",
+  "ku_lig": 26,
+  "ku_kupa": 19,
+  "ku_superkupa": 17,
+  "ku_kitasal": 2,
+  "kupaGecmisi": "UEFA Kupası · 2000\nUEFA Süper Kupası · 2000",
+  "tk_felsefe": "Teknik direktör Okan Buruk; 2023/24'te 102 puanla Türk futbolu rekoru.",
+  "stadyum": {
+   "ad": "Türk Telekom Stadyumu",
+   "ortSeyirci": 45432
+  }
+ },
+ {
+  "ad": "Fenerbahçe",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footyheadlines.com",
+   "uefa.com",
+   "stadiumdb.com",
+   "soccerbible.com"
+  ],
+  "tarih": "2025/26 sezonu (Kasım 2026'da erişilen kaynaklar)",
+  "e_ana": "#FFED00",
+  "e_ikinci": "#001F5B",
+  "e_sort": "#FFFFFF",
+  "e_corap": "#FFFFFF",
+  "e_desen": "Dikey çizgili",
+  "d_ana": "#FFED00",
+  "d_ikinci": "#001F5B",
+  "d_desen": "Düz",
+  "a_ana": "#1F4E9C",
+  "a_ikinci": "#001F5B",
+  "a_sort": "#001F5B",
+  "a_corap": "#001F5B",
+  "a_desen": "Dikey çizgili",
+  "ku_lig": 28,
+  "ku_kupa": 7,
+  "ku_superkupa": 10,
+  "stadyum": {
+   "ad": "Chobani Stadyumu Fenerbahçe Şükrü Saracoğlu Spor Kompleksi",
+   "kapasite": 50530,
+   "ortSeyirci": 35558
+  }
+ },
+ {
+  "ad": "Beşiktaş",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footyheadlines.com",
+   "dailysabah.com",
+   "footballhistory.org"
+  ],
+  "tarih": "2025/26 sezonu (Kasım 2026'da erişilen kaynaklar)",
+  "rkGalibiyet": "10-0 · Adana Demirspor",
+  "rkMacOyuncu": "Rıza Çalımbay · 602",
+  "rkGolOyuncu": "Hakkı Yeten · 382",
+  "e_ana": "#FFFFFF",
+  "a_ana": "#000000",
+  "a_ikinci": "#E30613",
+  "a_desen": "Desenli",
+  "ku_lig": 16,
+  "ku_kupa": 11,
+  "ku_superkupa": 10,
+  "stadyum": {
+   "ad": "Beşiktaş Stadyumu (Vodafone Park)",
+   "kapasite": 42684,
+   "acilis": 2016,
+   "rekSeyirci": 41843
+  }
+ },
+ {
+  "ad": "Trabzonspor",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footballhistory.org",
+   "uefa.com",
+   "stadiumdb.com"
+  ],
+  "tarih": "2025/26 sezonu (Kasım 2026'da erişilen kaynaklar)",
+  "rkMacOyuncu": "Hami Mandıralı · 551",
+  "rkGolOyuncu": "Hami Mandıralı · 266",
+  "ku_kupa": 9,
+  "ku_superkupa": 10,
+  "tk_felsefe": "2025/26 kaynaklarında teknik direktör Fatih Tekke.",
+  "stadyum": {
+   "ad": "Şenol Güneş Spor Kompleksi Papara Park",
+   "kapasite": 41131,
+   "acilis": 2016,
+   "sponsorAd": "Papara",
+   "rekSeyirci": 40368
+  }
+ },
+ {
+  "ad": "Başakşehir",
+  "kaynaklar": [
+   "wikipedia.org",
+   "fanatik.com.tr",
+   "stadiumdb.com"
+  ],
+  "tarih": "2025/26 sezonu (Kasım 2026'da erişilen kaynaklar)",
+  "tk_felsefe": "2025/26'yı 5. sırada bitirdi; teknik direktör Nuri Şahin.",
+  "stadyum": {
+   "ad": "Başakşehir Fatih Terim Stadyumu",
+   "kapasite": 17156,
+   "acilis": 2014
+  }
+ },
+ {
+  "ad": "Samsunspor",
+  "kaynaklar": [
+   "wikipedia.org",
+   "footyheadlines.com",
+   "tff.org",
+   "fanatik.com.tr"
+  ],
+  "tarih": "2025/26 sezonu (Kasım 2026'da erişilen kaynaklar)",
+  "a_ana": "#1B3A6B",
+  "a_desen": "Düz",
+  "tk_felsefe": "2025/26'da Konferans Ligi son 16 turuna ulaştı; Thorsten Fink ile Ekim 2026'da yollar ayrıldı.",
+  "stadyum": {
+   "ad": "Samsun Yeni 19 Mayıs Stadyumu",
+   "kapasite": 33919,
+   "acilis": 2017
+  }
+ }
+]
