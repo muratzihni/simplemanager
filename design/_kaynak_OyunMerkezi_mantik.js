@@ -72,6 +72,8 @@ const KO_SLOTS = [900, 1020, 1140, 1200];
 const koOf = (i) => KO_SLOTS[Math.floor(u01('ko|' + i) * 4)];
 const hhmm = (m) => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
 const DAY_START = 540;
+const DAY_END = 1260;
+const CLOCK_STEP = 180;
 const KITSET = { 'Avrupa kupası': 1, 'Kıtasal kulüp kupası': 1, 'Dünya kulüp turnuvası': 1 };
 function contOf(name) { const tur = window.VE_TUR || []; const o = []; tur.forEach((t, i) => { if (KITSET[t.tur] && Array.isArray(t.katilanKulup) && t.katilanKulup.indexOf(name) >= 0) o.push({ t, i }); }); return o; }
 const GOALW = { 'Santrfor': 5, 'Sağ kanat': 3.2, 'Sol kanat': 3.2, 'Ofansif orta saha': 3, 'Merkez orta saha': 1.5, 'Ön libero': 0.7, 'Sağ bek': 0.7, 'Sol bek': 0.7, 'Stoper': 0.5, 'Kaleci': 0.02 };
@@ -272,7 +274,9 @@ class Component extends DCLogic {
   myRound(M, from) { for (let i = from; i < M.rounds.length; i++) if (M.rounds[i].some(([h, a]) => h === M.p.n || a === M.p.n)) return i; return -1; }
   advance(days, untilMatch) {
     const M = this.model(); const G = this.gs(); let guard = 0; if (G.min === undefined) G.min = DAY_START;
-    { const my0 = this.nextMyRound(M, G); if (my0 >= 0 && M.dates[my0] === G.date && !G.sim[my0] && G.min < koOf(my0)) { G.min = koOf(my0); this.save(); this.setState({ tick: this.state.tick + 1 }); return; } }
+    { const my0 = this.nextMyRound(M, G); const mToday = my0 >= 0 && M.dates[my0] === G.date && !G.sim[my0];
+      if (mToday && G.min < koOf(my0)) { G.min = untilMatch ? koOf(my0) : Math.min(koOf(my0), G.min + CLOCK_STEP); this.save(); this.setState({ tick: this.state.tick + 1 }); return; }
+      if (!mToday && !untilMatch && G.min + CLOCK_STEP <= DAY_END) { G.min += CLOCK_STEP; this.save(); this.setState({ tick: this.state.tick + 1 }); return; } }
     while (guard++ < MAX_DAYS) {
       const my = this.nextMyRound(M, G);
       const matchToday = my >= 0 && M.dates[my] === G.date;
