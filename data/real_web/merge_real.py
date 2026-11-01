@@ -13,12 +13,20 @@ TXT=['rkGalibiyet','rkYenilgi','rkMacOyuncu','rkGolOyuncu','rkTransferAlinan','r
 NUM=['rkSezonGol','rkSezonPuan','rkSeyirci','rkYenilmez','rkSeri','ku_lig','ku_kupa','ku_superkupa','ku_kitasal','ku_dunya','ku_kita','ku_diger','tf_sayi','tf_ulke','tf_sosyal','hd_puan','hd_sabir','ak_kurulus','ak_sporcu']
 N20=['tf_atmosfer','tf_sadakat','tf_baski','tf_genc','tf_deplasman','tf_olay','tk_tempo','tk_pres','tk_cizgi','tk_genislik','tk_setparca','ak_kalite','ak_antrenor','ak_tesis']
 COL=[c+'_'+x for c in 'eda' for x in ('ana','ikinci','sort','corap')]
+def mergeRec(old,new,f):
+    if old is None: return new
+    m=dict(old)
+    for k,v in new.items():
+        if k=='gecmisKazananlar' and k in m and len(str(m[k]).splitlines())>=len(str(v).splitlines()): continue
+        if k=='kaynakNot' and k in m: m[k]=m[k]+' || '+v; continue
+        m[k]=v
+    return m
 out={'kulup':{},'milli':{},'lig':{},'odul':{}}; rej=[]
-for f in sorted(glob.glob(S+'/real/*.json')):
+for f in [S+'/real2/clubs.json',S+'/real2/nt2.json',S+'/real2/trn1.json',S+'/real2/trn2.json',S+'/real2/awd2.json']+sorted(glob.glob(S+'/real/*.json')):
     try: arr=json.load(open(f,encoding='utf-8'))
     except Exception as e: print('BOZUK',f,e); continue
-    if f.endswith('trn.json') or f.endswith('awd.json'):
-        kind='lig' if f.endswith('trn.json') else 'odul'
+    if re.search(r'(trn\d?|awd\d?)\.json$',f):
+        kind='lig' if 'trn' in f.split('/')[-1] else 'odul'
         for t in json.load(open(f,encoding='utf-8')):
             ad=t.get('ad'); r={}
             for k,v in t.items():
@@ -32,9 +40,9 @@ for f in sorted(glob.glob(S+'/real/*.json')):
                 else: rej.append((ad,k,'bilinmeyen anahtar'))
             src=', '.join(t.get('kaynaklar',[])) if isinstance(t.get('kaynaklar'),list) else ''
             r['kaynakNot']=('Kaynaklar: '+src if src else 'Kaynak belirtilmedi')+(' · '+t['tarih'] if t.get('tarih') else '')+' · web aramasıyla toplandı, doğrulanmadı'
-            out[kind][ad]=r
+            out[kind][ad]=mergeRec(out[kind].get(ad),r,f)
         continue
-    kind='milli' if f.endswith('nt.json') else 'kulup'
+    kind='milli' if re.search(r'nt\d?\.json$',f) else 'kulup'
     for t in arr:
         ad=t.get('ad'); r={}
         for k,v in t.items():
@@ -64,7 +72,7 @@ for f in sorted(glob.glob(S+'/real/*.json')):
         r['kaynakNot']=('Kaynaklar: '+src if src else 'Kaynak belirtilmedi')+(' · '+t['tarih'] if t.get('tarih') else '')+(' · tahmini alanlar: '+', '.join(est) if est else '')+' · web aramasıyla toplandı, doğrulanmadı'
         st=t.get('stadyum')
         if isinstance(st,dict): r['_stadyum']={k:v for k,v in st.items() if k in('ad','kapasite','acilis','sponsorAd','isitma','rekSeyirci','ortSeyirci') and v not in (None,'')}
-        out[kind][ad]=r
+        out[kind][ad]=mergeRec(out[kind].get(ad),r,f)
 META={"Ballon d'Or":('Oyuncu','Dünya','','Yıl sonu',0,20),"FIFA The Best Yılın Oyuncusu":('Oyuncu','Dünya','','Yıl sonu',0,19),"UEFA Yılın Oyuncusu":('Oyuncu','Kıta','UEFA Şampiyonlar Ligi','Sezon sonu',0,17),"Altın Ayakkabı":('Gol','Kıta','','Sezon sonu',0,16),"Kopa Kupası":('Oyuncu','Dünya','','Yıl sonu',21,15),"Yashin Kupası":('Kaleci','Dünya','','Yıl sonu',0,15),"Gerd Müller Kupası":('Gol','Dünya','','Yıl sonu',0,15),"Premier League Sezonun Oyuncusu (PFA)":('Oyuncu','Lig','Premier League','Sezon sonu',0,16),"Premier League Altın Ayakkabı":('Gol','Lig','Premier League','Sezon sonu',0,14),"Premier League Altın Eldiven":('Kaleci','Lig','Premier League','Sezon sonu',0,13),"FIFA Dünya Kupası Altın Top":('Oyuncu','Dünya','FIFA Dünya Kupası','Sezon sonu',0,18),"FIFA Dünya Kupası Altın Ayakkabı":('Gol','Dünya','FIFA Dünya Kupası','Sezon sonu',0,17),"FIFA Dünya Kupası Altın Eldiven":('Kaleci','Dünya','FIFA Dünya Kupası','Sezon sonu',0,16)}
 for ad,r in list(out['odul'].items()):
     if ad=='Süper Lig Gol Kralı':
