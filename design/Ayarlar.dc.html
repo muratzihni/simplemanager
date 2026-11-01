@@ -10,49 +10,49 @@
 <helmet>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#0A0F1C}
-a{color:#C9D0E2;text-decoration:none}a:hover{color:#FFFFFF}
-.tab:hover{background:rgba(255,255,255,0.06) !important}
-.opt:hover{border-color:rgba(255,255,255,0.35) !important}
-.ghost:hover{background:rgba(255,255,255,0.08) !important}
-.save:hover{background:#DD1838 !important}
-input[type=range]{accent-color:#C8102E;width:220px}
-@keyframes gblink{0%,100%{background:#C8102E;color:#FFFFFF}50%{background:rgba(200,16,46,0.08);color:#FF6B76}}
+body{margin:0;background:var(--td-bg,#0A0F1C)}
+a{color:var(--td-text3,#C9D0E2);text-decoration:none}a:hover{color:var(--td-strong,#FFFFFF)}
+.tab:hover{background:rgba(var(--td-fg-rgb,255,255,255),0.06) !important}
+.opt:hover{border-color:rgba(var(--td-fg-rgb,255,255,255),0.35) !important}
+.ghost:hover{background:rgba(var(--td-fg-rgb,255,255,255),0.08) !important}
+.save:hover{background:var(--td-accent-h,#DD1838) !important}
+input[type=range]{accent-color:var(--td-accent,#C8102E);width:220px}
+@keyframes gblink{0%,100%{background:var(--td-accent,#C8102E);color:#FFFFFF}50%{background:rgba(var(--td-accent-rgb,200,16,46),0.08);color:var(--td-accent2,#FF6B76)}}
 .blink{animation:gblink .7s ease-in-out infinite}
-.scroll{overflow-y:auto;min-height:0}.scroll > *{flex-shrink:0}.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:4px}
-.dd{appearance:none;-webkit-appearance:none;min-width:230px;height:40px;padding:0 34px 0 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.16);background-color:rgba(15,21,41,0.92);color:#F4F6FB;font:600 13px 'Manrope',sans-serif;color-scheme:dark;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FF6B76' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:12px 12px}
-.dd:hover{border-color:rgba(255,255,255,0.32)}.dd:focus{outline:none;border-color:#C8102E;box-shadow:inset 0 0 0 1px #C8102E}
-.dd option{background:#0F1529;color:#F4F6FB}.dd option:checked{background:#C8102E}
-.flag{flex:none;display:inline-block;width:24px;height:18px;border-radius:3px;background-image:url(/_blob/75fab712f3b0f95f5e4913eb6f0f5f7b);background-size:360px 270px;background-repeat:no-repeat;box-shadow:0 0 0 1px rgba(255,255,255,0.18)}
-.lrow:hover{background:rgba(255,255,255,0.06) !important}.ddbtn:hover{border-color:rgba(255,255,255,0.32) !important}
+.scroll{overflow-y:auto;min-height:0}.scroll > *{flex-shrink:0}.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:rgba(var(--td-fg-rgb,255,255,255),0.15);border-radius:4px}
+.dd{appearance:none;-webkit-appearance:none;min-width:230px;height:40px;padding:0 34px 0 12px;border-radius:9px;border:1px solid rgba(var(--td-fg-rgb,255,255,255),0.16);background-color:rgba(var(--td-panel-rgb,15,21,41),0.92);color:var(--td-text,#F4F6FB);font:600 13px 'Manrope',sans-serif;color-scheme:dark;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FF6B76' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:12px 12px}
+.dd:hover{border-color:rgba(var(--td-fg-rgb,255,255,255),0.32)}.dd:focus{outline:none;border-color:var(--td-accent,#C8102E);box-shadow:inset 0 0 0 1px var(--td-accent,#C8102E)}
+.dd option{background:var(--td-panel,#0F1529);color:var(--td-text,#F4F6FB)}.dd option:checked{background:var(--td-accent,#C8102E)}
+.flag{flex:none;display:inline-block;width:24px;height:18px;border-radius:3px;background-image:url(/_blob/75fab712f3b0f95f5e4913eb6f0f5f7b);background-size:360px 270px;background-repeat:no-repeat;box-shadow:0 0 0 1px rgba(var(--td-fg-rgb,255,255,255),0.18)}
+.lrow:hover{background:rgba(var(--td-fg-rgb,255,255,255),0.06) !important}.ddbtn:hover{border-color:rgba(var(--td-fg-rgb,255,255,255),0.32) !important}
 </style>
 </helmet>
-<div style="height: 100vh; min-height: 760px; position: relative; overflow: hidden; background: #0A0F1C; color: #F4F6FB; font-family: 'Manrope', system-ui, sans-serif">
-<img src="/_blob/37d3311d36b777efbeea9c38beb02667" alt="" aria-hidden="true" style="position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(18px) brightness(0.4) saturate(0.9)">
-<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(10,15,28,0.55)"></div>
+<div style="height: 100vh; min-height: 760px; position: relative; overflow: hidden; background: var(--td-bg,#0A0F1C); color: var(--td-text,#F4F6FB); font-family: 'Manrope', system-ui, sans-serif">
+<img src="/_blob/37d3311d36b777efbeea9c38beb02667" alt="" aria-hidden="true" style="position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(18px) var(--td-img-f,brightness(0.4) saturate(0.9))">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(var(--td-bg-rgb,10,15,28),0.55)"></div>
 
 <div style="position: relative; z-index: 1; box-sizing: border-box; padding: 24px 56px; display: flex; flex-direction: column; gap: 20px; height: 100%">
 
 <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
 <div style="display: flex; align-items: center; gap: 18px">
-<a href="Main.dc.html" class="ghost" aria-label="{{TX.back}}" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center">
-<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F6FB" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg>
+<a href="Main.dc.html" class="ghost" aria-label="{{TX.back}}" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.14); display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--td-text,var(--td-text,#F4F6FB))"><path d="M15 6l-6 6 6 6"></path></svg>
 </a>
 <div style="display: flex; flex-direction: column; gap: 2px">
-<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.22em; color: #FF6B76">{{T.menu}}</span>
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.22em; color: var(--td-accent2,#FF6B76)">{{T.menu}}</span>
 <h1 style="margin: 0; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; letter-spacing: 0.04em">{{T.settingsUp}}</h1>
 </div>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 10px">
-<button class="ghost" onClick="{{reset}}" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 14px 'Manrope', sans-serif; cursor: pointer">{{T.reset}}</button>
-<a href="Main.dc.html" class="save" onClick="{{save}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 10px; border: none; background: #C8102E; color: #FFFFFF; font: 700 14px 'Manrope', sans-serif; cursor: pointer">{{T.saveClose}}</a>
+<button class="ghost" onClick="{{reset}}" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.16); background: transparent; color: var(--td-text2,#DCE2F0); font: 600 14px 'Manrope', sans-serif; cursor: pointer">{{T.reset}}</button>
+<a href="Main.dc.html" class="save" onClick="{{save}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 10px; border: none; background: var(--td-accent,#C8102E); color: #FFFFFF; font: 700 14px 'Manrope', sans-serif; cursor: pointer">{{T.saveClose}}</a>
 </div>
 </header>
 
 <div style="flex: 1; min-height: 0; display: flex; gap: 20px; align-items: stretch">
 
 <!-- Sekmeler -->
-<nav aria-label="{{TX.cats}}" class="scroll" style="flex: 0 0 260px; align-self: flex-start; max-height: 100%; display: flex; flex-direction: column; gap: 4px; padding: 10px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.6); backdrop-filter: blur(10px)">
+<nav aria-label="{{TX.cats}}" class="scroll" style="flex: 0 0 260px; align-self: flex-start; max-height: 100%; display: flex; flex-direction: column; gap: 4px; padding: 10px; border-radius: 18px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.12); background: rgba(var(--td-bg-rgb,10,15,28),0.6); backdrop-filter: blur(10px)">
 <sc-for list="{{tabs}}" as="t" hint-placeholder-count="7">
 <button class="tab" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="position: relative; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 14px; border-radius: 10px; border: none; background: {{t.bg}}; color: {{t.fg}}; text-align: left; font: 600 15px 'Manrope', sans-serif; cursor: pointer">
 <span style="width: 3px; height: 22px; border-radius: 2px; background: {{t.bar}}"></span>{{t.label}}</button>
@@ -60,17 +60,17 @@ input[type=range]{accent-color:#C8102E;width:220px}
 </nav>
 
 <!-- İçerik -->
-<section aria-label="{{tabTitle}}" class="scroll" style="flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.6); backdrop-filter: blur(10px); padding: 8px 28px 20px">
-<div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+<section aria-label="{{tabTitle}}" class="scroll" style="flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; border-radius: 18px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.12); background: rgba(var(--td-bg-rgb,10,15,28),0.6); backdrop-filter: blur(10px); padding: 8px 28px 20px">
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 0 14px; border-bottom: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.08)">
 <span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: 0.05em">{{tabTitle}}</span>
-<span style="font-size: 14px; color: #A7B0C8">{{tabDesc}}</span>
+<span style="font-size: 14px; color: var(--td-mut,#A7B0C8)">{{tabDesc}}</span>
 </div>
 
 <sc-if value="{{showPreview}}" hint-placeholder-val="{{ false }}">
-<div style="margin-top: 16px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(200,16,46,0.45); background: rgba(200,16,46,0.10); display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px">
-<span style="font-weight: 700; color: #FF6B76; letter-spacing: 0.08em">{{TX.prev}}</span>
+<div style="margin-top: 16px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(var(--td-accent-rgb,200,16,46),0.45); background: rgba(var(--td-accent-rgb,200,16,46),0.10); display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px">
+<span style="font-weight: 700; color: var(--td-accent2,#FF6B76); letter-spacing: 0.08em">{{TX.prev}}</span>
 <sc-for list="{{preview}}" as="p" hint-placeholder-count="7">
-<span style="color: #DCE2F0"><span style="color: #8C96B2">{{p.k}}</span> {{p.v}}</span>
+<span style="color: var(--td-text2,#DCE2F0)"><span style="color: var(--td-mut2,#8C96B2)">{{p.k}}</span> {{p.v}}</span>
 </sc-for>
 </div>
 </sc-if>
@@ -78,10 +78,10 @@ input[type=range]{accent-color:#C8102E;width:220px}
 
 
 <sc-if value="{{showPalette}}" hint-placeholder-val="{{ false }}">
-<div style="margin-top: 16px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(5,8,16,0.7); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; font-size: 14px">
-<span style="font-weight: 700; color: #8C96B2; letter-spacing: 0.08em; font-size: 12px">{{TX.pal}}</span>
+<div style="margin-top: 16px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.12); background: rgba(var(--td-deep-rgb,5,8,15),0.7); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; font-size: 14px">
+<span style="font-weight: 700; color: var(--td-mut2,#8C96B2); letter-spacing: 0.08em; font-size: 12px">{{TX.pal}}</span>
 <sc-for list="{{palette}}" as="c" hint-placeholder-count="4">
-<span style="display: flex; align-items: center; gap: 8px; color: #DCE2F0"><span style="width: 18px; height: 18px; border-radius: 5px; background: {{c.color}}"></span>{{c.label}}</span>
+<span style="display: flex; align-items: center; gap: 8px; color: var(--td-text2,#DCE2F0)"><span style="width: 18px; height: 18px; border-radius: 5px; background: {{c.color}}"></span>{{c.label}}</span>
 </sc-for>
 </div>
 </sc-if>
@@ -90,7 +90,7 @@ input[type=range]{accent-color:#C8102E;width:220px}
 <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: {{s.rowPad}}; border-bottom: 1px solid {{s.rowBorder}}">
 <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 3px">
 <span style="font-size: {{s.labelSize}}; font-weight: 700; letter-spacing: {{s.labelLs}}; color: {{s.labelColor}}">{{s.label}}</span>
-<span style="font-size: 13px; line-height: 1.45; color: #8C96B2">{{s.desc}}</span>
+<span style="font-size: 13px; line-height: 1.45; color: var(--td-mut2,#8C96B2)">{{s.desc}}</span>
 </div>
 
 <sc-if value="{{s.isSeg}}" hint-placeholder-val="{{ true }}">
@@ -103,20 +103,20 @@ input[type=range]{accent-color:#C8102E;width:220px}
 
 <sc-if value="{{s.isLang}}" hint-placeholder-val="{{ false }}">
 <div style="position: relative">
-<button class="ddbtn" onClick="{{s.toggleLang}}" aria-expanded="{{s.langOpenStr}}" aria-haspopup="listbox" style="display: flex; align-items: center; gap: 10px; min-width: 260px; height: 42px; padding: 0 12px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.16); background: rgba(15,21,41,0.92); color: #F4F6FB; font: 700 13px 'Manrope', sans-serif; cursor: pointer; text-align: left">
-<span class="flag" aria-hidden="true" style="background-position: {{s.langFlag}}"></span><span style="flex: 1">{{s.langName}}<span style="margin-left: 6px; font-weight: 500; color: #8C96B2">{{s.langNative}}</span></span>
-<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF6B76" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+<button class="ddbtn" onClick="{{s.toggleLang}}" aria-expanded="{{s.langOpenStr}}" aria-haspopup="listbox" style="display: flex; align-items: center; gap: 10px; min-width: 260px; height: 42px; padding: 0 12px; border-radius: 9px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.16); background: rgba(var(--td-panel-rgb,15,21,41),0.92); color: var(--td-text,#F4F6FB); font: 700 13px 'Manrope', sans-serif; cursor: pointer; text-align: left">
+<span class="flag" aria-hidden="true" style="background-position: {{s.langFlag}}"></span><span style="flex: 1">{{s.langName}}<span style="margin-left: 6px; font-weight: 500; color: var(--td-mut2,#8C96B2)">{{s.langNative}}</span></span>
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--td-accent2,var(--td-accent2,#FF6B76))"><path d="M6 9l6 6 6-6"></path></svg>
 </button>
 <sc-if value="{{s.langOpen}}" hint-placeholder-val="{{ false }}">
-<div role="listbox" aria-label="{{TX.langs}}" style="position: absolute; z-index: 50; right: 0; top: calc(100% + 6px); width: 360px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.16); background: #0F1529; box-shadow: 0 18px 40px rgba(0,0,0,0.6)">
+<div role="listbox" aria-label="{{TX.langs}}" style="position: absolute; z-index: 50; right: 0; top: calc(100% + 6px); width: 360px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 12px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.16); background: var(--td-panel,#0F1529); box-shadow: 0 18px 40px rgba(0,0,0,0.6)">
 <input class="dd" type="search" value="{{s.langQ}}" onChange="{{s.setLangQ}}" placeholder="{{s.langSearch}}" style="min-width: 0; width: 100%; box-sizing: border-box; background-image: none; padding-right: 12px">
-<span style="font-size: 11px; color: #6F7A99">{{s.langCount}}</span>
+<span style="font-size: 11px; color: var(--td-mut3,#6F7A99)">{{s.langCount}}</span>
 <div class="scroll" style="max-height: 340px; display: flex; flex-direction: column; gap: 1px">
 <sc-for list="{{s.langItems}}" as="l" hint-placeholder-count="6">
 <button role="option" class="lrow" aria-selected="{{l.pressed}}" onClick="{{l.pick}}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 38px; padding: 4px 8px; border: none; border-bottom: {{l.sep}}; border-radius: 7px; background: {{l.bg}}; color: {{l.fg}}; font: 600 13px 'Manrope', sans-serif; text-align: left; cursor: pointer">
 <span class="flag" aria-hidden="true" style="background-position: {{l.flag}}"></span>
-<span style="min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span>{{l.name}}<span style="margin-left: 6px; font-weight: 500; color: #8C96B2">{{l.native}}</span></span><span style="font-size: 11px; font-weight: 500; color: #6F7A99">{{l.country}}</span></span>
-<span style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: #FF6B76">{{l.pin}}</span>
+<span style="min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span>{{l.name}}<span style="margin-left: 6px; font-weight: 500; color: var(--td-mut2,#8C96B2)">{{l.native}}</span></span><span style="font-size: 11px; font-weight: 500; color: var(--td-mut3,#6F7A99)">{{l.country}}</span></span>
+<span style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: var(--td-accent2,#FF6B76)">{{l.pin}}</span>
 </button>
 </sc-for>
 </div>
@@ -138,26 +138,26 @@ input[type=range]{accent-color:#C8102E;width:220px}
 
 <sc-if value="{{s.isToggle}}" hint-placeholder-val="{{ false }}">
 <button role="switch" aria-checked="{{s.checked}}" aria-label="{{s.label}}" onClick="{{s.toggle}}" style="width: 56px; height: 32px; border-radius: 999px; border: none; padding: 3px; background: {{s.trackBg}}; display: flex; justify-content: {{s.knobSide}}; cursor: {{s.tgCur}}; opacity: {{s.tgOp}}">
-<span style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; display: block"></span>
+<span style="width: 26px; height: 26px; border-radius: 50%; background: var(--td-strong,#FFFFFF); display: block"></span>
 </button>
 </sc-if>
 
 <sc-if value="{{s.isAction}}" hint-placeholder-val="{{ false }}">
-<button class="ghost" style="min-height: 40px; padding: 0 16px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.18); background: transparent; color: #F4F6FB; font: 600 13px 'Manrope', sans-serif; cursor: pointer">{{s.action}}</button>
+<button class="ghost" style="min-height: 40px; padding: 0 16px; border-radius: 9px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.18); background: transparent; color: var(--td-text,#F4F6FB); font: 600 13px 'Manrope', sans-serif; cursor: pointer">{{s.action}}</button>
 </sc-if>
 
 <sc-if value="{{s.isInfo}}" hint-placeholder-val="{{ false }}">
-<span style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(46,139,192,0.22); border: 1px solid rgba(46,139,192,0.55); color: #DCEBFF; font: 700 13px 'Manrope', sans-serif"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DCEBFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>{{s.badge}}</span>
+<span style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(46,139,192,0.22); border: 1px solid rgba(46,139,192,0.55); color: var(--td-blue,#DCEBFF); font: 700 13px 'Manrope', sans-serif"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--td-blue,var(--td-blue,#DCEBFF))"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>{{s.badge}}</span>
 </sc-if>
 
 <sc-if value="{{s.isKey}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="display: flex; align-items: center; gap: 6px">
 <sc-for list="{{s.keys}}" as="k" hint-placeholder-count="1">
-<kbd style="min-width: 34px; box-sizing: border-box; text-align: center; padding: 6px 10px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.22); border-bottom-width: 3px; background: rgba(255,255,255,0.06); font: 700 13px 'Manrope', sans-serif; color: #F4F6FB">{{k.k}}</kbd>
+<kbd style="min-width: 34px; box-sizing: border-box; text-align: center; padding: 6px 10px; border-radius: 7px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.22); border-bottom-width: 3px; background: rgba(var(--td-fg-rgb,255,255,255),0.06); font: 700 13px 'Manrope', sans-serif; color: var(--td-text,#F4F6FB)">{{k.k}}</kbd>
 </sc-for>
 </span>
-<button class="ghost" aria-label="{{TX.changeKey}}: {{s.label}}" style="min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.14); background: transparent; color: #A7B0C8; font: 600 12px 'Manrope', sans-serif; cursor: pointer">{{TX.change}}</button>
+<button class="ghost" aria-label="{{TX.changeKey}}: {{s.label}}" style="min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.14); background: transparent; color: var(--td-mut,#A7B0C8); font: 600 12px 'Manrope', sans-serif; cursor: pointer">{{TX.change}}</button>
 </div>
 </sc-if>
 </div>
@@ -165,9 +165,9 @@ input[type=range]{accent-color:#C8102E;width:220px}
 </section>
 </div>
 
-<footer style="display: flex; flex-wrap: wrap; gap: 18px; font-size: 12px; color: #8C96B2">
-<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">Tab</kbd> {{T.kcat}}</span>
-<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">Esc</kbd> {{T.kexit}}</span>
+<footer style="display: flex; flex-wrap: wrap; gap: 18px; font-size: 12px; color: var(--td-mut2,#8C96B2)">
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.18); font: 600 11px 'Manrope', sans-serif; color: var(--td-text3,#C9D0E2)">Tab</kbd> {{T.kcat}}</span>
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(var(--td-fg-rgb,255,255,255),0.18); font: 600 11px 'Manrope', sans-serif; color: var(--td-text3,#C9D0E2)">Esc</kbd> {{T.kexit}}</span>
 </footer>
 </div>
 </div>
@@ -175,7 +175,16 @@ input[type=range]{accent-color:#C8102E;width:220px}
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 // ===== Ortak tercihler: Ayarlar'daki Ölçek, Yüksek kontrast ve Hareketi azalt tüm ekranlara uygulanır =====
 (function tdPrefs() {
-  function read() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } try { const s = JSON.parse(r || '{}'); return s && typeof s === 'object' ? s : {}; } catch (e) { return {}; } }
+
+  const THEMES = {
+    'Koyu': { scheme: 'dark', bg: '#0A0F1C', deep: '#05080F', panel: '#0F1529', 'bg-rgb': '10,15,28', 'deep-rgb': '5,8,15', 'panel-rgb': '15,21,41', 'fg-rgb': '255,255,255', text: '#F4F6FB', strong: '#FFFFFF', text2: '#DCE2F0', text3: '#C9D0E2', mut: '#A7B0C8', mut2: '#8C96B2', mut3: '#6F7A99', mut4: '#5F6987', accent: '#C8102E', 'accent-rgb': '200,16,46', 'accent-h': '#DD1838', accent2: '#FF6B76', gold: '#F2C14E', green: '#4FB286', blue: '#8FB8FF', 'img-f': 'brightness(0.3) saturate(0.85)' },
+    'Açık': { scheme: 'light', bg: '#F2F4F9', deep: '#E4E8F1', panel: '#FFFFFF', 'bg-rgb': '242,244,249', 'deep-rgb': '228,232,241', 'panel-rgb': '255,255,255', 'fg-rgb': '15,23,42', text: '#111827', strong: '#0B1220', text2: '#1F2937', text3: '#334155', mut: '#475569', mut2: '#52607A', mut3: '#5B6B84', mut4: '#64748B', accent: '#C8102E', 'accent-rgb': '200,16,46', 'accent-h': '#A80D26', accent2: '#B80F2A', gold: '#8A5E00', green: '#14724C', blue: '#1F5FBF', 'img-f': 'brightness(1.25) saturate(0.35)' },
+    'Çim Sahası': { scheme: 'dark', bg: '#07140D', deep: '#040C08', panel: '#0C1D13', 'bg-rgb': '7,20,13', 'deep-rgb': '4,12,8', 'panel-rgb': '12,29,19', 'fg-rgb': '255,255,255', text: '#EEF7F1', strong: '#FFFFFF', text2: '#D5E8DC', text3: '#BAD3C3', mut: '#98B5A3', mut2: '#7FA08D', mut3: '#6A8E78', mut4: '#5F8270', accent: '#17803F', 'accent-rgb': '23,128,63', 'accent-h': '#1C9A4D', accent2: '#5FD99A', gold: '#F2C14E', green: '#5FD99A', blue: '#8FB8FF', 'img-f': 'brightness(0.3) saturate(0.9) hue-rotate(80deg)' },
+    'Gece Mavisi': { scheme: 'dark', bg: '#06101F', deep: '#030912', panel: '#0B1830', 'bg-rgb': '6,16,31', 'deep-rgb': '3,9,18', 'panel-rgb': '11,24,48', 'fg-rgb': '255,255,255', text: '#EEF4FF', strong: '#FFFFFF', text2: '#D6E3F8', text3: '#BCCDE8', mut: '#9CB0D0', mut2: '#8299BC', mut3: '#6F87AD', mut4: '#637C9E', accent: '#1F6FD6', 'accent-rgb': '31,111,214', 'accent-h': '#2F82EE', accent2: '#6CB6FF', gold: '#F2C14E', green: '#4FB286', blue: '#8FB8FF', 'img-f': 'brightness(0.3) saturate(0.9) hue-rotate(200deg)' },
+    'Gün Batımı': { scheme: 'dark', bg: '#160D0A', deep: '#0D0705', panel: '#211410', 'bg-rgb': '22,13,10', 'deep-rgb': '13,7,5', 'panel-rgb': '33,20,16', 'fg-rgb': '255,255,255', text: '#FBF1EA', strong: '#FFFFFF', text2: '#EBD9CC', text3: '#D7BFAE', mut: '#BDA290', mut2: '#A68B7D', mut3: '#917668', mut4: '#85695C', accent: '#C2410C', 'accent-rgb': '194,65,12', 'accent-h': '#DD5A1E', accent2: '#FF9A5C', gold: '#F2C14E', green: '#4FB286', blue: '#8FB8FF', 'img-f': 'brightness(0.3) saturate(0.9) hue-rotate(25deg)' },
+    'Taktik Tahtası': { scheme: 'light', bg: '#F3EEDF', deep: '#E6DFCB', panel: '#FBF8EE', 'bg-rgb': '243,238,223', 'deep-rgb': '230,223,203', 'panel-rgb': '251,248,238', 'fg-rgb': '42,38,26', text: '#1E2A23', strong: '#0E1712', text2: '#2B3A31', text3: '#3D4E43', mut: '#55665B', mut2: '#5E6F63', mut3: '#667668', mut4: '#6C7B6F', accent: '#1B6B3A', 'accent-rgb': '27,107,58', 'accent-h': '#15572E', accent2: '#1B6B3A', gold: '#7A5400', green: '#1B6B3A', blue: '#1F5FBF', 'img-f': 'brightness(1.2) saturate(0.15) sepia(0.5)' }
+  };
+  function read() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } try { const s = JSON.parse(r || '{}'); return Object.assign({}, s && typeof s === 'object' ? s : {}, window.__tdPreview || {}); } catch (e) { return {}; } }
   function apply() {
     try {
       const s = read(); const root = document.documentElement; if (!root) return;
@@ -183,6 +192,11 @@ input[type=range]{accent-color:#C8102E;width:220px}
       if (!st) { st = document.createElement('style'); st.id = 'td-prefs-style'; (document.head || root).appendChild(st); }
       const sc = s.scale === undefined ? 100 : Number(s.scale); let css = '';
       if (sc && sc !== 100) css += 'html{zoom:' + (sc / 100) + '}';
+      const th = THEMES[s.theme] || THEMES['Koyu']; let vars = '';
+      Object.keys(th).forEach(k => { if (k !== 'scheme') vars += '--td-' + k + ':' + th[k] + ';'; });
+      vars += '--td-main-scrim:' + (th.scheme === 'light' ? '0.62' : '0') + ';--td-img-f-main:' + (th.scheme === 'light' ? 'brightness(1.12) saturate(0.7)' : 'brightness(1.1) contrast(1.05) saturate(1.08)') + ';';
+      css += ':root{' + vars + 'color-scheme:' + th.scheme + '}html,body{background:' + th.bg + '}';
+
       if (s.contrast) css += 'html{filter:contrast(1.2) brightness(1.05)}';
       if (s.motion) css += '*,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;scroll-behavior:auto!important}';
       st.textContent = css;
@@ -209,6 +223,7 @@ const SECTIONS = [
     { key: 'mode', type: 'seg', label: 'Görüntü modu', desc: 'Oyunun pencerede mi tam ekranda mı çalışacağı.', opts: ['Tam ekran', 'Kenarlıksız', 'Pencere'], def: 'Tam ekran' },
     { key: 'res', type: 'seg', label: 'Çözünürlük', desc: 'Monitörünün yerel çözünürlüğü önerilir.', opts: ['1920×1080', '2560×1440', '3840×2160'], def: '1920×1080' },
     { key: 'gfx', type: 'seg', label: 'Grafik kalitesi', desc: 'Maç motoru görselleri, gölgeler ve efektler.', opts: ['Düşük', 'Orta', 'Yüksek', 'Ultra'], def: 'Yüksek' },
+    { key: 'theme', type: 'seg', label: 'Tema', desc: 'Oyunun renk teması. Seçince tüm ekranlara uygulanır.', opts: ['Koyu', 'Açık', 'Çim Sahası', 'Gece Mavisi', 'Gün Batımı', 'Taktik Tahtası'], def: 'Koyu' },
     { key: 'scale', type: 'slider', label: 'Arayüz ölçeği', desc: 'Yazı ve menü boyutu.', min: 80, max: 150, def: 100, unit: '%' },
     { key: 'fps', type: 'seg', label: 'Kare hızı sınırı', desc: 'Dizüstünde pil için düşük tutulabilir.', opts: ['60', '120', '144', 'Sınırsız'], def: '60' },
     { key: 'vsync', type: 'toggle', label: 'Dikey senkronizasyon', desc: 'Görüntüde yırtılmayı önler.', def: true }
@@ -513,7 +528,7 @@ class Component extends DCLogic {
     if (!LANG_SORTED.some(l => l.ad === v0.lang)) v0.lang = 'Türkçe';
     this.state = { tab: 'birim', v: v0, langOpen: false, langQ: '', spkIdx: -1, spkOn: false, spkNote: '', spkSeed: 1, atmFill: 'Dolu', atmTour: 'UEFA Şampiyonlar Ligi', atmStage: 'Lig / grup maçı', atmOpp: 'Dev kulüp', atmSide: 'Ev sahibi' };
   }
-  set(key, val) { this.setState({ v: Object.assign({}, this.state.v, { [key]: val }) }); }
+  set(key, val) { const nv = Object.assign({}, this.state.v, { [key]: val }); this.setState({ v: nv }); try { window.__tdPreview = nv; if (window.__tdApplyPrefs) window.__tdApplyPrefs(); } catch (e) {} }
 
   spkStop() { (this.spkT || []).forEach(t => clearTimeout(t)); this.spkT = []; try { ATM.stop(); } catch (e) {} this.setState({ spkOn: false, spkIdx: -1 }); }
   atmVol() { const v = this.state.v; const m = v.vMaster === undefined ? 80 : v.vMaster; const c = v.vCrowd === undefined ? 75 : v.vCrowd; return Math.max(0, Math.min(1, (m / 100) * (c / 100) * 1.2)); }
@@ -546,10 +561,10 @@ class Component extends DCLogic {
     const T = i18nFor(v.lang); const L = trFn(T.code); T.settingsUp = T.settings.toLocaleUpperCase(T.loc);
     const tabs = SECTIONS.map(s => {
       const on = s.id === tab;
-      return { label: T['t_' + s.id] || s.label, pressed: on ? 'true' : 'false', bg: on ? 'rgba(200,16,46,0.16)' : 'transparent', fg: on ? '#FFFFFF' : '#C9D0E2', bar: on ? '#C8102E' : 'transparent', pick: () => this.setState({ tab: s.id }) };
+      return { label: T['t_' + s.id] || s.label, pressed: on ? 'true' : 'false', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.16)' : 'transparent', fg: on ? '#FFFFFF' : 'var(--td-text3,#C9D0E2)', bar: on ? 'var(--td-accent,#C8102E)' : 'transparent', pick: () => this.setState({ tab: s.id }) };
     });
     const settings = sec.items.filter(i => !i.showIf || v[i.showIf]).map(i => {
-      const base = { label: L(i.label), desc: L(i.desc || ''), isLang: false, isSeg: false, isSelect: false, ddOpacity: '1', value: '', change: null, isSlider: false, isToggle: false, isAction: false, isKey: false, isInfo: false, badge: '', labelSize: '15px', labelLs: 'normal', labelColor: '#F4F6FB', rowPad: '16px 0', rowBorder: 'rgba(255,255,255,0.07)' };
+      const base = { label: L(i.label), desc: L(i.desc || ''), isLang: false, isSeg: false, isSelect: false, ddOpacity: '1', value: '', change: null, isSlider: false, isToggle: false, isAction: false, isKey: false, isInfo: false, badge: '', labelSize: '15px', labelLs: 'normal', labelColor: 'var(--td-text,#F4F6FB)', rowPad: '16px 0', rowBorder: 'rgba(var(--td-fg-rgb,255,255,255),0.07)' };
       if (i.type === 'info') return Object.assign(base, { isInfo: true, badge: L(i.badge) });
       if (i.type === 'lang') {
         const cur = LANG_SORTED.find(l => l.ad === v[i.key]) || LANG_SORTED[0];
@@ -558,27 +573,27 @@ class Component extends DCLogic {
         return Object.assign(base, { isLang: true, langOpen: this.state.langOpen, langOpenStr: this.state.langOpen ? 'true' : 'false', langName: T.code === 'TR' ? cur.ad : nativeName(cur), langNative: T.code === 'TR' ? cur.n : (cur.k === T.code ? '' : cur.ad), langFlag: lflag(cur.u),
           toggleLang: () => this.setState({ langOpen: !this.state.langOpen, langQ: '' }), langQ: this.state.langQ, setLangQ: (e) => this.setState({ langQ: e.target.value }),
           langCount: list.length + ' ' + T.langCount, langSearch: T.langSearch, label: T.lang, desc: T.fallback ? T.langDesc + ' — ' + cur.ad + (cur.n ? ' (' + cur.n + ')' : '') + ': not translated yet; shown in ' + T.fbName + ', widely used by its speakers.' : T.langDesc,
-          langItems: list.map((l, ix) => { const on = l.ad === cur.ad; return { name: T.code === 'TR' ? l.ad : nativeName(l), native: T.code === 'TR' ? l.n : '', country: L(l.u), flag: lflag(l.u), pressed: on ? 'true' : 'false', bg: on ? 'rgba(200,16,46,0.18)' : 'transparent', fg: on ? '#FFFFFF' : '#DCE2F0', sep: (l.k === 'TR' && !q) ? '1px solid rgba(200,16,46,0.6)' : '1px solid transparent', pin: l.k === 'TR' ? L('SABİT') : '', pick: () => { this.set(i.key, l.ad); this.setState({ langOpen: false, langQ: '' }); const sv = tdRead(); sv[i.key] = l.ad; tdWrite(sv); } }; }) });
+          langItems: list.map((l, ix) => { const on = l.ad === cur.ad; return { name: T.code === 'TR' ? l.ad : nativeName(l), native: T.code === 'TR' ? l.n : '', country: L(l.u), flag: lflag(l.u), pressed: on ? 'true' : 'false', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.18)' : 'transparent', fg: on ? '#FFFFFF' : 'var(--td-text2,#DCE2F0)', sep: (l.k === 'TR' && !q) ? '1px solid rgba(var(--td-accent-rgb,200,16,46),0.6)' : '1px solid transparent', pin: l.k === 'TR' ? L('SABİT') : '', pick: () => { this.set(i.key, l.ad); this.setState({ langOpen: false, langQ: '' }); const sv = tdRead(); sv[i.key] = l.ad; tdWrite(sv); } }; }) });
       }
       if (i.type === 'funSummary') { const a = funActive(v, L); return Object.assign(base, { isInfo: true, badge: a.length ? a.length + ' ' + T.funN : L('Hepsi gerçekçi'), desc: a.length ? a.join(' · ') : L('Henüz hiçbir kuralı değiştirmedin; aşağıdaki menülerden istediğini seç.') }); }
       if (i.type === 'preset') {
         return Object.assign(base, { isSeg: true, opts: PRESETS.map(p => {
           const on = FUN_ITEMS.every(it => v[it.key] === (p[1][it.key] !== undefined ? p[1][it.key] : it.def));
-          return { label: p[0], pressed: on ? 'true' : 'false', bg: on ? '#C8102E' : 'rgba(255,255,255,0.05)', fg: on ? '#FFFFFF' : '#C9D0E2', border: on ? '#C8102E' : 'rgba(255,255,255,0.14)',
+          return { label: p[0], pressed: on ? 'true' : 'false', bg: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.05)', fg: on ? '#FFFFFF' : 'var(--td-text3,#C9D0E2)', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.14)',
             pick: () => { const nv = Object.assign({}, this.state.v); FUN_ITEMS.forEach(it => { nv[it.key] = p[1][it.key] !== undefined ? p[1][it.key] : it.def; }); this.setState({ v: nv }); } };
         }) });
       }
-      if (i.type === 'heading' && i.big) return Object.assign(base, { labelSize: '22px', labelLs: '0.06em', labelColor: '#F4F6FB', rowPad: '28px 0 6px', rowBorder: 'rgba(200,16,46,0.5)' });
-      if (i.type === 'heading') return Object.assign(base, { labelSize: '12px', labelLs: '0.2em', labelColor: '#FF6B76', rowPad: '24px 0 4px', rowBorder: 'transparent' });
+      if (i.type === 'heading' && i.big) return Object.assign(base, { labelSize: '22px', labelLs: '0.06em', labelColor: 'var(--td-text,#F4F6FB)', rowPad: '28px 0 6px', rowBorder: 'rgba(var(--td-accent-rgb,200,16,46),0.5)' });
+      if (i.type === 'heading') return Object.assign(base, { labelSize: '12px', labelLs: '0.2em', labelColor: 'var(--td-accent2,#FF6B76)', rowPad: '24px 0 4px', rowBorder: 'transparent' });
       if (i.type === 'key') return Object.assign(base, { isKey: true, rowPad: '12px 0', keys: i.keys.map(k => ({ k: L(k) })) });
       if (i.type === 'seg' || i.type === 'multi') {
         const multi = i.type === 'multi';
         const cur = v[i.key];
-        const soonOpts = (i.soon || []).map(o => ({ label: L(o), pressed: 'false', bg: 'rgba(255,255,255,0.02)', fg: '#8C96B2', border: 'rgba(255,255,255,0.10)', op: '0.45', cur: 'not-allowed', dis: 'true', tip: L('3D maç motoru üzerinde çalışılıyor; şimdilik seçilemez.'), pick: () => {} }));
+        const soonOpts = (i.soon || []).map(o => ({ label: L(o), pressed: 'false', bg: 'rgba(var(--td-fg-rgb,255,255,255),0.02)', fg: 'var(--td-mut2,#8C96B2)', border: 'rgba(var(--td-fg-rgb,255,255,255),0.10)', op: '0.45', cur: 'not-allowed', dis: 'true', tip: L('3D maç motoru üzerinde çalışılıyor; şimdilik seçilemez.'), pick: () => {} }));
         return Object.assign(base, { isSeg: true, opts: i.opts.map(o => {
           const on = multi ? cur.indexOf(o) >= 0 : cur === o;
           return { op: '1', cur: 'pointer', dis: 'false', tip: '', label: L(o), pressed: on ? 'true' : 'false',
-            bg: on ? '#C8102E' : 'rgba(255,255,255,0.05)', fg: on ? '#FFFFFF' : '#C9D0E2', border: on ? '#C8102E' : 'rgba(255,255,255,0.14)',
+            bg: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.05)', fg: on ? '#FFFFFF' : 'var(--td-text3,#C9D0E2)', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.14)',
             pick: () => {
               if (!multi) return this.set(i.key, o);
               const arr = this.state.v[i.key].slice();
@@ -595,9 +610,9 @@ class Component extends DCLogic {
         return Object.assign(base, { isSlider: true, min: i.min, max: i.max, value: v[i.key], display: v[i.key] + i.unit, change: (e) => this.set(i.key, Number(e.target.value)) });
       }
       if (i.type === 'toggle') {
-        if (i.soon) return Object.assign(base, { label: L(i.label) + ' · ' + (L('3D · Yakında').split('· ')[1] || 'Yakında'), isToggle: true, checked: 'false', trackBg: 'rgba(255,255,255,0.10)', knobSide: 'flex-start', tgOp: '0.45', tgCur: 'not-allowed', toggle: () => {} });
+        if (i.soon) return Object.assign(base, { label: L(i.label) + ' · ' + (L('3D · Yakında').split('· ')[1] || 'Yakında'), isToggle: true, checked: 'false', trackBg: 'rgba(var(--td-fg-rgb,255,255,255),0.10)', knobSide: 'flex-start', tgOp: '0.45', tgCur: 'not-allowed', toggle: () => {} });
         const on = !!v[i.key];
-        return Object.assign(base, { tgOp: '1', tgCur: 'pointer', isToggle: true, checked: on ? 'true' : 'false', trackBg: on ? '#C8102E' : 'rgba(255,255,255,0.18)', knobSide: on ? 'flex-end' : 'flex-start', toggle: () => this.set(i.key, !this.state.v[i.key]) });
+        return Object.assign(base, { tgOp: '1', tgCur: 'pointer', isToggle: true, checked: on ? 'true' : 'false', trackBg: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.18)', knobSide: on ? 'flex-end' : 'flex-start', toggle: () => this.set(i.key, !this.state.v[i.key]) });
       }
       return Object.assign(base, { isAction: true, action: L(i.action) });
     });
@@ -633,7 +648,7 @@ class Component extends DCLogic {
       showPalette: !!sec.palette,
       palette: (function () {
         const P = {
-          'Kapalı': ['#2EAD6B', '#E3A72F', '#D93B45', '#8C96B2'],
+          'Kapalı': ['#2EAD6B', 'var(--td-gold,#E3A72F)', '#D93B45', 'var(--td-mut2,#8C96B2)'],
           'Protanopi': ['#0072B2', '#F0E442', '#D55E00', '#CC79A7'],
           'Döteranopi': ['#0072B2', '#F0E442', '#D55E00', '#CC79A7'],
           'Tritanopi': ['#009E73', '#BBBBBB', '#D55E00', '#CC79A7']
@@ -643,15 +658,15 @@ class Component extends DCLogic {
       })(),
       showDemo: !!sec.spikerDemo, showLib: false,
       spk: (() => { const st = this.state; const blink = (v.goalFlash && !v.motion) ? 'blink' : '';
-        return { toggle: () => (st.spkOn ? this.spkStop() : this.spkPlay()), btnLabel: st.spkOn ? '■ Durdur' : '▶ Canlandır', btnBg: st.spkOn ? 'rgba(255,255,255,0.08)' : '#C8102E', btnBorder: st.spkOn ? 'rgba(255,255,255,0.2)' : '#C8102E',
-          note: st.spkNote, noteColor: /bulunamadı|yok/.test(st.spkNote) ? '#F2C14E' : '#6F7A99',
+        return { toggle: () => (st.spkOn ? this.spkStop() : this.spkPlay()), btnLabel: st.spkOn ? '■ Durdur' : '▶ Canlandır', btnBg: st.spkOn ? 'rgba(var(--td-fg-rgb,255,255,255),0.08)' : 'var(--td-accent,#C8102E)', btnBorder: st.spkOn ? 'rgba(var(--td-fg-rgb,255,255,255),0.2)' : 'var(--td-accent,#C8102E)',
+          note: st.spkNote, noteColor: /bulunamadı|yok/.test(st.spkNote) ? 'var(--td-gold,#F2C14E)' : 'var(--td-mut3,#6F7A99)',
           newScene: () => { this.spkStop(); this.setState({ spkSeed: 2 + Math.floor(Math.random() * 1e6) }); }, persona: 'Spiker: ' + SPK_NAME + ' · yazılı anlatım · stadyum sesleri tamamen kodla üretilir',
           atm: [['Turnuva', 'atmTour', ATM_TOUR.map(x => x[0])], ['Aşama', 'atmStage', ATM_STAGE.map(x => x[0])], ['Rakip', 'atmOpp', ATM_OPP.map(x => x[0])], ['Doluluk', 'atmFill', ATM_FILL.map(x => x[0])]].map(([k, key, o]) => ({ k: k, value: st[key], opts: o.map(x => ({ v: x })), change: (e) => { this.setState({ [key]: e.target.value }); this.atmApply(); } })),
           heatText: 'Atmosfer: ' + atmLabel(atmHeat(st), valOf(ATM_FILL, st.atmFill)), heatPct: Math.round(Math.min(1, atmHeat(st)) * (0.55 + 0.45 * valOf(ATM_FILL, st.atmFill)) * 100) + '%',
-          presets: ATM_PRESETS.map(([t, o]) => { const on = Object.keys(o).every(k => st[k] === o[k]); return { t: t, bg: on ? 'rgba(200,16,46,0.18)' : 'transparent', bd: on ? '#C8102E' : 'rgba(255,255,255,0.14)', pick: () => { this.setState(o); this.atmApply(); } }; }),
+          presets: ATM_PRESETS.map(([t, o]) => { const on = Object.keys(o).every(k => st[k] === o[k]); return { t: t, bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.18)' : 'transparent', bd: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.14)', pick: () => { this.setState(o); this.atmApply(); } }; }),
           lib: [['Başlama düdüğü', 'whistle', 'kisa'], ['Faul düdüğü', 'whistle', 'faul'], ['Maç sonu', 'whistle', 'son'], ['Vuruş', 'kick', 1], ['Gol (ev)', 'roar', 1], ['Gol (deplasman)', 'awayGoal', 1], ['Direk', 'post', 0], ['“Ooo”', 'ooh', 1], ['Alkış', 'applause', 2.5], ['Islık', 'islik', 2.5], ['Tezahürat', 'chant', 6]].map(([t, k, a]) => ({ t: t, play: () => { this.atmApply(); if (k === 'roar' || k === 'net') ATM.play('net'); ATM.play(k, a); if (k !== 'whistle' && k !== 'kick' && k !== 'post') { try { clearTimeout(this.libT); this.libT = setTimeout(() => { if (!this.state.spkOn) ATM.stop(); }, 9000); } catch (e) {} } } })),
           lines: makeScene(st.spkSeed).map((ln, i) => { const act = st.spkOn && st.spkIdx === i; const done = st.spkOn ? i < st.spkIdx : true;
-            return { t: ln.t, cls: ln.goal && (act || !st.spkOn) ? blink : '', fw: ln.big ? '800' : (act ? '700' : '500'), color: ln.goal ? '#FF6B76' : ln.big ? '#F2C14E' : (act ? '#FFFFFF' : (done ? '#A7B0C8' : '#5F6987')), bg: act && !ln.goal ? 'rgba(255,255,255,0.08)' : 'transparent' }; }) }; })(),
+            return { t: ln.t, cls: ln.goal && (act || !st.spkOn) ? blink : '', fw: ln.big ? '800' : (act ? '700' : '500'), color: ln.goal ? 'var(--td-accent2,#FF6B76)' : ln.big ? 'var(--td-gold,#F2C14E)' : (act ? '#FFFFFF' : (done ? 'var(--td-mut,#A7B0C8)' : 'var(--td-mut4,#5F6987)')), bg: act && !ln.goal ? 'rgba(var(--td-fg-rgb,255,255,255),0.08)' : 'transparent' }; }) }; })(),
       demoClass: (v.goalFlash && !v.motion) ? 'blink' : '',
       demoNote: !v.goalFlash ? L('Yanıp sönme kapalı') : (v.motion ? L('Hareketi azalt açık, yanıp sönme uygulanmıyor') : L('Gol satırı {x} yanıp söner').replace('{x}', ((L(v.flashLen).match(/\(([^)]*)\)/) || [, L(v.flashLen)])[1]))),
       reset: () => this.setState({ v: defaults() }),
