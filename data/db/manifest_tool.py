@@ -14,7 +14,7 @@ FILES = lambda: sorted(
     + [p for p in (ROOT / "data" / "real_web").glob("*.json")]
     + [p for p in (ROOT / "data" / "names").glob("*.json")]
     + [p for p in (ROOT / "data" / "openfootball").glob("*.json")]
-    + [p for p in (ROOT / "design").glob("ve-op-*.js")]
+    + [p for p in (ROOT / "design").glob("ve-op-*.json")]
     + [ROOT / "design" / "VeriEditoru.dc.html"]
 )
 

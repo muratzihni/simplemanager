@@ -11,7 +11,7 @@
   "temsilci": 77
  },
  "not": "Oyuncu/personel üretilmiş (kurgusal) kayıtlardır; Süper Lig'de bellekten yazılan gerçek kişiler ayrıca işaretlidir. Web aramasıyla toplanan ve bellekten yazılan alanlar doğrulanmamıştır.",
- "ozet": "c3b683ab1b10e731de5173ccbb637d678eb739943316d4041b7eec243872230f",
+ "ozet": "f862e4920093b4716d0734194293e7191649abf9c1bd47e16385967ac24466e9",
  "dosyalar": {
   "data/names/cultures.json": "2b8e33034cc0e430ce0e8ac09a6f0758b9e5fb281ed88b6f75cd25164c949138",
   "data/names/names_all.json": "5b33c1fcaec23ba164f5b7cb77777b50441bde7c23abc7e0b4fb0f809a7ccf50",
@@ -380,11 +380,11 @@
   "data/world/personel/İtalya.json.gz": "168183416c71944932e243fb4e819ce5e09dddc1c260e6e9a4b19f38cc4e0b44",
   "data/world/personel/İzlanda.json.gz": "35e453af98a2c503f43cd72bd34e523b87441647ee9b273ac05afc3c2c488739",
   "data/world/personel/Şili.json.gz": "df0a13f0c7e9f370f7951da46aa16a2800bf63361c8135381251442128603896",
-  "design/VeriEditoru.dc.html": "ca1affa9c01a9c1bec2a21ac96b02e2a45f1c70b04637b89e78d9255aa06f88f",
-  "design/ve-op-1.js": "b718004631f661c59cb3f1d6550b805f7d76ed18a733e10e292a85e0fdb17559",
-  "design/ve-op-2.js": "6d1f45c6a7da6d395835b0859edde3cba6f31436897711ed587f4baa92c5e01b",
-  "design/ve-op-3.js": "39454f81147ef855ff9ee1ca7b952070c9dad7bc91d301a9ee51fbaa7c7916e2",
-  "design/ve-op-4.js": "88d67157b4de465ec1e3142dbc0e7ee6b03e5c438212b92e039b7cdc26e9b6fe",
-  "design/ve-op-5.js": "6ee0b509164f10feb6d1f4b213b8b5c43ef4e3d9476d4742d29a31da4e938a8e"
+  "design/VeriEditoru.dc.html": "769147e56a659c0961c4a06ad18029065daf26c1e5bc8f03acaf4fada81cf014",
+  "design/ve-op-1.json": "a00dfdf9784aa553d65d46bf9547b1d348e0def07a6968d821cfb04b03d04485",
+  "design/ve-op-2.json": "ffc23944ffef266140d75bee0ab8b43ed50be6dd2341a020386a81823219cdea",
+  "design/ve-op-3.json": "27199841b2e63481e7447742669b205a0a74f4218c3652a8eaf512fc9f3647f3",
+  "design/ve-op-4.json": "a4db79e37e9b37d58d9fdd430f4d388735cd55fbd5429532769316f1fd3c6cdb",
+  "design/ve-op-5.json": "076f893422773ea3c08b5da248b548fe5d95fd2e6a2a66bff96f0508790742e4"
  }
 }
