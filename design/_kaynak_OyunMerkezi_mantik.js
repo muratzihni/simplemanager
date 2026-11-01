@@ -172,7 +172,7 @@ class Component extends DCLogic {
     this.sample = picks.length === 0;
     this.items = this.sample ? [{ name: 'Menajer', pick: SAMPLE }] : picks.map((p, i) => { const a = dm[i] || {}; const nm = ((a.ad || '') + ' ' + (a.soyad || '')).trim() || ('Menajer ' + (i + 1)); return { name: nm, first: (a.ad || '').trim() || nm, m: a, pick: p }; });
     this.game = tdLoad(GAME_KEY, null) || {}; this.game.k = this.game.k || {};
-    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, edOpen: false, edd: {}, edTab: 'kulup', edMsg: '', fopen: '', kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
+    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, panoOld: false, edOpen: false, edd: {}, edTab: 'kulup', edMsg: '', fopen: '', kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
     this.loadFor(0);
   }
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
@@ -373,7 +373,7 @@ class Component extends DCLogic {
     const bar = (label, val, max, color) => N(val) === null ? null : { label, val: String(val), pct: Math.max(3, Math.min(100, val / max * 100)) + '%', color: color || powCol(val * 20 / max) };
     const it = (a, b, cc, o) => Object.assign({ a: String(a), b: String(b), c: cc === undefined ? '' : String(cc), w: '500', bg: 'transparent', cur: 'default', pick: () => {} }, o || {});
     const card = (title, o) => Object.assign({ title, chips: [], rows: [], bars: [], items: [], note: '', span: 'auto' }, o || {});
-    const out = { cols: 3, hasKpis: false, kpis: [], cards: [], vCards: v === 'pano' || v === 'kulup' || v === 'lig' || v === 'ulke' || v === 'oyuncu' || v === 'kisi', headLinks: [], backLabel: 'Kadroya dön', cgroups: [], hasCg: false, hasHead: false, headTitle: '', headSub: '', goBack: () => this.setState({ view: 'kadro' }), staffRows: [], hTabs: [], hHeads: [], noStaff: false, vTurn: v === 'turn', tq: st.tq || '', setTq: (e) => this.setState({ tq: e.target.value }), tList: [], tTitle: '', tCards: [],
+    const out = { cols: 3, hasKpis: false, kpis: [], cards: [], vPano: v === 'pano' && !st.panoOld, gridCols: (v === 'pano' && !st.panoOld) ? '170px minmax(0, 1fr)' : '170px minmax(0, 1fr) 240px', asideDisp: (v === 'pano' && !st.panoOld) ? 'none' : 'flex', backPano: () => this.setState({ panoOld: false }), isOldPano: v === 'pano' && !!st.panoOld, vCards: (v === 'pano' && !!st.panoOld) || v === 'kulup' || v === 'lig' || v === 'ulke' || v === 'oyuncu' || v === 'kisi', headLinks: [], backLabel: 'Kadroya dön', cgroups: [], hasCg: false, hasHead: false, headTitle: '', headSub: '', goBack: () => this.setState({ view: 'kadro' }), staffRows: [], hTabs: [], hHeads: [], noStaff: false, vTurn: v === 'turn', tq: st.tq || '', setTq: (e) => this.setState({ tq: e.target.value }), tList: [], tTitle: '', tCards: [],
       tModes: [['tur', 'Turnuvalar'], ['odul', 'Ödüller'], ['derbi', 'Derbiler'], ['sehir', 'Şehirler'], ['bolge', 'Bölgeler'], ['medya', 'Medya'], ['sakatlik', 'Sakatlıklar'], ['hava', 'Hava durumu'], ['para', 'Para birimleri'], ['dil', 'Diller'], ['kita', 'Kıtalar'], ['tanim', 'Tanımlar'], ['etap', 'Etap isimleri'], ['sozlesme', 'Sözleşme türleri']].map(t => ({ label: t[1], cnt: '', bg: (st.tmode || 'tur') === t[0] ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: (st.tmode || 'tur') === t[0] ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: () => this.setState({ tmode: t[0], tq: '' }) })), goKulup: () => this.setState({ view: 'kulup', vp: null, back: null, cg: '' }), goLig: () => this.setState({ view: 'lig', vp: null, back: null, cg: '' }), goUlke: () => this.setState({ view: 'ulke', vp: null, back: null, cg: '' }), ligName: M.p.lg || '—', ulkeName: M.p.c || '—', mgrName: this.items[st.mi].name };
     const neutral = 'rgba(var(--td-fg-rgb,255,255,255),0.08)', fg = 'var(--td-text,#F4F6FB)';
     const stad = (kd && kd.stad && kd.stad[p.n]) || {}; const fin = (x) => x ? money(x / 55.93) : null;
@@ -565,12 +565,42 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
     }
     if (vpOn) { out.hasHead = true; out.headTitle = p.n || p.lg || p.c; out.headSub = [v === 'kulup' ? (p.lg || '') : '', p.c].filter(Boolean).join(' · '); out.headLinks = v === 'kulup' ? [{ label: p.lg || '—', pick: () => this.openLeague(p.c, p.lg) }, { label: p.c, pick: () => this.openCountry(p.c) }] : (v === 'lig' ? [{ label: p.c, pick: () => this.openCountry(p.c) }] : []); }
     if (out.hasHead) { out.goBack = () => this.goBackNav('kadro'); out.backLabel = st.back ? 'Geri' : 'Kadroya dön'; }
+    if (v === 'pano') {
+      const total = squad.reduce((a, x) => a + (x[7] || 0), 0);
+      const wageTRY = has ? s.wg * 55.93 : (info.maasButce ? info.maasButce / 12 : 0);
+      const incTRY = ((Number(info.yayin) || 0) + (Number(info.sponsor) || 0) + (Number(info.bilet) || 0)) / 12;
+      const lvl = (x) => !x ? '—' : x >= 15 ? 'Yüksek' : x >= 9 ? 'Orta' : 'Düşük';
+      const stars = Math.max(0, Math.min(5, Math.round((Number(info.itibar) || 0) / 4)));
+      const nx = c.myFix.filter(f => !G.sim[f.i])[0]; const opp = nx ? (nx.h === p.n ? nx.a : nx.h) : '';
+      const crestOf = (n2) => ({ bg: 'hsl(' + (hash(n2) % 360) + ' 52% 34%)', t: initialsOf(n2) });
+      const oi = c.table.findIndex(r => r.name === p.n); const st0 = Math.max(0, Math.min(c.table.length - 5, oi - 2));
+      const lrows = c.table.slice(st0, st0 + 5).map(r => ({ pos: r.pos, name: r.name, o: r.p, g: r.w2, b: r.d, m: r.l, av: r.gd, pts: r.pts, bg: r.name === p.n ? 'rgba(242,193,78,0.22)' : 'transparent', w: r.name === p.n ? '800' : '500', pick: () => this.openClub(r.name, p.c, p.lg) }));
+      const parts = String(info.tk_dizilis || '4-3-3').split('-').map(Number).filter(n => n > 0); const lines = [1].concat(parts.length ? parts : [4, 3, 3]); const dots = [];
+      lines.forEach((m, i) => { for (let j = 0; j < m; j++) dots.push({ cx: Math.round((j + 1) * 100 / (m + 1)), cy: Math.round(58 - i * (50 / Math.max(1, lines.length - 1))), fill: i === 0 ? '#F2C14E' : '#B3202E' }); });
+      const played = c.myFix.filter(f => G.sim[f.i] && G.res[f.i + '|' + f.h + '|' + f.a]).slice(-5);
+      const form = played.map(f => { const r = G.res[f.i + '|' + f.h + '|' + f.a]; const d = f.h === p.n ? r[0] - r[1] : r[1] - r[0]; return { t: d > 0 ? 'G' : d < 0 ? 'M' : 'B', bg: d > 0 ? '#2E9E5B' : d < 0 ? '#E5484D' : '#6B7280' }; });
+      while (form.length < 5) form.push({ t: '–', bg: 'rgba(var(--td-fg-rgb,255,255,255),0.10)' });
+      const top3 = squad.slice().sort((a, b) => b[5] - a[5]).slice(0, 3).map(x => ({ no: x[9] || '', init: initialsOf(x[0]), name: x[0], pos: x[3], pow: x[5], bg: 'hsl(' + (hash(x[0]) % 360) + ' 40% 32%)', col: powCol(x[5]), pick: () => this.openPlayer(x, null) }));
+      const go = (vw) => () => this.setState({ view: vw, vp: null, back: null, cg: '' });
+      out.pano = {
+        crestBg: 'hsl(' + (hash(p.n) % 360) + ' 52% 34%)', crestText: initialsOf(p.n), club: p.n, lg: p.lg || '—',
+        kpis: [{ k: 'Kadro değeri', v: total ? money(total) : '—', c: 'rgba(90,70,200,0.30)' }, { k: 'Maaş gideri', v: wageTRY ? money(wageTRY / 55.93) + ' / ay' : '—', c: 'rgba(46,158,91,0.28)' }, { k: 'Bütçe', v: has ? money(s.tr) : (info.transfer ? fin(info.transfer) : '—'), c: 'rgba(31,111,214,0.28)' }, { k: 'Kulüp itibarı', v: '★'.repeat(stars) + '☆'.repeat(5 - stars), c: 'rgba(242,193,78,0.22)' }],
+        hasNext: !!nx, noNext: !nx, opp, oppBg: crestOf(opp || '?').bg, oppT: crestOf(opp || '?').t, nextWhen: nx ? fmtDate(nx.date) : '', nextWhere: nx ? (nx.h === p.n ? 'Ev sahibi' : 'Deplasman') : '', nextRound: nx ? String(c.myFix.indexOf(nx) + 1) : '', goFix: go('fikstur'),
+        lrows, goTab: go('tablo'),
+        form: info.tk_dizilis || '4-3-3', dots, style: info.tk_stil || '—', pres: lvl(Number(info.tk_pres)), tempo: lvl(Number(info.tk_tempo)), goClub: go('kulup'),
+        ready: String(squad.length), total: String(squad.length), goKadro: go('kadro'),
+        formChips: form, goFin: go('finans'),
+        bank: info.bakiye ? fin(info.bakiye) : '—', inc: incTRY ? fin(incTRY) : '—', exp: wageTRY ? fin(wageTRY) : '—', net: (incTRY && wageTRY) ? ((incTRY - wageTRY) >= 0 ? '+' : '−') + fin(Math.abs(incTRY - wageTRY)) : '—', netCol: (incTRY - wageTRY) >= 0 ? 'var(--td-green,#4FB286)' : 'var(--td-accent2,#FF6B76)',
+        top3, up: c.myFix.filter(f => !G.sim[f.i]).slice(0, 3).map(f => ({ date: fmtShort(f.date), opp: f.h === p.n ? f.a : f.h, ha: f.h === p.n ? '(E)' : '(D)', lg: p.lg || '—', pick: () => this.openClub(f.h === p.n ? f.a : f.h, p.c, p.lg) })),
+        detail: () => this.setState({ panoOld: true, cg: '' })
+      };
+    }
     // ekrana sığacak şekilde kart grupları
     const GM = { pano: { 'FORM VE SIRADAKİ MAÇLAR': 'Genel', 'LİG TABLOSU': 'Genel', 'EN İYİ OYUNCULAR': 'Genel', 'KITASAL TURNUVALAR': 'Genel', 'KUPA VİTRİNİ': 'Genel', 'YÖNETİM BEKLENTİSİ': 'Genel', 'HATLARA GÖRE GÜÇ': 'Kadro', 'YAŞ DAĞILIMI': 'Kadro', 'UYRUK DAĞILIMI': 'Kadro', 'SÖZLEŞMELER': 'Kadro', 'BÜTÇE VE TESİSLER': 'Kadro' },
       kulup: { 'KADRO': 'Kimlik', 'KİMLİK': 'Kimlik', 'FİNANS': 'Kimlik', 'STADYUM': 'Kimlik', 'TESİSLER VE YÖNETİM': 'Kimlik', 'TEKNİK HEYET': 'Tarihçe', 'KUPALAR': 'Tarihçe', 'REKORLAR': 'Tarihçe', 'TARAFTAR': 'Tarihçe', 'TAKTİKSEL ÖZELLİKLER': 'Hedef ve oyun', 'KULÜP HEDEFLERİ': 'Hedef ve oyun', 'AKADEMİ': 'Hedef ve oyun', 'KITASAL KUPA PUANLARI': 'Hedef ve oyun', 'KITASAL TURNUVALAR': 'Hedef ve oyun', 'DERBİLER': 'Hedef ve oyun' },
       oyuncu: { 'KİMLİK': 'Genel', 'SÖZLEŞME VE PARA': 'Genel', 'İTİBAR VE TANINIRLIK': 'Genel', 'TEKNİK': 'Özellikler', 'ZİHİNSEL': 'Özellikler', 'FİZİKSEL': 'Özellikler', 'KALECİLİK': 'Özellikler', 'MEVKİ SKORLARI': 'Davranış', 'SAHA İÇİ DAVRANIŞ': 'Davranış', 'OYUN TERCİHLERİ': 'Davranış', 'KARİYER GEÇMİŞİ': 'Kariyer', 'MİLLİ TAKIM': 'Kariyer' } };
     out.cgroups = [];
-    if (GM[v]) { const names = []; out.cards.forEach(cd => { const g = GM[v][cd.title] || 'Diğer'; if (names.indexOf(g) < 0) names.push(g); }); const sel = names.indexOf(st.cg) >= 0 ? st.cg : names[0];
+    if (GM[v] && !(v === 'pano' && !st.panoOld)) { const names = []; out.cards.forEach(cd => { const g = GM[v][cd.title] || 'Diğer'; if (names.indexOf(g) < 0) names.push(g); }); const sel = names.indexOf(st.cg) >= 0 ? st.cg : names[0];
       out.cgroups = names.length > 1 ? names.map(n => ({ label: n, cnt: '', bg: n === sel ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: n === sel ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: () => this.setState({ cg: n }) })) : [];
       out.cards = out.cards.filter(cd => (GM[v][cd.title] || 'Diğer') === sel); out.hasCg = out.cgroups.length > 0; if (v === 'oyuncu') { out.cards.forEach(cd => { if (cd.span === '1 / -1') cd.span = 'auto'; }); if (out.cards.length === 4) out.cols = 4; } }
     return out;
