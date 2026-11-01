@@ -49,6 +49,11 @@ function poolOf(kd, p, team) {
 }
 function allPools(kd, p) { const o = []; TEAM_LIST.forEach(t => { poolOf(kd, p, t[0]).forEach(x => o.push(x)); }); return o; }
 
+const ED_IDX = { guc: 5, pot: 6, deger: 7, soz: 8, uyruk: 2, mevki: 3, ayak: 4, forma: 9 };
+const ED_POS = ['Kaleci', 'Stoper', 'Sağ bek', 'Sol bek', 'Ön libero', 'Merkez orta saha', 'Ofansif orta saha', 'Sağ kanat', 'Sol kanat', 'Santrfor'];
+const ED_LABEL = { guc: 'Güç', pot: 'Potansiyel', deger: 'Piyasa değeri (milyon €)', soz: 'Sözleşme bitiş yılı', uyruk: 'Uyruk', mevki: 'Mevki', ayak: 'Ayak', forma: 'Forma numarası' };
+function edGet(row, k) { const v = row[ED_IDX[k]]; if (k === 'deger') return String(Math.round((Number(v) || 0) / 1e5) / 10); return v === undefined || v === null ? '' : String(v); }
+function edSet(row, k, v) { if (k === 'guc' || k === 'pot') row[ED_IDX[k]] = Math.max(1, Math.min(20, Math.round(Number(v)) || row[ED_IDX[k]])); else if (k === 'deger') row[7] = Math.max(0, Math.round((Number(String(v).replace(',', '.')) || 0) * 1e6)); else if (k === 'soz') row[8] = String(Math.max(2026, Math.min(2045, parseInt(v, 10) || Number(row[8]) || 2027))); else if (k === 'forma') row[9] = Math.max(0, Math.min(99, parseInt(v, 10) || 0)); else if (k === 'mevki') { if (ED_POS.indexOf(v) >= 0) row[3] = v; } else if (k === 'ayak') { if (['Sağ', 'Sol', 'İki ayak'].indexOf(v) >= 0) row[4] = v; } else if (k === 'uyruk') { if (String(v).trim()) row[2] = String(v).trim(); } }
 const KITSET = { 'Avrupa kupası': 1, 'Kıtasal kulüp kupası': 1, 'Dünya kulüp turnuvası': 1 };
 function contOf(name) { const tur = window.VE_TUR || []; const o = []; tur.forEach((t, i) => { if (KITSET[t.tur] && Array.isArray(t.katilanKulup) && t.katilanKulup.indexOf(name) >= 0) o.push({ t, i }); }); return o; }
 const GOALW = { 'Santrfor': 5, 'Sağ kanat': 3.2, 'Sol kanat': 3.2, 'Ofansif orta saha': 3, 'Merkez orta saha': 1.5, 'Ön libero': 0.7, 'Sağ bek': 0.7, 'Sol bek': 0.7, 'Stoper': 0.5, 'Kaleci': 0.02 };
@@ -146,13 +151,14 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this._hist = [];
+    try { window.addEventListener('keydown', (ev) => { if ((ev.ctrlKey || ev.metaKey) && (ev.key === 'e' || ev.key === 'E')) { ev.preventDefault(); this.openEditor(); } else if (ev.key === 'Escape' && this.state.edOpen) this.setState({ edOpen: false }); }); } catch (e) {}
     try { history.pushState({ g: 1 }, ''); window.addEventListener('popstate', () => { if (this._hist.length) { this.goPrev(); try { history.pushState({ g: 1 }, ''); } catch (e) {} } }); } catch (e) {}
     const dr = tdLoad(DRAFT_KEY, null) || {};
     const picks = Array.isArray(dr.kulupler) ? dr.kulupler.filter(Boolean) : []; const dm = Array.isArray(dr.managers) ? dr.managers : [];
     this.sample = picks.length === 0;
     this.items = this.sample ? [{ name: 'Menajer', pick: SAMPLE }] : picks.map((p, i) => { const a = dm[i] || {}; const nm = ((a.ad || '') + ' ' + (a.soyad || '')).trim() || ('Menajer ' + (i + 1)); return { name: nm, first: (a.ad || '').trim() || nm, m: a, pick: p }; });
     this.game = tdLoad(GAME_KEY, null) || {}; this.game.k = this.game.k || {};
-    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, fopen: '', kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
+    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, edOpen: false, edd: {}, fopen: '', kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
     this.loadFor(0);
   }
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
@@ -163,6 +169,22 @@ class Component extends DCLogic {
     return super.setState(p, cb);
   }
   goPrev() { const b = this._hist.pop(); if (!b) return; this._popping = true; try { this.setState(Object.assign({ back: null, rep: null }, b)); } finally { this._popping = false; } }
+  applyPatches(G) {
+    const P = G && G.patch; if (!P) return; Object.keys(P).forEach(key => { const e = P[key]; const kd = window.VE_KD && window.VE_KD[e.c]; if (!kd) return; ['clubs', 'res', 'yth'].forEach(sec => { const list = kd[sec] && kd[sec][e.club]; if (!list) return; const row = list.find(r => r[0] === e.name); if (row) Object.keys(e.f).forEach(k => edSet(row, k, e.f[k])); }); });
+  }
+  edOn() { try { return !!tdRead().ingameEditor; } catch (e) { return false; } }
+  openEditor() { this.setState({ edOpen: true, edd: {} }); }
+  saveEdit() {
+    const t = this._edTarget; const st = this.state; if (!t) { this.setState({ edOpen: false }); return; } const G = this.gs(); G.patch = G.patch || {}; const key = t.c + '|' + t.club + '|' + t.name;
+    const e = G.patch[key] || { c: t.c, club: t.club, name: t.name, o: {}, f: {} };
+    Object.keys(ED_IDX).forEach(k => { const nv = st.edd[k]; if (nv === undefined) return; if (e.o[k] === undefined) e.o[k] = edGet(t.row, k); const tmp = t.row.slice(); edSet(tmp, k, nv); e.f[k] = edGet(tmp, k); });
+    G.patch[key] = e; G.edited = true; this.applyPatches(G); this.save(); this.setState({ edOpen: false, edd: {}, tick: st.tick + 1 });
+  }
+  revertEdit(key) {
+    const G = this.gs(); const e = G.patch && G.patch[key]; if (!e) return; const kd = window.VE_KD && window.VE_KD[e.c];
+    if (kd) ['clubs', 'res', 'yth'].forEach(sec => { const list = kd[sec] && kd[sec][e.club]; const row = list && list.find(r => r[0] === e.name); if (row) Object.keys(e.o).forEach(k => edSet(row, k, e.o[k])); });
+    delete G.patch[key]; this.save(); this.setState({ tick: this.state.tick + 1, edd: {} });
+  }
   openView(view, vp) {
     const cu = this.state; const back = { view: cu.view, vp: cu.vp, psel: cu.psel, psrc: cu.psrc, pclub: cu.pclub, fsel: cu.fsel, ssel: cu.ssel, cg: cu.cg };
     const go = () => this.setState({ view, vp, back, cg: '', tick: this.state.tick + 1 });
@@ -181,6 +203,7 @@ class Component extends DCLogic {
   save() { tdSave(GAME_KEY, this.game); }
   model() {
     const st = this.state; const it = this.items[st.mi]; const p = it.pick; const kd = (window.VE_KD && window.VE_KD[p.c]) || null;
+    try { this.applyPatches(this.gs()); } catch (e) {}
     const squad = (kd && kd.clubs[p.n]) ? kd.clubs[p.n].slice() : [];
     const league = (kd && kd.ligs[p.lg]) ? kd.ligs[p.lg].slice() : []; if (league.length && league.indexOf(p.n) < 0) league.push(p.n);
     const strength = (name) => { const a = kd && kd.clubs[name]; if (!a || !a.length) return 7; const t = a.slice().sort((x, y) => y[5] - x[5]).slice(0, 11); return t.reduce((s, x) => s + x[5], 0) / t.length; };
@@ -288,7 +311,11 @@ class Component extends DCLogic {
       nextDay: () => this.advance(1, false), toMatch: () => this.advance(0, true),
       nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vHeyet: st.view === 'heyet', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
       msgs: msgRows, hasMsg: !!cur, cur: cur || { from: '', subject: '', paras: [], facts: [], hasFacts: false },
-      fd, hasFd: fd.has, noFd: !fd.has, rep: st.rep && st.rep.open ? st.rep : null, hasRep: !!(st.rep && st.rep.open), closeRep: () => this.setState({ rep: null }), squad: squadRows, noSquad: !squadRows.length, heads, fgroups, anyF, clearF, fq: st.fq || '', setFq: (e) => this.setState({ fq: e.target.value }), shown: squadRows.length + ' / ' + pool.length, fixtures, noFix: !fixtures.length, table, fin: finRows, noFin: !has,
+      edit: (() => { const on = this.edOn(); const t = this._edTarget; const G2 = G; const P = (G2 && G2.patch) || {};
+      const fields = t ? Object.keys(ED_IDX).map(k => { const cur = st.edd[k] !== undefined ? st.edd[k] : edGet(t.row, k); const sel = k === 'mevki' ? ED_POS : k === 'ayak' ? ['Sağ', 'Sol', 'İki ayak'] : null; return { k, label: ED_LABEL[k], val: cur, isSel: !!sel, isIn: !sel, opts: sel || [], set: (e) => this.setState({ edd: Object.assign({}, this.state.edd, { [k]: e.target.value }) }) }; }) : [];
+      const list = Object.keys(P).map(key => ({ txt: P[key].name + ' · ' + P[key].club, sub: Object.keys(P[key].f).map(k => ED_LABEL[k] + ': ' + P[key].o[k] + ' → ' + P[key].f[k]).join(', '), undo: () => this.revertEdit(key) }));
+      return { on, off: !on, hasT: !!t && on, noT: !t && on, title: t ? t.name : '', fields, list, hasList: list.length > 0, save: () => this.saveEdit(), close: () => this.setState({ edOpen: false, edd: {} }) }; })(),
+    edOpen: !!st.edOpen, edited: !!G.edited, edBtn: this.edOn(), openEd: () => this.openEditor(), fd, hasFd: fd.has, noFd: !fd.has, rep: st.rep && st.rep.open ? st.rep : null, hasRep: !!(st.rep && st.rep.open), closeRep: () => this.setState({ rep: null }), squad: squadRows, noSquad: !squadRows.length, heads, fgroups, anyF, clearF, fq: st.fq || '', setFq: (e) => this.setState({ fq: e.target.value }), shown: squadRows.length + ' / ' + pool.length, fixtures, noFix: !fixtures.length, table, fin: finRows, noFin: !has,
       hasNext: !!nx, noNext: !nx, next: nx ? { opp: nx.opp, where: nx.home ? 'Ev sahibi' : 'Deplasman', date: fmtDate(nx.date), days: diffDays(G.date, nx.date) <= 0 ? 'Bugün' : diffDays(G.date, nx.date) + ' gün sonra' } : { opp: '', where: '', date: '', days: '' },
       summary: [{ k: 'Takım gücü (en iyi 11)', v: avg11 ? avg11.toFixed(1) : '—' }, { k: 'Lig sırası', v: myPos && league.length ? myPos + ' / ' + league.length : '—' }, { k: 'Kadro', v: squad.length ? String(squad.length) : '—' }, { k: 'Sezon hedefi', v: has ? EXP_LABEL[s.exp] : '—' }, { k: 'Kıtasal', v: (contOf(p.n).map(x => x.t.ad).slice(0, 2).join(', ')) || contProj((M.kd && M.kd.ulke) || {}, league.map(n => [n, M.strength(n)]).sort((a, b) => b[1] - a[1]).findIndex(x => x[0] === p.n) + 1) || '—' }]
     };
@@ -317,6 +344,7 @@ class Component extends DCLogic {
     const openT = (idx) => () => this.setState({ view: 'turn', tsel: idx });
     const winners = (txt, max) => String(txt || '').split('\n').filter(Boolean).slice(0, max || 40).map(l => { const q = l.split(' · '); return it(q[0] || '', q[1] || '', q[2] || ''); });
     const fmtMoney = (x, pb) => (pb === '₺' || !pb) ? money(x / 55.93) : Number(x).toLocaleString() + ' ' + pb;
+    if (v !== 'oyuncu') this._edTarget = null;
     const contL = contOf(p.n);
     const projTxt = vpOn ? '' : contProj(ulk, (c.league || []).map(n => [n, M.strength(n)]).sort((a, b) => b[1] - a[1]).findIndex(x => x[0] === p.n) + 1);
     const contCard = () => card('KITASAL TURNUVALAR', { rows: projTxt ? [{ k: 'Güç sırasına göre hak', v: projTxt }] : [], items: contL.map(x => it(x.t.kita || 'Kıtasal', x.t.ad, x.t.tur, { cur: 'pointer', pick: openT(x.i) })), note: contL.length ? '' : (info.hd_kitasal ? 'Kıtasal hedef: ' + info.hd_kitasal : 'Bu kulüp kıtasal turnuva katılımcı listesinde yok.') });
@@ -402,7 +430,7 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
       if (x) {
         const age = 2026 - x[1]; const gen = genAttrs(x[0], x[3], x[5], age); const real = Array.isArray(x[10]) ? x[10] : null; const ks = AT_TECH.concat(AT_MENT, AT_PHYS, AT_GK);
         const A = {}; ks.forEach((k, i) => { A[k] = (real && real[i] > 0) ? real[i] : gen[k]; });
-        out.hasHead = true; out.headTitle = x[0]; out.headSub = x[3] + ' · ' + age + ' yaş · ' + x[2]; out.headLinks = [{ label: pcl ? pcl.n : p.n, pick: () => this.openClub(pcl ? pcl.n : p.n, pcl ? pcl.c : p.c, '') }, { label: x[2], pick: () => this.openCountry(x[2]) }].concat(x[18] && x[18] !== x[2] ? [{ label: x[18], pick: () => this.openCountry(x[18]) }] : []);
+        this._edTarget = { c: pcl ? pcl.c : p.c, club: pcl ? pcl.n : p.n, name: x[0], row: x }; out.hasHead = true; out.headTitle = x[0]; out.headSub = x[3] + ' · ' + age + ' yaş · ' + x[2]; out.headLinks = [{ label: pcl ? pcl.n : p.n, pick: () => this.openClub(pcl ? pcl.n : p.n, pcl ? pcl.c : p.c, '') }, { label: x[2], pick: () => this.openCountry(x[2]) }].concat(x[18] && x[18] !== x[2] ? [{ label: x[18], pick: () => this.openCountry(x[18]) }] : []);
         out.hasKpis = true;
         out.kpis = [{ label: 'GÜÇ', value: String(x[5]), color: powCol(x[5]), sub: '1–20' }, { label: 'POTANSİYEL', value: String(x[6]), color: powCol(x[6]), sub: '1–20' }, { label: 'DEĞER', value: x[7] ? money(x[7]) : '—', color: fg, sub: 'piyasa değeri' }, { label: 'SÖZLEŞME', value: x[8] || '—', color: fg, sub: 'bitiş yılı' }, { label: 'AYAK', value: x[4], color: fg, sub: 'tercih' }, { label: 'FORMA', value: x[9] ? '#' + x[9] : '—', color: fg, sub: 'numara' }];
         const grp = (title, arr) => card(title, { bars: arr.map(k => bar(k, A[k], 20)).filter(Boolean) });
