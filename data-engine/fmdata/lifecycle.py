@@ -131,3 +131,66 @@ def generate_regens(country: str, cfg: CountryRegen, clubs: list[tuple[str, int]
             birth = dt.date(by, rng.randint(1, 12), rng.randint(1, 28))
             out.append(Regen(name_pool(country, rng), birth, country, club, regen_quality(cfg, fac, rng)))
     return out
+
+
+# ---------------- Emeklilik sonrası plan, geçmiş yılları, saha içi olaylar ----------------
+import re as _re
+
+POST_CAREER = ["Teknik direktör", "Yardımcı antrenör", "Altyapı antrenörü", "Kulüp yöneticisi", "Kulüp başkanı",
+               "Scout (yetenek avcısı)", "Menajer", "TV yorumcusu", "İş insanı", "Futboldan uzaklaşır"]
+
+
+def post_career_outcome(plan: str, backup: str, leadership: int, reputation: int, rng: random.Random) -> str:
+    """Emekli olunca seçilen plan tutar mı? Tutmazsa yedek plan denenir; o da tutmazsa 'Futboldan uzaklaşır'.
+    Teknik direktörlük için liderlik ve itibar, diğer roller için itibar belirleyicidir."""
+    def works(role: str) -> bool:
+        if role == "Futboldan uzaklaşır":
+            return True
+        base = {"Teknik direktör": 0.25 + 0.02 * leadership, "Kulüp başkanı": 0.05 + 0.02 * reputation,
+                "TV yorumcusu": 0.2 + 0.03 * reputation}.get(role, 0.45 + 0.01 * reputation)
+        return rng.random() < min(0.95, base)
+    for role in (plan, backup):
+        if role in POST_CAREER and works(role):
+            return role
+    return "Futboldan uzaklaşır"
+
+
+_STINT = _re.compile(r"^\s*(\d{4})\s*[–-]\s*(\d{4})?\s*·\s*([^·]+?)\s*(?:\([^)]*\))?\s*·")
+
+
+def years_by(text: str, today_year: int, club_country: dict[str, str]) -> tuple[dict[str, int], dict[str, int]]:
+    """Kariyer geçmişi satırlarından kulüp ve ülke başına toplam yıl. Bitişi boş satır 'hâlâ orada' sayılır."""
+    clubs: dict[str, int] = {}
+    countries: dict[str, int] = {}
+    for ln in (text or "").splitlines():
+        m = _STINT.match(ln)
+        if not m:
+            continue
+        a, b, name = int(m.group(1)), int(m.group(2)) if m.group(2) else today_year, m.group(3).strip()
+        yrs = max(0, b - a)
+        clubs[name] = clubs.get(name, 0) + yrs
+        c = club_country.get(name, "Bilinmiyor")
+        countries[c] = countries.get(c, 0) + yrs
+    return clubs, countries
+
+
+def position_fit(scores: dict[str, int], position: str) -> float:
+    """Mevki skoru 1..20 → oynarken verim çarpanı 0.5..1.0."""
+    s = max(1, min(20, scores.get(position, 1)))
+    return 0.5 + 0.5 * (s - 1) / 19
+
+
+def incident_events(ratings: dict[str, int], minutes: int, rng: random.Random, provoked: bool = False) -> list[str]:
+    """90 dakikalık maçta saha içi olaylar. ratings: dvOlay, dvKufur, dvKavga, dvHakem, dvKasitli, dvTahrik,
+    dvSeyirci, dvKart, dvSakin (hepsi 1..20). Olasılıklar maç başınadır ve ayarlanabilir başlangıç değerleridir."""
+    calm = ratings.get("dvSakin", 10) / 20.0
+    scale = (minutes / 90.0) * (1.4 if provoked else 1.0) * (1.3 - 0.6 * calm)
+    table = [("dvKufur", "Küfür etti", 0.20), ("dvHakem", "Hakeme itiraz etti", 0.30), ("dvKasitli", "Kasıtlı faul yaptı", 0.25),
+             ("dvTahrik", "Rakibi tahrik etti", 0.20), ("dvSeyirci", "Seyirciyle tartıştı", 0.10), ("dvKavga", "Rakip oyuncuya saldırdı", 0.06)]
+    out = []
+    gate = ratings.get("dvOlay", 5) / 20.0
+    for key, text, p in table:
+        prob = p * (ratings.get(key, 5) / 20.0) * (0.5 + gate) * scale
+        if rng.random() < prob:
+            out.append(text)
+    return out

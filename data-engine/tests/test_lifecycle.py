@@ -83,3 +83,34 @@ class Regen(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Career(unittest.TestCase):
+    def test_post_career_fallbacks(self):
+        r = random.Random(3)
+        outs = {L.post_career_outcome("Kulüp başkanı", "Menajer", 5, 1, random.Random(i)) for i in range(50)}
+        self.assertTrue(outs <= set(L.POST_CAREER))
+        self.assertEqual(L.post_career_outcome("Futboldan uzaklaşır", "Menajer", 5, 5, r), "Futboldan uzaklaşır")
+        self.assertEqual(L.post_career_outcome("???", "???", 5, 5, r), "Futboldan uzaklaşır")
+
+    def test_leadership_helps_coaching(self):
+        def rate(lead):
+            return sum(L.post_career_outcome("Teknik direktör", "Futboldan uzaklaşır", lead, 10, random.Random(i)) == "Teknik direktör" for i in range(400))
+        self.assertLess(rate(2), rate(20))
+
+    def test_years_by(self):
+        txt = "2014–2016 · A (genç/rezerv) · 10 maç / 1 gol\n2016–2019 · B · 50 maç / 5 gol\n2019– · A · 20 maç / 2 gol\nbozuk"
+        c, k = L.years_by(txt, 2026, {"A": "Türkiye", "B": "İngiltere"})
+        self.assertEqual(c, {"A": 2 + 7, "B": 3})
+        self.assertEqual(k, {"Türkiye": 9, "İngiltere": 3})
+
+    def test_position_fit(self):
+        self.assertEqual(L.position_fit({"Stoper": 20}, "Stoper"), 1.0)
+        self.assertEqual(L.position_fit({}, "Stoper"), 0.5)
+
+    def test_incidents_scale_with_traits(self):
+        hi = {k: 20 for k in ["dvOlay", "dvKufur", "dvKavga", "dvHakem", "dvKasitli", "dvTahrik", "dvSeyirci"]}; hi["dvSakin"] = 1
+        lo = {k: 1 for k in hi}; lo["dvSakin"] = 20
+        n = lambda d: sum(len(L.incident_events(d, 90, random.Random(i))) for i in range(500))
+        self.assertGreater(n(hi), n(lo) * 5)
+        self.assertEqual(L.incident_events(hi, 0, random.Random(1)), [])
