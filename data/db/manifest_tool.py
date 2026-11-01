@@ -13,6 +13,8 @@ FILES = lambda: sorted(
     + [p for p in (ROOT / "data" / "real_memory").glob("*.json")]
     + [p for p in (ROOT / "data" / "real_web").glob("*.json")]
     + [p for p in (ROOT / "data" / "names").glob("*.json")]
+    + [p for p in (ROOT / "data" / "openfootball").glob("*.json")]
+    + [p for p in (ROOT / "design").glob("ve-op-*.js")]
     + [ROOT / "design" / "VeriEditoru.dc.html"]
 )
 
@@ -29,10 +31,10 @@ def build() -> None:
     man = {
         "id": "varsayilan-v1",
         "ad": "Varsayılan Veritabanı",
-        "surum": "1.1",
+        "surum": "1.2",
         "durum": "kesin",
         "tarih": "2026-11-01",
-        "icerik": {"kulup": 7053, "oyuncu": 367052, "personel": 85606, "temsilci": 77},
+        "icerik": {"kulup": 7053, "oyuncu": 397499, "personel": 85606, "temsilci": 77},
         "not": "Oyuncu/personel üretilmiş (kurgusal) kayıtlardır; Süper Lig'de bellekten yazılan gerçek kişiler ayrıca işaretlidir. "
                "Web aramasıyla toplanan ve bellekten yazılan alanlar doğrulanmamıştır.",
         "ozet": top,
