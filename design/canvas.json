@@ -99,6 +99,15 @@
       "w": 1440,
       "x": 13680,
       "y": 0
+    },
+    "Karsilama.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "is_interactive": true,
+      "title": "Yeni Kariyer: Karşılama",
+      "w": 1440,
+      "x": 15200,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -118,6 +127,7 @@
     "UlkeSecimi.dc.html",
     "LigPiramidi.dc.html",
     "KulupSecimi.dc.html",
+    "Karsilama.dc.html",
     "Ayarlar.dc.html",
     "Yapimcilar.dc.html",
     "VeriEditoru.dc.html",
