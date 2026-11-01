@@ -184,7 +184,24 @@ class Component extends DCLogic {
   }
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
   gs() { const k = this.key(); if (!this.game.k[k] || this.game.k[k].lg !== this.items[this.state.mi].pick.lg) this.game.k[k] = { lg: this.items[this.state.mi].pick.lg, date: START, min: DAY_START, sim: {}, res: {}, read: {} }; return this.game.k[k]; }
-  loadFor(mi) { this.setState({ loaded: false }); const p = this.items[mi].pick; loadKD(p.c, ok => { this.setState({ loaded: true, kdOk: ok, tick: this.state.tick + 1 }); }); }
+  loadFor(mi) { this.setState({ loaded: false }); const p = this.items[mi].pick; loadKD(p.c, ok => { this.setState({ loaded: true, kdOk: ok, tick: this.state.tick + 1 }); try { this.consumeLive(); } catch (e) {} }); }
+  startLive() {
+    const M = this.model(); const G = this.gs(); const my = this.nextMyRound(M, G); if (my < 0) return; const pair = M.rounds[my].find(([h, a]) => h === M.p.n || a === M.p.n); if (!pair) return; const [h, a] = pair; const kd = M.kd;
+    const ROLES433 = ['KL', 'SĞB', 'STP', 'STP', 'SLB', 'DOS', 'OS', 'OS', 'SĞK', 'SNT', 'SLK'], ROLES4231 = ['KL', 'SĞB', 'STP', 'STP', 'SLB', 'DOS', 'DOS', 'SĞK', 'OOS', 'SLK', 'SNT'];
+    const PREF = { KL: ['Kaleci'], 'SĞB': ['Sağ bek'], STP: ['Stoper'], SLB: ['Sol bek'], DOS: ['Ön libero', 'Merkez orta saha'], OS: ['Merkez orta saha', 'Ofansif orta saha'], OOS: ['Ofansif orta saha', 'Merkez orta saha'], 'SĞK': ['Sağ kanat'], SLK: ['Sol kanat'], SNT: ['Santrfor'] };
+    const side = (n, roles) => { const pool = ((kd && kd.clubs && kd.clubs[n]) || []).slice().sort((x, y) => y[5] - x[5]); const used = {}; const names = [], pg = []; roles.forEach(r => { let c = pool.find(x => !used[x[0]] && (PREF[r] || []).indexOf(x[3]) >= 0) || pool.find(x => !used[x[0]] && (r === 'KL' ? x[3] === 'Kaleci' : x[3] !== 'Kaleci')) || pool.find(x => !used[x[0]]); if (c) { used[c[0]] = 1; names.push(c[0]); pg.push(c[5]); } else { names.push('#' + (names.length + 1)); pg.push(null); } }); return { name: n, short: String(n).replace(/[^\p{L}]/gu, '').slice(0, 3).toLocaleUpperCase('tr-TR'), hue: hash(n) % 360, str: Math.round(M.strength(n) * 10) / 10, names, pg }; };
+    tdSave('td-mac-v1', { key: my + '|' + h + '|' + a, round: my, club: M.p.n, seed: 1 + (hash(my + h + a) % 100000), home: side(h, ROLES4231), away: side(a, ROLES433) });
+    tdSave('td-mac-sonuc-v1', null);
+  }
+  consumeLive() {
+    const res = tdLoad('td-mac-sonuc-v1', null), ho = tdLoad('td-mac-v1', null); if (!res || !ho || res.key !== ho.key) return;
+    const M = this.model(); const G = this.gs(); const r = ho.round; const parts = String(ho.key).split('|');
+    if (!M.rounds[r] || G.sim[r] || (parts[1] !== M.p.n && parts[2] !== M.p.n)) { if (G.sim[r]) { tdSave('td-mac-sonuc-v1', null); tdSave('td-mac-v1', null); } return; }
+    G.res[ho.key] = [res.hg, res.ag]; let hh = 0, aa = 0; G.ev = G.ev || {};
+    G.ev[ho.key] = { goals: (res.goals || []).slice().sort((x, y) => x.min - y.min).map(g => { if (g.side === 0) hh++; else aa++; return { min: g.min, who: g.who, side: g.side, score: hh + '–' + aa }; }) };
+    this.simRound(M, G, r); G.date = addDays(G.date, 1); G.min = DAY_START; M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) this.simRound(M, G, i); });
+    tdSave('td-mac-sonuc-v1', null); tdSave('td-mac-v1', null); this.save(); this.setState({ view: 'fikstur', fsel: -1, tick: this.state.tick + 1 });
+  }
   setState(p, cb) {
     try { const st = this.state; if (p && p.view && st && p.view !== st.view && !this._popping) { this._hist.push({ view: st.view, vp: st.vp, psel: st.psel, psrc: st.psrc, pclub: st.pclub, fsel: st.fsel, ssel: st.ssel, cg: st.cg, tsel: st.tsel, tmode: st.tmode }); if (this._hist.length > 40) this._hist.shift(); } } catch (e) {}
     return super.setState(p, cb);
@@ -268,6 +285,7 @@ class Component extends DCLogic {
     if (G.sim[r]) return; G.sim[r] = 1;
     M.rounds[r].forEach(([h, a]) => {
       const dif = M.strength(h) - M.strength(a); const lh = Math.max(0.2, 1.4 + 0.18 * dif + 0.25), la = Math.max(0.2, 1.1 - 0.18 * dif);
+      if (G.res[r + '|' + h + '|' + a]) return;
       G.res[r + '|' + h + '|' + a] = [poisson(lh, u01('g|' + r + h + a + 'h')), poisson(la, u01('g|' + r + h + a + 'a'))];
     });
   }
@@ -348,9 +366,9 @@ class Component extends DCLogic {
     if (fsi >= 0) {
       const f = myFix[fsi], r = G.res[fixKey(f)]; const gm = genMatch(fixKey(f), f.h, f.a, r[0], r[1], M.kd, M.strength(f.h), M.strength(f.a));
       fd = { has: true, title: f.h + ' – ' + f.a, score: r[0] + ' – ' + r[1], sub: fmtDate(f.date) + ' · ' + (p.lg || ''), home: f.h, away: f.a,
-        goals: gm.goals.map(g => ({ min: g.min + "'", who: g.who, ast: g.ast ? '(' + g.ast + ')' : '', club: g.club, score: g.score, col: g.side === 'h' ? 'var(--td-accent2,#FF6B76)' : 'var(--td-blue,#8FB8FF)', pick: () => this.setState({ rep: Object.assign(replayOf(g, fixKey(f)), { open: true }) }) })),
+        goals: ((G.ev && G.ev[fixKey(f)] && G.ev[fixKey(f)].goals) ? G.ev[fixKey(f)].goals.map(g => ({ min: g.min, who: g.who, ast: '', club: g.side === 0 ? f.h : f.a, side: g.side === 0 ? 'h' : 'a', score: g.score })) : gm.goals).map(g => ({ min: g.min + "'", who: g.who, ast: g.ast ? '(' + g.ast + ')' : '', club: g.club, score: g.score, col: g.side === 'h' ? 'var(--td-accent2,#FF6B76)' : 'var(--td-blue,#8FB8FF)', pick: () => this.setState({ rep: Object.assign(replayOf(g, fixKey(f)), { open: true }) }) })),
         cards: gm.cards.map(c => ({ min: c.min + "'", who: c.who, club: c.club, ico: c.red ? '🟥' : '🟨' })), stats: gm.stats, motm: gm.motm,
-        noGoals: !gm.goals.length, noCards: !gm.cards.length, note: 'Dakikalar, golcüler ve istatistikler sonuçtan türetilmiş özettir (maç motoru olay kaydı yok).' };
+        noGoals: !((G.ev && G.ev[fixKey(f)] && G.ev[fixKey(f)].goals) ? G.ev[fixKey(f)].goals.length : gm.goals.length), noCards: !gm.cards.length, note: (G.ev && G.ev[fixKey(f)]) ? 'Goller maç motorunda oynanan maçtan; istatistikler ve kartlar sonuçtan türetilmiş özettir.' : 'Dakikalar, golcüler ve istatistikler sonuçtan türetilmiş özettir (maç motoru olay kaydı yok).' };
     }
 
     const tb = {}; league.forEach(n => { tb[n] = { n, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0 }; });
@@ -363,7 +381,7 @@ class Component extends DCLogic {
     const out = {
       crestBg: 'hsl(' + hue + ' 52% 34%)', crestText: initialsOf(p.n), clubName: p.n, 
       tabs, goPrev: () => this.goPrev(), mgrInit: String((this.items[st.mi].name || 'M')).trim().slice(0, 1).toLocaleUpperCase('tr-TR'), hasUnread: unread > 0, goInbox: () => this.setState({ view: 'inbox', vp: null, back: null }), mainBd: (st.view === 'pano' && !st.panoOld) ? 'none' : '1px solid rgba(var(--td-fg-rgb,255,255,255),0.12)', mainBg: (st.view === 'pano' && !st.panoOld) ? 'transparent' : 'rgba(var(--td-panel-rgb,15,21,41),0.78)', backOp: this._hist.length > 0 ? '1' : '0.4', hasTabs: this.items.length > 1, dateText: fmtDate(G.date), timeText: hhmm(clock), matchDay, notMatchDay: !matchDay,
-      simMatch: () => { this.simRound(M, G, my); G.date = addDays(G.date, 1); G.min = DAY_START; M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) this.simRound(M, G, i); }); this.save(); this.setState({ view: 'fikstur', tick: st.tick + 1 }); },
+      startLive: () => this.startLive(), simMatch: () => { this.simRound(M, G, my); G.date = addDays(G.date, 1); G.min = DAY_START; M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) this.simRound(M, G, i); }); this.save(); this.setState({ view: 'fikstur', tick: st.tick + 1 }); },
       nextDay: () => this.advance(1, false), toMatch: () => this.advance(0, true),
       nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vHeyet: st.view === 'heyet', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
       msgs: msgRows, hasMsg: !!cur, cur: cur || { from: '', subject: '', paras: [], facts: [], hasFacts: false },
