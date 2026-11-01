@@ -330,6 +330,7 @@ const WORLD = {"Afganistan":{"l":[["Afghanistan Champions League",null,1]],"c":[
 const DBS = [
   { src: 'resmi', name: 'Varsayılan Veritabanı', tag: 'KESİN SÜRÜM', players: 397499, clubs: 7053, staff: 85606, meta: 'Oyunla gelen · tüm dünya · 2026/27 başı · kesinleştirildi (v1.2)' }
 ];
+try { const st = JSON.parse(localStorage.getItem('td-db-stats-v1') || 'null'); if (st && st.oyuncu > 0) { DBS[0].players = st.oyuncu; if (st.kulup) DBS[0].clubs = st.kulup; if (st.personel) DBS[0].staff = st.personel; } } catch (e) {}
 const SIZES = [
   { label: 'Küçük', share: 0.15, w: 0, note: 'sadece kontrol edilen liglerin oyuncuları ve önemli yabancılar' },
   { label: 'Orta', share: 0.30, w: 2, note: 'kontrol edilen ülkeler ve büyük liglerin oyuncuları' },

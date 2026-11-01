@@ -2185,7 +2185,7 @@ function startVirtGen(onTick) {
         virtAdd('personel', 'Serbest|' + x + '|F', freeStaffFor(x, list.length, avg), 'Serbest', x);
       }
     }
-    VIRT.progress = i / tasks.length; VIRT.ver++;
+    VIRT.progress = i / tasks.length; VIRT.ver++; if (i >= tasks.length) VIRT.done = true;
     const now = Date.now(); if (onTick && (now - last > 600 || i >= tasks.length)) { last = now; onTick(); }
     if (i < tasks.length) setTimeout(step, 4); else VIRT.done = true;
   };
@@ -2483,16 +2483,21 @@ function loadWorld(done0) {
 }
 emekliDefaults(); applyRegenDefaults();
 convertPickers();
-let OP_STATE = 'loading'; const OP_WAIT = [];
+let OP_STATE = 'loading'; let OP_FAIL = false; const OP_WAIT = []; const OP_EXPECT = 72930;
 function loadOP(done) {
   const base = (() => { try { return document.baseURI || location.href; } catch (e) { return ''; } })();
   let i = 1;
   const next = () => {
     if (i > 12) return done();
-    const rels = ['ve-op-' + i + '.js', 'project/ve-op-' + i + '.js', '../project/ve-op-' + i + '.js']; let r = 0; const n = i;
+    const f0 = 've-op-' + i + '.js'; const rels = [f0, './' + f0, 'project/' + f0, '/project/' + f0, '../project/' + f0]; let r = 0; const n = i;
+    try { rels.unshift(new URL(f0, base).href); } catch (e) {}
+    try { if (location.origin && location.origin !== 'null') rels.push(location.origin + '/project/' + f0); } catch (e) {}
+    try { performance.getEntriesByType('resource').forEach(en => { const m = String(en.name).match(/^(.*\/)[^\/]*\.dc\.html/); if (m) rels.unshift(m[1] + f0); }); } catch (e) {}
+    try { document.querySelectorAll('script[src], link[href], iframe[src]').forEach(el => { const u = el.src || el.href; const m = String(u).match(/^(.*\/)project\//); if (m) rels.push(m[1] + 'project/' + f0); }); } catch (e) {}
+    try { const pb = window.parent && window.parent !== window ? window.parent.document.baseURI : ''; if (pb) rels.push(new URL('project/' + f0, pb).href); } catch (e) {}
     const tryOne = () => {
-      if (r >= rels.length) return done();
-      let u = rels[r++]; try { u = new URL(rels[0], base).href; if (r > 1) u = rels[r - 1]; } catch (e) {}
+      if (r >= rels.length) { if (n === 1) OP_FAIL = true; return done(); }
+      const u = rels[r++];
       const sc = document.createElement('script'); sc.src = u; sc.async = true;
       sc.onload = () => { i = n + 1; next(); };
       sc.onerror = () => { try { sc.remove(); } catch (e) {} tryOne(); };
@@ -2627,7 +2632,10 @@ class Component extends DCLogic {
     const list = this.state.data[tk].concat([r]);
     this.setState({ data: Object.assign({}, this.state.data, { [tk]: list }), tab: tk, sel: Object.assign({}, this.state.sel, { [tk]: list.length - 1 }), listOpen: false, q: '', secBy: Object.assign({}, this.state.secBy || {}, { [tk]: 0 }) });
   }
-  startVirt() { if (WORLD_READY) startVirtGen(() => this.setState({ virtTick: VIRT.ver })); }
+  saveStats() {
+    try { const d = this.state.data; localStorage.setItem('td-db-stats-v1', JSON.stringify({ oyuncu: d.oyuncu.length + VIRT.n.oyuncu, personel: d.personel.length + VIRT.n.personel, kulup: d.kulup.length, gercek: VIRT.imported || 0, ts: Date.now() })); } catch (e) {}
+  }
+  startVirt() { if (WORLD_READY) startVirtGen(() => { this.setState({ virtTick: VIRT.ver }); if (VIRT.done) this.saveStats(); }); }
   openClub(k, c, names) {
     const tab = this.state.tab; const tk = tab === 'personel' ? 'personel' : 'oyuncu'; const nd = this.materialize(names, tk); const first = nd[tk].findIndex(r => r.kulup === k);
     this.setState({ data: nd, sqC: c, sqK: k, clubFilter: k, sel: Object.assign({}, this.state.sel, first >= 0 ? { [tk]: first } : {}), q: '', listOpen: false });
@@ -2796,7 +2804,7 @@ class Component extends DCLogic {
       isKulup: !!COUNTRY_TABS[tab], cf, cfOpts: ['Tüm ülkeler'].concat(tab === 'lig' || tab === 'odul' ? ['Uluslararası'] : []).concat(tab === 'kulup' ? CLUB_COUNTRIES : ALL_COUNTRIES).map(x => ({ v: x })),
       setCf: (e) => { const c = e.target.value; const first = recs.findIndex(r => c === 'Tüm ülkeler' || (c === 'Uluslararası' ? !r.ulke : r.ulke === c)); this.setState({ cfBy: Object.assign({}, this.state.cfBy, { [tab]: c }), q: '', sel: Object.assign({}, sel, first >= 0 ? { [tab]: first } : {}) }); },
       hasMore: totalAll > rows.length, moreText: (totalAll - rows.length).toLocaleString('tr-TR') + ' kayıt daha var · aramayı ya da ülkeyi daraltınca görünür.',
-      badge: this.state.loading ? 'DÜNYA VERİSİ YÜKLENİYOR…' : this.state.loadErr ? 'DÜNYA VERİSİ YÜKLENEMEDİ · ÖRNEK VERİ' : (tab === 'oyuncu' || tab === 'personel') ? 'DÜNYA VERİSİ · ' + (recs.length + VIRT.n[tab]).toLocaleString('tr-TR') + ' KAYIT' + (VIRT.done ? '' : ' · ÜRETİLİYOR %' + Math.round(VIRT.progress * 100)) : 'GERÇEK VERİ · ' + recs.length.toLocaleString('tr-TR') + ' KAYIT',
+      badge: this.state.loading ? 'DÜNYA VERİSİ YÜKLENİYOR…' : this.state.loadErr ? 'DÜNYA VERİSİ YÜKLENEMEDİ · ÖRNEK VERİ' : (tab === 'oyuncu' || tab === 'personel') ? 'DÜNYA VERİSİ · ' + (recs.length + VIRT.n[tab]).toLocaleString('tr-TR') + ' KAYIT' + (VIRT.done ? '' : ' · ÜRETİLİYOR %' + Math.round(VIRT.progress * 100)) + ((VIRT.imported || 0) < OP_EXPECT ? ' · GERÇEK OYUNCU VERİSİ EKSİK (' + (VIRT.imported || 0).toLocaleString('tr-TR') + '/' + OP_EXPECT.toLocaleString('tr-TR') + ')' : '') : 'GERÇEK VERİ · ' + recs.length.toLocaleString('tr-TR') + ' KAYIT',
       saveOpen: this.state.saveOpen, saveOpenStr: this.state.saveOpen ? 'true' : 'false',
       toggleSave: () => this.setState({ saveOpen: !this.state.saveOpen, savedName: '', ioOpen: false, resetOpen: false, resetDone: '' }),
       saveName: this.state.saveName, setSaveName: (e) => this.setState({ saveName: e.target.value }),
