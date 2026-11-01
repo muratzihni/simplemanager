@@ -11,7 +11,7 @@
   "temsilci": 77
  },
  "not": "Oyuncu/personel üretilmiş (kurgusal) kayıtlardır; Süper Lig'de bellekten yazılan gerçek kişiler ayrıca işaretlidir. Web aramasıyla toplanan ve bellekten yazılan alanlar doğrulanmamıştır.",
- "ozet": "f862e4920093b4716d0734194293e7191649abf9c1bd47e16385967ac24466e9",
+ "ozet": "80eaab3cb64cdce57e30cb2d2c506fe509a0dc5e7b930ad7b8a20e537033e979",
  "dosyalar": {
   "data/names/cultures.json": "2b8e33034cc0e430ce0e8ac09a6f0758b9e5fb281ed88b6f75cd25164c949138",
   "data/names/names_all.json": "5b33c1fcaec23ba164f5b7cb77777b50441bde7c23abc7e0b4fb0f809a7ccf50",
@@ -380,7 +380,7 @@
   "data/world/personel/İtalya.json.gz": "168183416c71944932e243fb4e819ce5e09dddc1c260e6e9a4b19f38cc4e0b44",
   "data/world/personel/İzlanda.json.gz": "35e453af98a2c503f43cd72bd34e523b87441647ee9b273ac05afc3c2c488739",
   "data/world/personel/Şili.json.gz": "df0a13f0c7e9f370f7951da46aa16a2800bf63361c8135381251442128603896",
-  "design/VeriEditoru.dc.html": "769147e56a659c0961c4a06ad18029065daf26c1e5bc8f03acaf4fada81cf014",
+  "design/VeriEditoru.dc.html": "590d28c3ce84e5d7152a4931adede6367e415099c0980d00ee483ce58610a94c",
   "design/ve-op-1.json": "a00dfdf9784aa553d65d46bf9547b1d348e0def07a6968d821cfb04b03d04485",
   "design/ve-op-2.json": "ffc23944ffef266140d75bee0ab8b43ed50be6dd2341a020386a81823219cdea",
   "design/ve-op-3.json": "27199841b2e63481e7447742669b205a0a74f4218c3652a8eaf512fc9f3647f3",

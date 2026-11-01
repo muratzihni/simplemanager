@@ -23,6 +23,36 @@ function loadKD(country, done) {
   if (window.VE_KD[country]) fin(); else fetchJson('kd/' + slugOf(country) + '.json', d => { if (d) window.VE_KD[country] = d; else ok = false; fin(); });
   if (window.VE_TUR) fin(); else fetchJson('kd/_turnuvalar.json', d => { if (d) window.VE_TUR = d; fin(); });
 }
+const AT_TECH = ['Bitiricilik', 'Dribbling', 'İlk dokunuş', 'Orta', 'Pas', 'Uzaktan şut', 'Top kesme', 'Markaj', 'Kafa', 'Teknik', 'Korner', 'Serbest vuruş', 'Penaltı', 'Uzun taç atışı'];
+const AT_MENT = ['Karar alma', 'Önsezi', 'Pozisyon alma', 'Liderlik', 'Soğukkanlılık', 'Çalışkanlık', 'Takım oyunu', 'Agresiflik', 'Cesaret', 'Konsantrasyon', 'Kararlılık', 'Yaratıcılık', 'Topsuz hareket', 'Vizyon'];
+const AT_PHYS = ['Hız', 'Hızlanma', 'Çeviklik', 'Dayanıklılık', 'Güç', 'Denge', 'Zıplama', 'Doğal form', 'Sakatlık direnci'];
+const AT_GK = ['Hava hakimiyeti', 'Alan hakimiyeti', 'İletişim', 'Garip hareketler', 'Top tutma', 'Ayakla oyun', 'Teke tek', 'Refleks', 'Çıkış', 'Elle atış'];
+const kHash = (s) => hash(s) / 4294967296;
+const POS_BIAS = {
+  'Kaleci': { 'Hava hakimiyeti': 1, 'Alan hakimiyeti': 1, 'İletişim': 1, 'Top tutma': 1, 'Teke tek': 1, 'Refleks': 2, 'Çıkış': 0, 'Elle atış': 0, 'Ayakla oyun': -1, 'Garip hareketler': -1, 'Konsantrasyon': 2, 'Soğukkanlılık': 1, 'Pas': -4, 'Bitiricilik': -9, 'Dribbling': -8, 'Hız': -3, 'Hızlanma': -3, 'Zıplama': 1, 'Çeviklik': 1 },
+  'Stoper': { 'Top kesme': 3, 'Markaj': 3, 'Kafa': 3, 'Pozisyon alma': 3, 'Güç': 3, 'Zıplama': 2, 'Cesaret': 2, 'Konsantrasyon': 1, 'Bitiricilik': -5, 'Dribbling': -3, 'Orta': -4, 'Yaratıcılık': -3, 'Vizyon': -2, 'Uzaktan şut': -4, 'Korner': -4, 'Serbest vuruş': -4, 'Hız': -1 },
+  'Sağ bek': { 'Orta': 2, 'Top kesme': 1, 'Markaj': 1, 'Hız': 2, 'Hızlanma': 2, 'Dayanıklılık': 3, 'Çalışkanlık': 3, 'Topsuz hareket': 1, 'Bitiricilik': -3, 'Kafa': -2, 'Yaratıcılık': -2, 'Güç': -1 },
+  'Sol bek': { 'Orta': 2, 'Top kesme': 1, 'Markaj': 1, 'Hız': 2, 'Hızlanma': 2, 'Dayanıklılık': 3, 'Çalışkanlık': 3, 'Topsuz hareket': 1, 'Bitiricilik': -3, 'Kafa': -2, 'Yaratıcılık': -2, 'Güç': -1 },
+  'Ön libero': { 'Top kesme': 3, 'Markaj': 2, 'Pas': 1, 'Pozisyon alma': 3, 'Çalışkanlık': 3, 'Dayanıklılık': 3, 'Güç': 2, 'Takım oyunu': 2, 'Karar alma': 1, 'Bitiricilik': -3, 'Dribbling': -2, 'Orta': -3, 'Hız': -1 },
+  'Merkez orta saha': { 'Pas': 3, 'Vizyon': 2, 'Karar alma': 2, 'İlk dokunuş': 2, 'Çalışkanlık': 2, 'Dayanıklılık': 2, 'Takım oyunu': 2, 'Teknik': 1, 'Bitiricilik': -2, 'Kafa': -2, 'Markaj': -1 },
+  'Ofansif orta saha': { 'Pas': 3, 'Vizyon': 3, 'Yaratıcılık': 3, 'Teknik': 3, 'Dribbling': 2, 'İlk dokunuş': 3, 'Uzaktan şut': 2, 'Topsuz hareket': 2, 'Önsezi': 2, 'Top kesme': -4, 'Markaj': -4, 'Kafa': -3, 'Güç': -2, 'Pozisyon alma': -1 },
+  'Sağ kanat': { 'Hız': 3, 'Hızlanma': 3, 'Dribbling': 3, 'Orta': 3, 'Çeviklik': 2, 'Teknik': 2, 'Topsuz hareket': 1, 'Top kesme': -5, 'Markaj': -5, 'Kafa': -4, 'Güç': -3, 'Zıplama': -2, 'Pozisyon alma': -2 },
+  'Sol kanat': { 'Hız': 3, 'Hızlanma': 3, 'Dribbling': 3, 'Orta': 3, 'Çeviklik': 2, 'Teknik': 2, 'Topsuz hareket': 1, 'Top kesme': -5, 'Markaj': -5, 'Kafa': -4, 'Güç': -3, 'Zıplama': -2, 'Pozisyon alma': -2 },
+  'Santrfor': { 'Bitiricilik': 4, 'Topsuz hareket': 3, 'Önsezi': 3, 'Soğukkanlılık': 2, 'Kafa': 2, 'Güç': 2, 'Hızlanma': 1, 'Penaltı': 1, 'Top kesme': -6, 'Markaj': -6, 'Orta': -3, 'Korner': -4, 'Uzun taç atışı': -3, 'Pozisyon alma': -1 }
+};
+function genAttrs(name, mevki, guc, age) {
+  const a = {}; const bias = POS_BIAS[mevki] || {}; const gk = mevki === 'Kaleci';
+  AT_TECH.concat(AT_MENT, AT_PHYS).forEach(k => {
+    let v = guc + (bias[k] || 0) + (kHash(name + '|' + k) - 0.5) * 4;
+    if (age >= 30 && ['Hız', 'Hızlanma', 'Çeviklik', 'Zıplama'].indexOf(k) >= 0) v -= (age - 29) * 0.7;
+    if (age <= 20 && ['Soğukkanlılık', 'Karar alma', 'Konsantrasyon', 'Liderlik'].indexOf(k) >= 0) v -= 1.5;
+    if (age >= 26 && AT_MENT.indexOf(k) >= 0) v += Math.min(1.5, (age - 25) * 0.3);
+    if (['Korner', 'Serbest vuruş', 'Penaltı', 'Uzun taç atışı'].indexOf(k) >= 0 && !bias[k]) v -= 2;
+    a[k] = Math.max(1, Math.min(20, Math.round(v)));
+  });
+  AT_GK.forEach(k => { a[k] = gk ? Math.max(1, Math.min(20, Math.round(guc + (bias[k] || 0) + (kHash(name + '|' + k) - 0.5) * 3))) : 1 + Math.floor(kHash(name + '#' + k) * 3); });
+  return a;
+}
 const EXP_LABEL = ['Şampiyonluk', 'Üst sıralar', 'Orta sıra', 'Ligde kal'];
 const FIN = ['Çok güçlü', 'Güçlü', 'Dengeli', 'Sıkıntılı', 'İflasın eşiğinde'];
 const FIN_COLOR = ['var(--td-green,#4FB286)', 'var(--td-green,#4FB286)', 'var(--td-blue,#8FB8FF)', 'var(--td-gold,#F2C14E)', 'var(--td-accent2,#FF6B76)'];
@@ -116,12 +146,12 @@ class Component extends DCLogic {
     const vis = msgs.filter(m => m.date <= G.date).sort((a, b) => b.date < a.date ? -1 : b.date > a.date ? 1 : 0);
     const mi = Math.max(0, Math.min(st.msg, vis.length - 1)); const cur = vis[mi];
     const unread = vis.filter(m => !G.read[m.id]).length;
-    const nav = [['pano', 'Pano', ''], ['inbox', 'Gelen Kutusu', unread ? String(unread) : ''], ['kadro', 'Kadro', ''], ['fikstur', 'Fikstür', ''], ['tablo', 'Tablo', ''], ['finans', 'Finans', ''], ['kulup', 'Kulüp', ''], ['lig', 'Lig', ''], ['ulke', 'Ülke', ''], ['turn', 'Turnuvalar', ''], ['taktik', 'Taktik', 'Yakında'], ['antrenman', 'Antrenman', 'Yakında'], ['transfer', 'Transfer', 'Yakında']].map(n => { const on = st.view === n[0]; const dis = n[2] === 'Yakında'; return { label: n[1], badge: n[2], pressed: on ? 'true' : 'false', dis: dis ? 'true' : 'false', bar: on ? 'var(--td-accent,#C8102E)' : 'transparent', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.14)' : 'transparent', fg: dis ? 'var(--td-mut2,#8C96B2)' : 'var(--td-text,#F4F6FB)', cur: dis ? 'not-allowed' : 'pointer', pick: () => { if (!dis) this.setState({ view: n[0] }); } }; });
+    const nav = [['pano', 'Pano', ''], ['inbox', 'Gelen Kutusu', unread ? String(unread) : ''], ['kadro', 'Kadro', ''], ['heyet', 'Teknik Heyet', ''], ['fikstur', 'Fikstür', ''], ['tablo', 'Tablo', ''], ['finans', 'Finans', ''], ['kulup', 'Kulüp', ''], ['lig', 'Lig', ''], ['ulke', 'Ülke', ''], ['turn', 'Turnuvalar', ''], ['taktik', 'Taktik', 'Yakında'], ['antrenman', 'Antrenman', 'Yakında'], ['transfer', 'Transfer', 'Yakında']].map(n => { const on = st.view === n[0]; const dis = n[2] === 'Yakında'; return { label: n[1], badge: n[2], pressed: on ? 'true' : 'false', dis: dis ? 'true' : 'false', bar: on ? 'var(--td-accent,#C8102E)' : 'transparent', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.14)' : 'transparent', fg: dis ? 'var(--td-mut2,#8C96B2)' : 'var(--td-text,#F4F6FB)', cur: dis ? 'not-allowed' : 'pointer', pick: () => { if (!dis) this.setState({ view: n[0] }); } }; });
     const vlist = { pano: 1, inbox: 1, kadro: 1, fikstur: 1, tablo: 1, finans: 1, kulup: 1, lig: 1, ulke: 1, turn: 1 };
     const msgRows = vis.map((m, i) => ({ from: m.from, date: fmtShort(m.date), subject: m.subject, weight: G.read[m.id] ? '500' : '800', pressed: i === mi ? 'true' : 'false', bar: !G.read[m.id] ? 'var(--td-accent,#C8102E)' : 'transparent', bg: i === mi ? 'rgba(var(--td-fg-rgb,255,255,255),0.06)' : 'transparent', pick: () => { G.read[m.id] = 1; this.save(); this.setState({ msg: i }); } }));
     if (cur && !G.read[cur.id] && st.view === 'inbox') { G.read[cur.id] = 1; this.save(); }
     const sorted = squad.slice().sort((a, b) => (POS_ORDER[a[3]] - POS_ORDER[b[3]]) || (b[5] - a[5]));
-    const squadRows = sorted.map(x => ({ no: x[9] || '', name: x[0], pos: x[3], age: 2026 - x[1], nat: x[2], pow: x[5], pot: x[6], col: powCol(x[5]), val: x[7] ? money(x[7]) : '—', end: x[8] || '—' }));
+    const squadRows = sorted.map(x => ({ pick: () => this.setState({ view: 'oyuncu', psel: x[0] }), no: x[9] || '', name: x[0], pos: x[3], age: 2026 - x[1], nat: x[2], pow: x[5], pot: x[6], col: powCol(x[5]), val: x[7] ? money(x[7]) : '—', end: x[8] || '—' }));
     const fixtures = myFix.map((f, i) => { const done = !!G.sim[f.i]; const r = G.res[f.i + '|' + f.h + '|' + f.a]; const mine = f.h === p.n ? 0 : 1; let res = '', col = 'var(--td-text3,#C9D0E2)'; if (done && r) { res = r[0] + ' – ' + r[1]; const d = mine === 0 ? r[0] - r[1] : r[1] - r[0]; col = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? 'var(--td-accent2,#FF6B76)' : 'var(--td-gold,#F2C14E)'; } return { n: i + 1, date: fmtDate(f.date), home: f.h, away: f.a, res, col, bg: f.i === my ? 'rgba(var(--td-accent-rgb,200,16,46),0.10)' : 'transparent' }; });
     const tb = {}; league.forEach(n => { tb[n] = { n, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0 }; });
     Object.keys(G.res).forEach(k => { const [r, h, a] = k.split('|'); const [x, y] = G.res[k]; if (!tb[h] || !tb[a]) return; tb[h].p++; tb[a].p++; tb[h].gf += x; tb[h].ga += y; tb[a].gf += y; tb[a].ga += x; if (x > y) { tb[h].w++; tb[a].l++; } else if (x < y) { tb[a].w++; tb[h].l++; } else { tb[h].d++; tb[a].d++; } });
@@ -135,7 +165,7 @@ class Component extends DCLogic {
       tabs, hasTabs: this.items.length > 1, dateText: fmtDate(G.date), matchDay, notMatchDay: !matchDay,
       simMatch: () => { this.simRound(M, G, my); G.date = addDays(G.date, 1); M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) this.simRound(M, G, i); }); this.save(); this.setState({ view: 'fikstur', tick: st.tick + 1 }); },
       nextDay: () => this.advance(1, false), toMatch: () => this.advance(0, true),
-      nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
+      nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vHeyet: st.view === 'heyet', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
       msgs: msgRows, hasMsg: !!cur, cur: cur || { from: '', subject: '', paras: [], facts: [], hasFacts: false },
       squad: squadRows, noSquad: !squadRows.length, fixtures, noFix: !fixtures.length, table, fin: finRows, noFin: !has,
       hasNext: !!nx, noNext: !nx, next: nx ? { opp: nx.opp, where: nx.home ? 'Ev sahibi' : 'Deplasman', date: fmtDate(nx.date), days: diffDays(G.date, nx.date) <= 0 ? 'Bugün' : diffDays(G.date, nx.date) + ' gün sonra' } : { opp: '', where: '', date: '', days: '' },
@@ -152,9 +182,12 @@ class Component extends DCLogic {
     const bar = (label, val, max, color) => N(val) === null ? null : { label, val: String(val), pct: Math.max(3, Math.min(100, val / max * 100)) + '%', color: color || powCol(val * 20 / max) };
     const it = (a, b, cc, o) => Object.assign({ a: String(a), b: String(b), c: cc === undefined ? '' : String(cc), w: '500', bg: 'transparent', cur: 'default', pick: () => {} }, o || {});
     const card = (title, o) => Object.assign({ title, chips: [], rows: [], bars: [], items: [], note: '', span: 'auto' }, o || {});
-    const out = { cols: 3, hasKpis: false, kpis: [], cards: [], vCards: v === 'pano' || v === 'kulup' || v === 'lig' || v === 'ulke', vTurn: v === 'turn', tq: st.tq || '', setTq: (e) => this.setState({ tq: e.target.value }), tList: [], tTitle: '', tCards: [],
+    const out = { cols: 3, hasKpis: false, kpis: [], cards: [], vCards: v === 'pano' || v === 'kulup' || v === 'lig' || v === 'ulke' || v === 'oyuncu', hasHead: false, headTitle: '', headSub: '', goBack: () => this.setState({ view: 'kadro' }), staffRows: [], noStaff: false, vTurn: v === 'turn', tq: st.tq || '', setTq: (e) => this.setState({ tq: e.target.value }), tList: [], tTitle: '', tCards: [],
       goKulup: () => this.setState({ view: 'kulup' }), goLig: () => this.setState({ view: 'lig' }), goUlke: () => this.setState({ view: 'ulke' }), ligName: p.lg || '—', ulkeName: p.c || '—', mgrName: this.items[st.mi].name };
     const neutral = 'rgba(var(--td-fg-rgb,255,255,255),0.08)', fg = 'var(--td-text,#F4F6FB)';
+    const stad = (kd && kd.stad && kd.stad[p.n]) || {}; const fin = (x) => x ? money(x / 55.93) : null;
+    const ROLE = ['Başkan', 'Sportif direktör', 'Teknik direktör', 'Yardımcı antrenör', 'Kaleci antrenörü', 'Kondisyoner', 'Analist', 'Fizyoterapist', 'Doktor', 'Gözlemci', 'Altyapı sorumlusu'];
+    const staffSorted = ((kd && kd.staff && kd.staff[p.n]) || []).slice().sort((a, b) => (ROLE.indexOf(a[3]) < 0 ? 99 : ROLE.indexOf(a[3])) - (ROLE.indexOf(b[3]) < 0 ? 99 : ROLE.indexOf(b[3])) || b[6] - a[6]);
     const lineBars = c.lines.map(l => bar(l[0], l[1].toFixed(1), 20, powCol(l[1])));
     const lgRec = tur.find(t => t.ad === p.lg && t.ulke === p.c) || null;
     const lgIdx = lgRec ? tur.indexOf(lgRec) : -1;
@@ -200,6 +233,10 @@ class Component extends DCLogic {
       const keys = [['ku_lig', 'Lig şampiyonluğu'], ['ku_kupa', 'Ulusal kupa'], ['ku_superkupa', 'Süper kupa'], ['ku_kitasal', 'Kıtasal kupa'], ['ku_dunya', 'Dünya kulüpler kupası']];
       out.cards = [
         card('KİMLİK', { chips: colors, rows: rowsOf([row('Kuruluş', info.kurulus), row('Şehir', info.sehir), row('Stadyum', info.stadyum), row('Kapasite', info.kapasite ? Number(info.kapasite).toLocaleString() : null), row('Ortalama seyirci', info.tf_ortSeyirci ? Number(info.tf_ortSeyirci).toLocaleString() : null), row('Ezeli rakip', info.rakip), row('İtibar', info.itibar ? info.itibar + ' / 20' : null), row('Mali durum', info.maliDurum)]) }),
+card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bakiyesi', fin(info.bakiye)), row('Toplam borç', fin(info.borc)), row('1 yıl içinde vadesi gelen borç', fin(info.kisaBorc)), row('Borç faizi', info.faiz ? '%' + info.faiz : null), row('Mali kısıtlama', info.kisitlama), row('Transfer bütçesi', fin(info.transfer)), row('Maaş bütçesi', info.maasButce ? fin(info.maasButce) + ' / ay' : null), row('Yayın geliri (yıllık)', fin(info.yayin)), row('Sponsor geliri (yıllık)', fin(info.sponsor)), row('Bilet geliri (yıllık)', fin(info.bilet)), row('Zengin sahip / yatırımcı', info.zengin)]) }),
+        card('STADYUM', { rows: rowsOf([row('Ad', stad.ad || info.stadyum), row('Kapasite', (stad.kapasite || info.kapasite) ? Number(stad.kapasite || info.kapasite).toLocaleString() : null), row('Koltuklu kapasite', stad.oturmali ? Number(stad.oturmali).toLocaleString() : null), row('Zemin', stad.zemin), row('Çatı', stad.cati), row('Saha ölçüsü (m)', stad.boyut), row('Açılış yılı', stad.acilis), row('UEFA kategorisi', stad.uefa), row('Mülkiyet', stad.sahip), row('Zemin ısıtması', stad.isitma), row('Sponsorlu ad', stad.sponsorAd), row('Ortalama seyirci', (stad.ortSeyirci || info.tf_ortSeyirci) ? Number(stad.ortSeyirci || info.tf_ortSeyirci).toLocaleString() : null), row('Rekor seyirci', stad.rekSeyirci ? Number(stad.rekSeyirci).toLocaleString() : null)]), bars: [bar('Ev sahibi avantajı', stad.avantaj, 20), bar('Atmosfer', stad.atmosfer, 20)].filter(Boolean) }),
+        card('TESİSLER VE YÖNETİM', { rows: rowsOf([row('Yönetim profili', info.profil), row('Taraftar beklentisi', info.taraftar), row('Tanınırlık', info.tanin), row('İtibar', info.itibar ? info.itibar + ' / 20' : null)]), bars: [bar('Antrenman tesisi', info.tesis, 20), bar('Altyapı', info.altyapi, 20), bar('Gözlemci ağı', info.gozlem, 20)].filter(Boolean) }),
+        card('TEKNİK HEYET', { items: staffSorted.slice(0, 10).map(q => it(q[3], q[0], q[5] === 'Yok' ? '' : q[5])), note: staffSorted.length > 10 ? '+' + (staffSorted.length - 10) + ' kişi' : '' }),
         card('KUPALAR', { rows: keys.filter(k => info[k[0]]).map(k => ({ k: k[1], v: String(info[k[0]]) })).concat(String(info.kupaGecmisi || '').split('\n').filter(Boolean).map(l => { const q = l.split(' · '); return { k: q[0], v: q.slice(1).join(' · ') }; })) }),
         card('REKORLAR', { rows: rowsOf([row('En büyük galibiyet', info.rkGalibiyet), row('En ağır yenilgi', info.rkYenilgi), row('En çok maç', info.rkMacOyuncu), row('En çok gol', info.rkGolOyuncu), row('Sezonda en çok gol', info.rkSezonGol), row('Sezonda en çok puan', info.rkSezonPuan), row('Rekor seyirci', info.rkSeyirci ? Number(info.rkSeyirci).toLocaleString() : null), row('Rekor transfer (alınan)', info.rkTransferAlinan), row('Rekor transfer (satılan)', info.rkTransferSatilan), row('En uzun yenilmezlik', info.rkYenilmez), row('En uzun galibiyet serisi', info.rkSeri)]) }),
         card('TARAFTAR', { rows: rowsOf([row('Taraftar sayısı (milyon)', info.tf_sayi), row('Organize gruplar', info.tf_ultra), row('Kimlik', info.tf_kimlik), row('Sosyal medya (milyon)', info.tf_sosyal)]), bars: [bar('Tribün atmosferi', info.tf_atmosfer, 20), bar('Sadakat', info.tf_sadakat, 20), bar('Yönetime baskı', info.tf_baski, 20), bar('Genç taraftar', info.tf_genc, 20), bar('Deplasman desteği', info.tf_deplasman, 20)].filter(Boolean) }),
@@ -218,6 +255,23 @@ class Component extends DCLogic {
         card('GEÇMİŞ KAZANANLAR', { items: winners(lg.gecmisKazananlar, 40), note: lg.gecmisKazananlar ? 'Yıl · şampiyon · ikinci' : 'Geçmiş kazananlar verisi yok.', span: 'auto' }),
         card('TAKIMLAR', { chips: c.league.map(n => ({ t: n, bg: n === p.n ? 'rgba(var(--td-accent-rgb,200,16,46),0.25)' : neutral, fg })) })
       ].filter(cd => cd.rows.length || cd.bars.length || cd.items.length || cd.chips.length || cd.note);
+    } else if (v === 'heyet') {
+      out.staffRows = staffSorted.map(q => ({ name: q[0], role: q[3], age: 2026 - q[1], nat: q[2], lic: q[5], rep: q[6], col: powCol(q[6]), end: q[4] || '—' })); out.noStaff = !out.staffRows.length;
+    } else if (v === 'oyuncu') {
+      const x = squad.find(z => z[0] === st.psel) || null;
+      if (x) {
+        const age = 2026 - x[1]; const gen = genAttrs(x[0], x[3], x[5], age); const real = Array.isArray(x[10]) ? x[10] : null; const ks = AT_TECH.concat(AT_MENT, AT_PHYS, AT_GK);
+        const A = {}; ks.forEach((k, i) => { A[k] = (real && real[i] > 0) ? real[i] : gen[k]; });
+        out.hasHead = true; out.headTitle = x[0]; out.headSub = x[3] + ' · ' + age + ' yaş · ' + x[2];
+        out.hasKpis = true;
+        out.kpis = [{ label: 'GÜÇ', value: String(x[5]), color: powCol(x[5]), sub: '1–20' }, { label: 'POTANSİYEL', value: String(x[6]), color: powCol(x[6]), sub: '1–20' }, { label: 'DEĞER', value: x[7] ? money(x[7]) : '—', color: fg, sub: 'piyasa değeri' }, { label: 'SÖZLEŞME', value: x[8] || '—', color: fg, sub: 'bitiş yılı' }, { label: 'AYAK', value: x[4], color: fg, sub: 'tercih' }, { label: 'FORMA', value: x[9] ? '#' + x[9] : '—', color: fg, sub: 'numara' }];
+        const grp = (title, arr) => card(title, { bars: arr.map(k => bar(k, A[k], 20)).filter(Boolean) });
+        const hist = String(x[11] || '').split('\n').filter(Boolean).map(l2 => { const q = l2.split(' · '); return it(q[0] || '', q[1] || '', q[2] || ''); });
+        out.cards = [grp('TEKNİK', AT_TECH), grp('ZİHİNSEL', AT_MENT), grp('FİZİKSEL', AT_PHYS)].concat(x[3] === 'Kaleci' ? [grp('KALECİLİK', AT_GK)] : [], [
+          card('KARİYER GEÇMİŞİ', { items: hist, note: hist.length ? '' : 'Kariyer geçmişi verisi yok (bu oyuncu otomatik üretildi).', span: '1 / -1' }),
+          card('MİLLİ TAKIM', { rows: x[12] ? [{ k: 'A milli maç', v: String(x[12]) }, { k: 'A milli gol', v: String(x[13] || 0) }] : [], note: x[12] ? '' : 'A milli takıma çıkmadı.' })
+        ]);
+      } else out.cards = [card('OYUNCU', { note: 'Oyuncu bulunamadı.' })];
     } else if (v === 'ulke') {
       out.cols = 2;
       const lgs = tur.map((t, i) => ({ t, i })).filter(x => x.t.ulke === p.c && (x.t.tur === 'Lig' || x.t.tur === 'Yabancı lig')).sort((a, b) => (a.t.kademe || 99) - (b.t.kademe || 99));
