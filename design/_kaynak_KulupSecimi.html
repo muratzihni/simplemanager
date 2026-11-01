@@ -211,30 +211,9 @@ const FIN = ['Çok güçlü', 'Güçlü', 'Dengeli', 'Sıkıntılı', 'İflasın
 const FIN_COLOR = ['var(--td-green,#4FB286)', 'var(--td-green,#4FB286)', 'var(--td-blue,#8FB8FF)', 'var(--td-gold,#F2C14E)', 'var(--td-accent2,#FF6B76)'];
 const FIN_MUL = [1.4, 1.1, 0.8, 0.4, 0.1];
 function fameOf(r) { return r >= 17 ? 'Dünya çapında' : r >= 14 ? 'Kıtasal' : r >= 11 ? 'Ulusal' : r >= 6 ? 'Bölgesel' : 'Yerel'; }
-const clubCache = {};
-function leagueClubs(country, li) {
-  const key = country + '|' + li; if (clubCache[key]) return clubCache[key];
-  const lg = (DB[country] || [])[li]; if (!lg) return (clubCache[key] = []);
-  const ul = ULKE[country] === undefined ? 6 : ULKE[country];
-  const caps = lg[1].map(n => STAD[n] ? STAD[n][1] : null); const have = caps.filter(x => x != null).sort((a, b) => a - b);
-  const list = lg[1].map((n, idx) => {
-    const base = Math.round(ul - 2.4 * li - 4); const h = rnd01(n, 'r');
-    const pct = caps[idx] != null && have.length > 1 ? have.filter(x => x < caps[idx]).length / (have.length - 1) : 0.35 + 0.3 * h;
-    const score = 0.7 * pct + 0.3 * h;
-    const rep = clamp(base - 1 + Math.round(Math.pow(score, 1.4) * 6), 1, 20);
-    return { n: n, c: country, li: li, lg: lg[0], rep: rep };
-  });
-  const sorted = list.slice().sort((a, b) => b.rep - a.rep || a.n.localeCompare(b.n, 'tr'));
-  sorted.forEach((x, i) => {
-    const fr = i / Math.max(1, sorted.length); x.exp = fr < 0.12 ? 0 : fr < 0.35 ? 1 : fr < 0.7 ? 2 : 3;
-    const h2 = rnd01(x.n, 'p'); x.pat = h2 < 0.3 ? 0 : h2 < 0.8 ? 1 : 2;
-    const sc = x.rep + (rnd01(x.n, 'f') - 0.5) * 6 + 2; x.fin = sc >= 16 ? 0 : sc >= 12 ? 1 : sc >= 6 ? 2 : sc >= 3 ? 3 : 4;
-    const st = STAD[x.n]; x.stad = st ? st[0] : '—'; x.cap = st ? st[1] : (Math.round((x.rep * x.rep * 190 + 800) / 100) * 100); x.city = st ? st[2] : '—'; x.estCap = !st;
-    x.tr = Math.round(50000 * Math.pow(1.46, x.rep) * FIN_MUL[x.fin]); x.wg = Math.round(20000 * Math.pow(1.48, x.rep));
-    const f = k => clamp(Math.round(x.rep * 0.85 + (rnd01(x.n, k) - 0.5) * 4), 1, 20); x.f1 = f('t'); x.f2 = f('a'); x.f3 = clamp(f('g') - 1, 1, 20);
-  });
-  return (clubCache[key] = list);
-}
+/*__MODEL__*/
+const CMODEL = makeClubModel({ leagues: c => (DB[c] || []).map(l => ({ name: l[0], clubs: l[1] })), stad: n => STAD[n], ulke: c => ULKE[c], rival: n => RIVAL[n], nick: n => NICK[n] });
+const leagueClubs = CMODEL.leagueClubs;
 const EXP_LABEL = ['Şampiyonluk', 'Üst sıralar', 'Orta sıra', 'Ligde kal'];
 const EXP_TONE = [['rgba(232,193,90,0.18)', 'var(--td-gold,#E8C15A)'], ['rgba(143,184,255,0.16)', 'var(--td-blue,#8FB8FF)'], ['rgba(var(--td-fg-rgb,255,255,255),0.08)', 'var(--td-text3,#C9D0E2)'], ['rgba(var(--td-fg-rgb,255,255,255),0.05)', 'var(--td-mut2,#8C96B2)']];
 const PAT_LABEL = ['Sabırlı', 'Normal', 'Acımasız'];
