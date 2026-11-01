@@ -129,11 +129,14 @@ a{color:#C9D0E2;text-decoration:none}a:hover{color:#FFFFFF}
 </div>
 <div class="scroll" style="flex: 1; display: flex; flex-direction: column; gap: 6px">
 <sc-for list="{{tiers}}" as="t" hint-placeholder-count="5">
-<button class="tier" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 52px; padding: 8px 10px; border-radius: 10px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: #F4F6FB; text-align: left; cursor: pointer; font-family: 'Manrope', sans-serif">
+<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 52px; padding: 8px 10px; border-radius: 10px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: #F4F6FB; text-align: left; font-family: 'Manrope', sans-serif">
 <span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 18px; color: {{t.numColor}}">{{t.no}}</span>
 <span style="display: flex; flex-direction: column; min-width: 0"><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 19px; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{t.name}}</span><span style="font-size: 11px; color: #8C96B2">{{t.hint}}</span></span>
-<span style="padding: 3px 10px; border-radius: 999px; background: {{t.chipBg}}; border: 1px solid {{t.chipBorder}}; color: {{t.chipFg}}; font-size: 11px; font-weight: 800; letter-spacing: 0.06em">{{t.chip}}</span>
-</button>
+<div role="group" aria-label="{{t.name}} modu" style="display: flex; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.16)">
+<button class="seg" onClick="{{t.sim}}" aria-pressed="{{t.simPressed}}" style="min-height: 32px; padding: 0 12px; border: none; background: {{t.simBg}}; color: {{t.simFg}}; font: 700 12px 'Manrope', sans-serif; cursor: pointer">Simüle</button>
+<button class="seg" onClick="{{t.ctl}}" aria-pressed="{{t.ctlPressed}}" style="min-height: 32px; padding: 0 12px; border: none; border-left: 1px solid rgba(255,255,255,0.16); background: {{t.ctlBg}}; color: {{t.ctlFg}}; font: 700 12px 'Manrope', sans-serif; cursor: pointer">Kontrol</button>
+</div>
+</div>
 </sc-for>
 <sc-if value="{{noLeagues}}" hint-placeholder-val="{{ false }}">
 <span style="padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.04); font-size: 13px; color: #C9D0E2">Bu ülkede kontrol edilebilecek ulusal lig yok.</span>
@@ -251,18 +254,20 @@ class Component extends DCLogic {
     let cores = 8, mem = 16;
     try { if (typeof navigator !== 'undefined') { cores = navigator.hardwareConcurrency || cores; mem = navigator.deviceMemory || mem; } } catch (e) {}
     this.hw = { cores: cores, mem: mem, cap: Math.max(4, Math.floor((cores * 6 + mem * 2 - 10) / 2)) };
-    this.state = { cont: 'uefa', country: 'Türkiye', q: '', depth: { 'Türkiye': 0 }, db: 0, size: 2, dbOpen: false };
+    this.state = { cont: 'uefa', country: 'Türkiye', q: '', depth: { 'Türkiye': [0] }, db: 0, size: 2, dbOpen: false };
     const dr = tdLoad(DRAFT_KEY, null);
-    if (dr && dr.depth && typeof dr.depth === 'object') {
-      const depth = {}; Object.keys(dr.depth).forEach(u => { const n = leaguesOf(u).length; if (n) depth[u] = Math.max(0, Math.min(n - 1, dr.depth[u] | 0)); });
+    if (dr && (dr.kontrol || dr.depth) && typeof (dr.kontrol || dr.depth) === 'object') {
+      const depth = {}; const src = dr.kontrol || dr.depth;
+      Object.keys(src).forEach(u => { const n = leaguesOf(u).length; if (!n) return; const v = src[u]; const arr = Array.isArray(v) ? v.map(x => x | 0) : Array.from({ length: (v | 0) + 1 }, (_, k) => k); const ok = Array.from(new Set(arr.filter(x => x >= 0 && x < n))).sort((a, b) => a - b); if (ok.length) depth[u] = ok; });
       if (Object.keys(depth).length) { const c0 = dr.country && depth[dr.country] !== undefined ? dr.country : Object.keys(depth)[0]; const ct = contOf(c0); Object.assign(this.state, { depth: depth, country: c0, cont: ct ? ct.id : 'uefa' }); }
       if (dr.db >= 0 && dr.db < DBS.length) this.state.db = dr.db;
       if (dr.size >= 0 && dr.size < SIZES.length) this.state.size = dr.size;
     }
   }
-  setDepth(country, d) {
+  setDepth(country, arr) {
     const depth = Object.assign({}, this.state.depth);
-    if (d < 0) delete depth[country]; else depth[country] = d;
+    const ok = Array.from(new Set(arr)).sort((a, b) => a - b);
+    if (!ok.length) delete depth[country]; else depth[country] = ok;
     this.setState({ depth: depth });
   }
   renderVals() {
@@ -279,30 +284,32 @@ class Component extends DCLogic {
     const countries = cur.list.slice().sort((a, b) => a.localeCompare(b, 'tr')).filter(u => !ql || u.toLocaleLowerCase('tr-TR').indexOf(ql) >= 0).map(u => {
       const sel = u === country; const ctl = depth[u] !== undefined;
       return { name: u, flagPos: flagPos(u, 24, 18), bar: sel ? '#C8102E' : 'transparent', bg: sel ? 'rgba(200,16,46,0.12)' : 'transparent',
-        info: ctl ? (depth[u] + 1) + ' lig kontrol' : (leaguesOf(u).length ? leaguesOf(u).length + ' lig · ' + ((WORLD[u] || {}).c || []).length + ' kupa' : 'lig yok'), infoColor: ctl ? '#FF6B76' : '#6F7A99',
+        info: ctl ? depth[u].length + ' lig kontrol' : (leaguesOf(u).length ? leaguesOf(u).length + ' lig · ' + ((WORLD[u] || {}).c || []).length + ' kupa' : 'lig yok'), infoColor: ctl ? '#FF6B76' : '#6F7A99',
         simPressed: ctl ? 'false' : 'true', ctlPressed: ctl ? 'true' : 'false',
         simBg: ctl ? 'transparent' : 'rgba(255,255,255,0.14)', simFg: ctl ? '#8C96B2' : '#FFFFFF',
         ctlBg: ctl ? '#C8102E' : 'transparent', ctlFg: ctl ? '#FFFFFF' : '#8C96B2',
         pick: () => this.setState({ country: u }),
-        sim: () => { this.setDepth(u, -1); this.setState({ country: u }); },
-        ctl: () => { if (!leaguesOf(u).length) { this.setState({ country: u }); return; } if (this.state.depth[u] === undefined) this.setDepth(u, 0); this.setState({ country: u }); } };
+        sim: () => { this.setDepth(u, []); this.setState({ country: u }); },
+        ctl: () => { if (!leaguesOf(u).length) { this.setState({ country: u }); return; } if (this.state.depth[u] === undefined) this.setDepth(u, [0]); this.setState({ country: u }); } };
     });
     const ligs = leaguesOf(country);
-    const d = depth[country] === undefined ? -1 : depth[country];
+    const cs = depth[country] || []; const d = cs.length - 1;
     const W0 = WORLD[country] || { l: [], c: [] };
     const tiers = ligs.map((n, i) => {
-      const on = i <= d;
+      const on = cs.indexOf(i) >= 0;
       const L = W0.l[i]; const tm = L[1], gr = L[2];
       return { no: String(i + 1), name: n, pressed: on ? 'true' : 'false',
         hint: (tm ? tm + ' takım' : 'takım sayısı veritabanından') + (gr > 1 ? ' · ' + gr + ' grup' : ''),
         border: on ? 'rgba(200,16,46,0.6)' : 'rgba(255,255,255,0.12)', bg: on ? 'rgba(200,16,46,0.12)' : 'rgba(255,255,255,0.02)',
-        numColor: on ? '#FF6B76' : '#8C96B2', chip: on ? 'KONTROL' : 'SİMÜLE', chipBg: on ? '#C8102E' : 'transparent', chipBorder: on ? '#C8102E' : '#6F7A99', chipFg: on ? '#FFFFFF' : '#C9D0E2',
-        pick: () => this.setDepth(country, (d === i && i === 0) ? -1 : i) };
+        numColor: on ? '#FF6B76' : '#8C96B2', simBg: on ? 'transparent' : 'rgba(255,255,255,0.14)', simFg: on ? '#8C96B2' : '#FFFFFF', ctlBg: on ? '#C8102E' : 'transparent', ctlFg: on ? '#FFFFFF' : '#8C96B2',
+        simPressed: on ? 'false' : 'true', ctlPressed: on ? 'true' : 'false',
+        sim: () => this.setDepth(country, Array.from({ length: i }, (_, k) => k)),
+        ctl: () => this.setDepth(country, Array.from({ length: i + 1 }, (_, k) => k)) };
     });
     const playable = Object.keys(depth).sort((a, b) => a.localeCompare(b, 'tr'));
-    const totalLeagues = playable.reduce((s, u) => s + depth[u] + 1, 0);
+    const totalLeagues = playable.reduce((s, u) => s + depth[u].length, 0);
     const MAXCH = 5;
-    const chips = playable.slice(0, MAXCH).map(u => { const L = leaguesOf(u); const dd = depth[u]; return { flagPos: flagPos(u, 24, 18), t: u, n: (dd + 1) + ' lig', full: u + ': ' + (dd === 0 ? L[0] : L[0] + ' → ' + L[dd]), pick: () => { const ct = contOf(u); this.setState({ country: u, cont: ct ? ct.id : this.state.cont, q: '' }); } }; });
+    const chips = playable.slice(0, MAXCH).map(u => { const L = leaguesOf(u); const dd = depth[u]; return { flagPos: flagPos(u, 24, 18), t: u, n: dd.length + ' lig', full: u + ': ' + dd.map(k => L[k]).join(' · '), pick: () => { const ct = contOf(u); this.setState({ country: u, cont: ct ? ct.id : this.state.cont, q: '' }); } }; });
     const hasMore = playable.length > MAXCH, moreText = '+' + (playable.length - MAXCH) + ' ülke';
     const cap = this.hw.cap;
     const sz = SIZES[this.state.size];
@@ -312,9 +319,10 @@ class Component extends DCLogic {
     const load = totalLeagues === 0 ? 'En az bir ülkede Kontrol seçmelisin.' : over ? 'Bilgisayarın bu yükü kaldıramaz · lig sayısını ya da veritabanı boyutunu azalt.' : pct > 0.75 ? 'Sınıra yakın · oyun yavaş ilerleyebilir.' : pct > 0.4 ? 'Rahat · normal hız.' : 'Çok rahat · hızlı.';
     const saveDraft = () => {
       const st = this.state; const dep = st.depth; const ligListesi = {}; const ligler = [];
-      Object.keys(dep).forEach(u => { const L = leaguesOf(u); const dd = dep[u]; ligListesi[u] = dd === 0 ? L[0] : L[0] + ' → ' + L[dd]; for (let i = 0; i <= dd; i++) ligler.push(u + ' · ' + L[i]); });
+      Object.keys(dep).forEach(u => { const L = leaguesOf(u); const dd = dep[u]; ligListesi[u] = dd.map(k => L[k]).join(' · '); dd.forEach(k => ligler.push(u + ' · ' + L[k])); });
       const prev = tdLoad(DRAFT_KEY, null) || {};
-      tdSave(DRAFT_KEY, Object.assign({}, prev, { depth: dep, country: st.country, db: st.db, size: st.size, dbName: DBS[st.db].name, sizeName: SIZES[st.size].label, ligListesi: ligListesi, ligler: ligler }));
+      const depthSayi = {}; Object.keys(dep).forEach(u => { depthSayi[u] = dep[u].length - 1; });
+      tdSave(DRAFT_KEY, Object.assign({}, prev, { depth: depthSayi, kontrol: dep, country: st.country, db: st.db, size: st.size, dbName: DBS[st.db].name, sizeName: SIZES[st.size].label, ligListesi: ligListesi, ligler: ligler }));
     };
     return {
       saveDraft,
@@ -325,7 +333,7 @@ class Component extends DCLogic {
       countryFlagLg: flagPos(country, 36, 27),
       countryNote: (contOf(country) || cur).org + ' · ' + ligs.length + ' kademe · ' + (d < 0 ? 'tümü simüle' : (d + 1) + ' lig kontrol'),
       ligBorder: d >= 0 ? 'rgba(200,16,46,0.45)' : 'rgba(255,255,255,0.12)',
-      tierFootnote: 'Bir lige tıkla: o lig ve üstündekiler kontrol edilir. Sınır yok, bilgisayarın kaldırdığı kadar.',
+      tierFootnote: 'Piramit üstten başlar: bir lige Kontrol dersen onun üstündeki tüm ligler de kontrol edilir. Bir lige Simüle dersen o lig ve altındakiler arka planda simüle edilir.',
       cups: (W0.c || []).map(c => ({ name: c[0], type: c[1] })),
       hasCups: (W0.c || []).length > 0, noLeagues: ligs.length === 0,
       countryWarn: W0.n || (W0.u ? 'Bu ülkenin verileri kaynaktan doğrulanamadı; veritabanı yüklenince güncellenir.' : ''),
