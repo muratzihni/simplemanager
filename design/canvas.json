@@ -108,6 +108,15 @@
       "w": 1440,
       "x": 15200,
       "y": 0
+    },
+    "OyunMerkezi.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Oyun: Ana Ekran",
+      "w": 1440,
+      "x": 16720,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -128,6 +137,7 @@
     "LigPiramidi.dc.html",
     "KulupSecimi.dc.html",
     "Karsilama.dc.html",
+    "OyunMerkezi.dc.html",
     "Ayarlar.dc.html",
     "Yapimcilar.dc.html",
     "VeriEditoru.dc.html",
