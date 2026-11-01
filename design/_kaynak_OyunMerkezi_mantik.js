@@ -54,6 +54,19 @@ const ED_POS = ['Kaleci', 'Stoper', 'Sağ bek', 'Sol bek', 'Ön libero', 'Merkez
 const ED_LABEL = { guc: 'Güç', pot: 'Potansiyel', deger: 'Piyasa değeri (milyon €)', soz: 'Sözleşme bitiş yılı', uyruk: 'Uyruk', mevki: 'Mevki', ayak: 'Ayak', forma: 'Forma numarası' };
 function edGet(row, k) { const v = row[ED_IDX[k]]; if (k === 'deger') return String(Math.round((Number(v) || 0) / 1e5) / 10); return v === undefined || v === null ? '' : String(v); }
 function edSet(row, k, v) { if (k === 'guc' || k === 'pot') row[ED_IDX[k]] = Math.max(1, Math.min(20, Math.round(Number(v)) || row[ED_IDX[k]])); else if (k === 'deger') row[7] = Math.max(0, Math.round((Number(String(v).replace(',', '.')) || 0) * 1e6)); else if (k === 'soz') row[8] = String(Math.max(2026, Math.min(2045, parseInt(v, 10) || Number(row[8]) || 2027))); else if (k === 'forma') row[9] = Math.max(0, Math.min(99, parseInt(v, 10) || 0)); else if (k === 'mevki') { if (ED_POS.indexOf(v) >= 0) row[3] = v; } else if (k === 'ayak') { if (['Sağ', 'Sol', 'İki ayak'].indexOf(v) >= 0) row[4] = v; } else if (k === 'uyruk') { if (String(v).trim()) row[2] = String(v).trim(); } }
+const ST_KEYS = ['Taktik bilgisi', 'Hücum', 'Savunma', 'Kalecilik', 'Fiziksel çalışma', 'Motivasyon', 'Disiplin', 'İnsan yönetimi', 'Gençlerle çalışma', 'Yetenek değerlendirme', 'Potansiyel değerlendirme', 'Uyum'];
+const ST_BIAS = { 'Teknik direktör': { 'Taktik bilgisi': 3, 'Motivasyon': 2, 'İnsan yönetimi': 2 }, 'Yardımcı antrenör': { 'Taktik bilgisi': 1, 'Hücum': 1, 'Savunma': 1 }, 'Kaleci antrenörü': { 'Kalecilik': 5, 'Hücum': -4, 'Savunma': -2, 'Taktik bilgisi': -3 }, 'Kondisyoner': { 'Fiziksel çalışma': 5, 'Taktik bilgisi': -4 }, 'Gözlemci': { 'Yetenek değerlendirme': 4, 'Potansiyel değerlendirme': 4, 'Taktik bilgisi': -3 }, 'Fizyoterapist': { 'Fiziksel çalışma': 3, 'Taktik bilgisi': -5 }, 'Sportif direktör': { 'Yetenek değerlendirme': 3, 'Potansiyel değerlendirme': 2, 'İnsan yönetimi': 3 }, 'Altyapı sorumlusu': { 'Gençlerle çalışma': 4 } };
+function genStaff(q) { const it = Number(q[6]) || 8, b = ST_BIAS[q[3]] || {}; return ST_KEYS.map(k => { let v = it * 0.9 + 2 + (b[k] || 0) + (kHash(q[0] + '|' + k) - 0.5) * 4; if (k === 'Kalecilik' && !b[k]) v = 3 + kHash(q[0] + k) * 3; return Math.max(1, Math.min(20, Math.round(v))); }); }
+function staffAttrs(q) { return Array.isArray(q[8]) && q[8].length === ST_KEYS.length ? q[8] : genStaff(q); }
+const ST_ROLES = ['Başkan', 'Sportif direktör', 'Teknik direktör', 'Yardımcı antrenör', 'Kaleci antrenörü', 'Kondisyoner', 'Analist', 'Fizyoterapist', 'Doktor', 'Gözlemci', 'Altyapı sorumlusu'];
+const ST_LIC = ['Yok', 'UEFA C', 'UEFA B', 'UEFA A', 'UEFA Pro'];
+const CLUB_F = [['bakiye', 'Kasa bakiyesi (milyon €)', 'tl'], ['borc', 'Toplam borç (milyon €)', 'tl'], ['itibar', 'İtibar', 'n20'], ['tesis', 'Antrenman tesisi', 'n20'], ['altyapi', 'Altyapı', 'n20'], ['gozlem', 'Gözlemci ağı', 'n20'], ['kapasite', 'Stadyum kapasitesi', 'n'], ['stadyum', 'Stadyum', 't'], ['sehir', 'Şehir', 't']];
+const CLUB_S = [['tr', 'Transfer bütçesi (milyon €)', 'eur'], ['wg', 'Maaş bütçesi (milyon €/ay)', 'eur']];
+function clubGet(info, sObj, k, kind) { const v = kind === 'eur' ? (sObj ? sObj[k] : undefined) : info[k]; if (v === undefined || v === null) return ''; if (kind === 'tl') return String(Math.round(v / 1e5 / 55.93) / 10); if (kind === 'eur') return String(Math.round(v / 1e5) / 10); return String(v); }
+function clubVal(v, kind) { if (kind === 'tl') return Math.max(0, Math.round((Number(String(v).replace(',', '.')) || 0) * 1e6 * 55.93)); if (kind === 'eur') return Math.max(0, Math.round((Number(String(v).replace(',', '.')) || 0) * 1e6)); if (kind === 'n20') return Math.max(1, Math.min(20, Math.round(Number(v)) || 1)); if (kind === 'n') return Math.max(0, Math.round(Number(v)) || 0); return String(v); }
+function rowsOfClub(kd, club, name) { const o = []; ['clubs', 'res', 'yth'].forEach(sec => { const l = kd[sec] && kd[sec][club]; if (l) l.forEach((r, i) => { if (r[0] === name) o.push({ sec, row: r }); }); }); return o; }
+function dropRows(kd, club, name) { ['clubs', 'res', 'yth'].forEach(sec => { const l = kd[sec] && kd[sec][club]; if (!l) return; for (let i = l.length - 1; i >= 0; i--) if (l[i][0] === name) l.splice(i, 1); }); }
+function putRow(kd, club, sec, row) { kd[sec] = kd[sec] || {}; kd[sec][club] = kd[sec][club] || []; if (!kd[sec][club].some(r => r[0] === row[0])) kd[sec][club].push(row.slice()); }
 const KITSET = { 'Avrupa kupası': 1, 'Kıtasal kulüp kupası': 1, 'Dünya kulüp turnuvası': 1 };
 function contOf(name) { const tur = window.VE_TUR || []; const o = []; tur.forEach((t, i) => { if (KITSET[t.tur] && Array.isArray(t.katilanKulup) && t.katilanKulup.indexOf(name) >= 0) o.push({ t, i }); }); return o; }
 const GOALW = { 'Santrfor': 5, 'Sağ kanat': 3.2, 'Sol kanat': 3.2, 'Ofansif orta saha': 3, 'Merkez orta saha': 1.5, 'Ön libero': 0.7, 'Sağ bek': 0.7, 'Sol bek': 0.7, 'Stoper': 0.5, 'Kaleci': 0.02 };
@@ -98,6 +111,7 @@ const AT_TECH = ['Bitiricilik', 'Dribbling', 'İlk dokunuş', 'Orta', 'Pas', 'Uz
 const AT_MENT = ['Karar alma', 'Önsezi', 'Pozisyon alma', 'Liderlik', 'Soğukkanlılık', 'Çalışkanlık', 'Takım oyunu', 'Agresiflik', 'Cesaret', 'Konsantrasyon', 'Kararlılık', 'Yaratıcılık', 'Topsuz hareket', 'Vizyon'];
 const AT_PHYS = ['Hız', 'Hızlanma', 'Çeviklik', 'Dayanıklılık', 'Güç', 'Denge', 'Zıplama', 'Doğal form', 'Sakatlık direnci'];
 const AT_GK = ['Hava hakimiyeti', 'Alan hakimiyeti', 'İletişim', 'Garip hareketler', 'Top tutma', 'Ayakla oyun', 'Teke tek', 'Refleks', 'Çıkış', 'Elle atış'];
+const ALL_AT = AT_TECH.concat(AT_MENT, AT_PHYS, AT_GK);
 const kHash = (s) => hash(s) / 4294967296;
 const POS_BIAS = {
   'Kaleci': { 'Hava hakimiyeti': 1, 'Alan hakimiyeti': 1, 'İletişim': 1, 'Top tutma': 1, 'Teke tek': 1, 'Refleks': 2, 'Çıkış': 0, 'Elle atış': 0, 'Ayakla oyun': -1, 'Garip hareketler': -1, 'Konsantrasyon': 2, 'Soğukkanlılık': 1, 'Pas': -4, 'Bitiricilik': -9, 'Dribbling': -8, 'Hız': -3, 'Hızlanma': -3, 'Zıplama': 1, 'Çeviklik': 1 },
@@ -158,7 +172,7 @@ class Component extends DCLogic {
     this.sample = picks.length === 0;
     this.items = this.sample ? [{ name: 'Menajer', pick: SAMPLE }] : picks.map((p, i) => { const a = dm[i] || {}; const nm = ((a.ad || '') + ' ' + (a.soyad || '')).trim() || ('Menajer ' + (i + 1)); return { name: nm, first: (a.ad || '').trim() || nm, m: a, pick: p }; });
     this.game = tdLoad(GAME_KEY, null) || {}; this.game.k = this.game.k || {};
-    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, edOpen: false, edd: {}, fopen: '', kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
+    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, edOpen: false, edd: {}, edTab: 'kulup', edMsg: '', fopen: '', kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
     this.loadFor(0);
   }
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
@@ -169,21 +183,53 @@ class Component extends DCLogic {
     return super.setState(p, cb);
   }
   goPrev() { const b = this._hist.pop(); if (!b) return; this._popping = true; try { this.setState(Object.assign({ back: null, rep: null }, b)); } finally { this._popping = false; } }
-  applyPatches(G) {
-    const P = G && G.patch; if (!P) return; Object.keys(P).forEach(key => { const e = P[key]; const kd = window.VE_KD && window.VE_KD[e.c]; if (!kd) return; ['clubs', 'res', 'yth'].forEach(sec => { const list = kd[sec] && kd[sec][e.club]; if (!list) return; const row = list.find(r => r[0] === e.name); if (row) Object.keys(e.f).forEach(k => edSet(row, k, e.f[k])); }); });
+  opApply(op, dir) {
+    const kd = window.VE_KD && window.VE_KD[op.c]; if (!kd) return false; const d = dir > 0;
+    if (op.t === 'p') { const vals = d ? op.f : op.o; rowsOfClub(kd, op.club, op.name).forEach(x => Object.keys(vals).forEach(k => { if (k === 'A') x.row[10] = Array.isArray(vals.A) ? vals.A.slice() : 0; else edSet(x.row, k, vals[k]); })); return true; }
+    if (op.t === 'add') { if (d) putRow(kd, op.club, 'clubs', op.row); else dropRows(kd, op.club, op.row[0]); return true; }
+    if (op.t === 'del') { if (d) dropRows(kd, op.club, op.name); else op.rows.forEach(x => putRow(kd, op.club, x.sec, x.row)); return true; }
+    if (op.t === 'mv') { const kd2 = window.VE_KD && window.VE_KD[op.toC]; if (!kd2) return false; if (d) { dropRows(kd, op.club, op.name); putRow(kd2, op.toClub, 'clubs', op.rows[0].row); } else { dropRows(kd2, op.toClub, op.name); op.rows.forEach(x => putRow(kd, op.club, x.sec, x.row)); } return true; }
+    if (op.t === 'club') { const vals = d ? op.f : op.o; kd.info = kd.info || {}; kd.info[op.club] = kd.info[op.club] || {}; Object.keys(vals).forEach(k => { if (k === 'tr' || k === 'wg') { const it = this.items.find(x => x.pick.n === op.club && x.pick.c === op.c); if (it && it.pick.s) it.pick.s[k] = vals[k]; } else kd.info[op.club][k] = vals[k]; }); return true; }
+    if (op.t === 'st') { const vals = d ? op.f : op.o; const lists = [kd.staff && kd.staff[op.club], op.club === 'Serbest' ? kd.sfree : null].filter(Boolean); lists.forEach(l => l.forEach(q => { if (q[0] !== op.name) return; if ('role' in vals) q[3] = vals.role; if ('uyruk' in vals) q[2] = vals.uyruk; if ('soz' in vals) q[4] = vals.soz; if ('lisans' in vals) q[5] = vals.lisans; if ('itibar' in vals) q[6] = vals.itibar; if ('A' in vals) q[8] = Array.isArray(vals.A) ? vals.A.slice() : 0; })); return true; }
+    return false;
   }
+  applyAll(G) {
+    if (!G) return; if (G.patch && !G.ops) { G.ops = []; Object.keys(G.patch).forEach((k, i) => { const e = G.patch[k]; G.ops.push({ id: 'm' + i, t: 'p', c: e.c, club: e.club, name: e.name, f: e.f, o: e.o }); }); delete G.patch; }
+    G.ops = G.ops || []; this._applied = this._applied || {}; G.ops.forEach(op => { if (!this._applied[op.id] && this.opApply(op, 1)) this._applied[op.id] = true; });
+  }
+  addOp(op) { const G = this.gs(); G.ops = G.ops || []; op.id = 'o' + Date.now() + '_' + G.ops.length; G.ops.push(op); G.edited = true; const ok = () => { this.applyAll(G); this.save(); this.setState({ edd: {}, edMsg: 'Kaydedildi.', tick: this.state.tick + 1 }); }; const need = [op.c].concat(op.toC ? [op.toC] : []).filter(c => !(window.VE_KD && window.VE_KD[c])); if (need.length) { let n = need.length; need.forEach(c => loadKD(c, () => { if (--n === 0) ok(); })); } else ok(); }
+  undoOp(id) { const G = this.gs(); const i = (G.ops || []).findIndex(o => o.id === id); if (i < 0) return; const op = G.ops[i]; if (this._applied && this._applied[id]) { this.opApply(op, -1); delete this._applied[id]; } G.ops.splice(i, 1); this.save(); this.setState({ tick: this.state.tick + 1, edMsg: 'Geri alındı.' }); }
   edOn() { try { return !!tdRead().ingameEditor; } catch (e) { return false; } }
-  openEditor() { this.setState({ edOpen: true, edd: {} }); }
-  saveEdit() {
-    const t = this._edTarget; const st = this.state; if (!t) { this.setState({ edOpen: false }); return; } const G = this.gs(); G.patch = G.patch || {}; const key = t.c + '|' + t.club + '|' + t.name;
-    const e = G.patch[key] || { c: t.c, club: t.club, name: t.name, o: {}, f: {} };
-    Object.keys(ED_IDX).forEach(k => { const nv = st.edd[k]; if (nv === undefined) return; if (e.o[k] === undefined) e.o[k] = edGet(t.row, k); const tmp = t.row.slice(); edSet(tmp, k, nv); e.f[k] = edGet(tmp, k); });
-    G.patch[key] = e; G.edited = true; this.applyPatches(G); this.save(); this.setState({ edOpen: false, edd: {}, tick: st.tick + 1 });
+  openEditor() { const v = this.state.view; const tab = v === 'oyuncu' ? 'oy' : v === 'kisi' ? 'pers' : 'kulup'; this.setState({ edOpen: true, edd: {}, edTab: tab, edMsg: '' }); }
+  edSave(force) {
+    const st = this.state, tab = force || st.edTab || 'kulup', d = st.edd || {}; const msg = (m) => this.setState({ edMsg: m });
+    if (tab === 'oy') { const t = this._edTarget; if (!t) return msg('Önce bir oyuncu profili aç.'); const f = {}, o = {}; Object.keys(ED_IDX).forEach(k => { if (d[k] === undefined) return; const tmp = t.row.slice(); edSet(tmp, k, d[k]); const nv = edGet(tmp, k), ov = edGet(t.row, k); if (nv !== ov) { f[k] = nv; o[k] = ov; } });
+      if (d.kulup !== undefined && d.kulup.trim() && d.kulup.trim() !== t.club) { const to = this.clubInfo(d.kulup.trim()); if (!to.c) return msg('Bu isimde bir kulüp bulunamadı.'); const rows = rowsOfClub(window.VE_KD[t.c], t.club, t.name).map(x => ({ sec: x.sec, row: x.row.slice() })); if (Object.keys(f).length) this.addOp({ t: 'p', c: t.c, club: t.club, name: t.name, f, o }); return this.addOp({ t: 'mv', c: t.c, club: t.club, name: t.name, toC: to.c, toClub: d.kulup.trim(), rows }); }
+      if (!Object.keys(f).length) return msg('Değişiklik yok.'); return this.addOp({ t: 'p', c: t.c, club: t.club, name: t.name, f, o }); }
+    if (tab === 'sil') { const t = this._edTarget; if (!t) return msg('Önce bir oyuncu profili aç.'); const rows = rowsOfClub(window.VE_KD[t.c], t.club, t.name).map(x => ({ sec: x.sec, row: x.row.slice() })); this.setState({ view: 'kadro', edOpen: false }); return this.addOp({ t: 'del', c: t.c, club: t.club, name: t.name, rows }); }
+    if (tab === 'ozel') { const t = this._edTarget; if (!t) return msg('Önce bir oyuncu profili aç.'); const cur = this._edAttrs || []; const A = cur.map((v, i) => { const nv = d['a_' + ALL_AT[i]]; return nv === undefined ? v : Math.max(1, Math.min(20, Math.round(Number(nv)) || v)); }); if (A.every((v, i) => v === cur[i])) return msg('Değişiklik yok.'); return this.addOp({ t: 'p', c: t.c, club: t.club, name: t.name, f: { A }, o: { A: Array.isArray(t.row[10]) ? t.row[10].slice() : 0 } }); }
+    if (tab === 'kulup') { const ct = this._clubTarget; if (!ct) return; const kd = window.VE_KD[ct.c] || {}; const info = (kd.info && kd.info[ct.club]) || {}; const sObj = ct.own ? (this.items[st.mi].pick.s || null) : null; const f = {}, o = {};
+      CLUB_F.concat(ct.own && sObj ? CLUB_S : []).forEach(([k, , kind]) => { if (d[k] === undefined) return; const nv = clubVal(d[k], kind); const ov = kind === 'eur' ? sObj[k] : info[k]; if (nv !== ov) { f[k] = nv; o[k] = ov === undefined ? (kind === 't' ? '' : 0) : ov; } }); if (!Object.keys(f).length) return msg('Değişiklik yok.'); return this.addOp({ t: 'club', c: ct.c, club: ct.club, f, o }); }
+    if (tab === 'pers') { const t = this._stTarget; if (!t || t.own) return msg('Düzenlemek için bir personel profili aç (Teknik Heyet › kişi).'); const q = t.row; const f = {}, o = {};
+      if (d.role !== undefined && d.role !== q[3]) { f.role = d.role; o.role = q[3]; } if (d.uyruk !== undefined && d.uyruk.trim() && d.uyruk.trim() !== q[2]) { f.uyruk = d.uyruk.trim(); o.uyruk = q[2]; } if (d.soz !== undefined && String(d.soz) !== String(q[4])) { f.soz = String(parseInt(d.soz, 10) || q[4]); o.soz = q[4]; } if (d.lisans !== undefined && d.lisans !== q[5]) { f.lisans = d.lisans; o.lisans = q[5]; } if (d.itibar !== undefined && Number(d.itibar) !== Number(q[6])) { f.itibar = Math.max(1, Math.min(20, Math.round(Number(d.itibar)) || q[6])); o.itibar = q[6]; }
+      const cur = staffAttrs(q); const A = cur.map((v, i) => { const nv = d['s_' + ST_KEYS[i]]; return nv === undefined ? v : Math.max(1, Math.min(20, Math.round(Number(nv)) || v)); }); if (A.some((v, i) => v !== cur[i])) { f.A = A; o.A = Array.isArray(q[8]) ? q[8].slice() : 0; }
+      if (!Object.keys(f).length) return msg('Değişiklik yok.'); return this.addOp({ t: 'st', c: t.c, club: t.club, name: t.name, f, o }); }
+    if (tab === 'yeni') { const ct = this._clubTarget; if (!ct) return; const nm = (d.n_ad || '').trim(); if (!nm) return msg('Oyuncu adı gerekli.'); const yr = parseInt(d.n_yil, 10) || 2006; const mevki = ED_POS.indexOf(d.n_mevki) >= 0 ? d.n_mevki : 'Merkez orta saha'; const g = Math.max(1, Math.min(20, Math.round(Number(d.n_guc)) || 10)); const row = [nm, yr, (d.n_uyruk || ct.c).trim(), mevki, ['Sağ', 'Sol', 'İki ayak'].indexOf(d.n_ayak) >= 0 ? d.n_ayak : 'Sağ', g, Math.max(g, Math.min(20, Math.round(Number(d.n_pot)) || g)), Math.round((Number(String(d.n_deger || '1').replace(',', '.')) || 1) * 1e6), String(parseInt(d.n_soz, 10) || 2028), parseInt(d.n_forma, 10) || 0, 0, '', 0, 0, '', 0, 0, '', '', 0, 0]; return this.addOp({ t: 'add', c: ct.c, club: ct.club, row }); }
   }
-  revertEdit(key) {
-    const G = this.gs(); const e = G.patch && G.patch[key]; if (!e) return; const kd = window.VE_KD && window.VE_KD[e.c];
-    if (kd) ['clubs', 'res', 'yth'].forEach(sec => { const list = kd[sec] && kd[sec][e.club]; const row = list && list.find(r => r[0] === e.name); if (row) Object.keys(e.o).forEach(k => edSet(row, k, e.o[k])); });
-    delete G.patch[key]; this.save(); this.setState({ tick: this.state.tick + 1, edd: {} });
+  edBuild() {
+    const st = this.state, tab = st.edTab || 'kulup', d = st.edd || {}; const on = this.edOn(); const set = (k) => (e) => this.setState({ edd: Object.assign({}, this.state.edd, { [k]: e.target.value }) });
+    const F = (k, label, cur, o) => Object.assign({ k, label, val: d[k] !== undefined ? d[k] : cur, isIn: true, isSel: false, isHead: false, opts: [], set: set(k) }, o || {});
+    const SEL = (k, label, cur, opts) => F(k, label, cur, { isIn: false, isSel: true, opts });
+    const HD = (label) => ({ k: 'h' + label, label, isHead: true, isIn: false, isSel: false, opts: [], val: '', set: () => {} });
+    let fields = [], cols = 2, note = '', canSave = true, canDel = false;
+    if (tab === 'oy') { const t = this._edTarget; if (!t) { note = 'Düzenlemek için bir oyuncu profilini aç (Kadro › oyuncu), sonra Ctrl+E’ye bas.'; canSave = false; } else { note = t.name; fields = Object.keys(ED_IDX).map(k => F(k, ED_LABEL[k], edGet(t.row, k), k === 'mevki' ? { isIn: false, isSel: true, opts: ED_POS } : k === 'ayak' ? { isIn: false, isSel: true, opts: ['Sağ', 'Sol', 'İki ayak'] } : {})).concat([F('kulup', 'Kulüp (transfer için yeni kulüp adı)', t.club)]); canDel = true; } }
+    else if (tab === 'ozel') { const t = this._edTarget; if (!t) { note = 'Düzenlemek için bir oyuncu profilini aç.'; canSave = false; } else { cols = 4; note = t.name; const cur = this._edAttrs || []; const gk = t.row[3] === 'Kaleci'; fields = []; [['TEKNİK', AT_TECH], ['ZİHİNSEL', AT_MENT], ['FİZİKSEL', AT_PHYS]].concat(gk ? [['KALECİLİK', AT_GK]] : []).forEach(([h, arr]) => { fields.push(HD(h)); arr.forEach(k => fields.push(F('a_' + k, k, String(cur[ALL_AT.indexOf(k)])))); }); } }
+    else if (tab === 'kulup') { const ct = this._clubTarget; const kd = ct && window.VE_KD && window.VE_KD[ct.c]; if (!ct || !kd) { note = 'Kulüp verisi yüklenemedi.'; canSave = false; } else { const info = (kd.info && kd.info[ct.club]) || {}; const sObj = ct.own ? (this.items[st.mi].pick.s || null) : null; note = ct.club; fields = CLUB_F.map(([k, l, kind]) => F(k, l, clubGet(info, null, k, kind))); if (sObj) fields = fields.concat(CLUB_S.map(([k, l, kind]) => F(k, l, clubGet(info, sObj, k, kind)))); } }
+    else if (tab === 'pers') { const t = this._stTarget; if (!t || t.own) { note = t && t.own ? 'Kendi teknik direktör kaydın düzenlenemez.' : 'Düzenlemek için bir personel profili aç (Teknik Heyet › kişi).'; canSave = false; } else { cols = 4; const q = t.row; note = q[0]; fields = [SEL('role', 'Görev', q[3], ST_ROLES), F('uyruk', 'Uyruk', q[2]), F('soz', 'Sözleşme bitiş yılı', String(q[4] || '')), SEL('lisans', 'Lisans', q[5], ST_LIC), F('itibar', 'İtibar', String(q[6]))]; const cur = staffAttrs(q); fields.push(HD('ÖZELLİKLER')); ST_KEYS.forEach((k, i) => fields.push(F('s_' + k, k, String(cur[i])))); } }
+    else if (tab === 'yeni') { const ct = this._clubTarget; note = ct ? ct.club : ''; fields = [F('n_ad', 'Ad Soyad', ''), F('n_yil', 'Doğum yılı', '2006'), F('n_uyruk', 'Uyruk', ct ? ct.c : ''), SEL('n_mevki', 'Mevki', 'Merkez orta saha', ED_POS), SEL('n_ayak', 'Ayak', 'Sağ', ['Sağ', 'Sol', 'İki ayak']), F('n_guc', 'Güç', '10'), F('n_pot', 'Potansiyel', '12'), F('n_deger', 'Piyasa değeri (milyon €)', '1'), F('n_soz', 'Sözleşme bitiş yılı', '2028'), F('n_forma', 'Forma numarası', '0')]; }
+    const G = this.gs(); const list = ((G && G.ops) || []).slice().reverse().map(op => ({ txt: (op.t === 'add' ? 'Yeni oyuncu · ' + op.row[0] : op.t === 'del' ? 'Silindi · ' + op.name : op.t === 'mv' ? 'Transfer · ' + op.name : op.t === 'club' ? 'Kulüp · ' + op.club : op.t === 'st' ? 'Personel · ' + op.name : 'Oyuncu · ' + op.name) + (op.t === 'mv' ? ' → ' + op.toClub : '') , sub: (op.t === 'p' || op.t === 'st' || op.t === 'club') ? Object.keys(op.f).map(k => k === 'A' ? 'Özellikler' : (ED_LABEL[k] || k) + ': ' + op.o[k] + ' → ' + op.f[k]).join(', ') : op.club, undo: () => this.undoOp(op.id) }));
+    const TABS = [['oy', 'Oyuncu'], ['ozel', 'Oyuncu özellikleri'], ['kulup', 'Kulüp'], ['pers', 'Personel'], ['yeni', 'Yeni oyuncu'], ['liste', 'Düzenlemeler']];
+    return { on, off: !on, tab, isList: tab === 'liste', isForm: tab !== 'liste', tabs: TABS.map(t => ({ label: t[1], bg: tab === t[0] ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: tab === t[0] ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: () => this.setState({ edTab: t[0], edd: {}, edMsg: '' }) })), fields, cols, note, hasNote: !!note, canSave, canDel, msg: st.edMsg || '', hasMsg: !!st.edMsg, list, hasList: list.length > 0, noList: !list.length, save: () => this.edSave(), del: () => this.edSave('sil'), close: () => this.setState({ edOpen: false, edd: {}, edMsg: '' }) };
   }
   openView(view, vp) {
     const cu = this.state; const back = { view: cu.view, vp: cu.vp, psel: cu.psel, psrc: cu.psrc, pclub: cu.pclub, fsel: cu.fsel, ssel: cu.ssel, cg: cu.cg };
@@ -203,7 +249,7 @@ class Component extends DCLogic {
   save() { tdSave(GAME_KEY, this.game); }
   model() {
     const st = this.state; const it = this.items[st.mi]; const p = it.pick; const kd = (window.VE_KD && window.VE_KD[p.c]) || null;
-    try { this.applyPatches(this.gs()); } catch (e) {}
+    try { this.applyAll(this.gs()); } catch (e) {}
     const squad = (kd && kd.clubs[p.n]) ? kd.clubs[p.n].slice() : [];
     const league = (kd && kd.ligs[p.lg]) ? kd.ligs[p.lg].slice() : []; if (league.length && league.indexOf(p.n) < 0) league.push(p.n);
     const strength = (name) => { const a = kd && kd.clubs[name]; if (!a || !a.length) return 7; const t = a.slice().sort((x, y) => y[5] - x[5]).slice(0, 11); return t.reduce((s, x) => s + x[5], 0) / t.length; };
@@ -311,10 +357,7 @@ class Component extends DCLogic {
       nextDay: () => this.advance(1, false), toMatch: () => this.advance(0, true),
       nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vHeyet: st.view === 'heyet', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
       msgs: msgRows, hasMsg: !!cur, cur: cur || { from: '', subject: '', paras: [], facts: [], hasFacts: false },
-      edit: (() => { const on = this.edOn(); const t = this._edTarget; const G2 = G; const P = (G2 && G2.patch) || {};
-      const fields = t ? Object.keys(ED_IDX).map(k => { const cur = st.edd[k] !== undefined ? st.edd[k] : edGet(t.row, k); const sel = k === 'mevki' ? ED_POS : k === 'ayak' ? ['Sağ', 'Sol', 'İki ayak'] : null; return { k, label: ED_LABEL[k], val: cur, isSel: !!sel, isIn: !sel, opts: sel || [], set: (e) => this.setState({ edd: Object.assign({}, this.state.edd, { [k]: e.target.value }) }) }; }) : [];
-      const list = Object.keys(P).map(key => ({ txt: P[key].name + ' · ' + P[key].club, sub: Object.keys(P[key].f).map(k => ED_LABEL[k] + ': ' + P[key].o[k] + ' → ' + P[key].f[k]).join(', '), undo: () => this.revertEdit(key) }));
-      return { on, off: !on, hasT: !!t && on, noT: !t && on, title: t ? t.name : '', fields, list, hasList: list.length > 0, save: () => this.saveEdit(), close: () => this.setState({ edOpen: false, edd: {} }) }; })(),
+      edit: this.edBuild(),
     edOpen: !!st.edOpen, edited: !!G.edited, edBtn: this.edOn(), openEd: () => this.openEditor(), fd, hasFd: fd.has, noFd: !fd.has, rep: st.rep && st.rep.open ? st.rep : null, hasRep: !!(st.rep && st.rep.open), closeRep: () => this.setState({ rep: null }), squad: squadRows, noSquad: !squadRows.length, heads, fgroups, anyF, clearF, fq: st.fq || '', setFq: (e) => this.setState({ fq: e.target.value }), shown: squadRows.length + ' / ' + pool.length, fixtures, noFix: !fixtures.length, table, fin: finRows, noFin: !has,
       hasNext: !!nx, noNext: !nx, next: nx ? { opp: nx.opp, where: nx.home ? 'Ev sahibi' : 'Deplasman', date: fmtDate(nx.date), days: diffDays(G.date, nx.date) <= 0 ? 'Bugün' : diffDays(G.date, nx.date) + ' gün sonra' } : { opp: '', where: '', date: '', days: '' },
       summary: [{ k: 'Takım gücü (en iyi 11)', v: avg11 ? avg11.toFixed(1) : '—' }, { k: 'Lig sırası', v: myPos && league.length ? myPos + ' / ' + league.length : '—' }, { k: 'Kadro', v: squad.length ? String(squad.length) : '—' }, { k: 'Sezon hedefi', v: has ? EXP_LABEL[s.exp] : '—' }, { k: 'Kıtasal', v: (contOf(p.n).map(x => x.t.ad).slice(0, 2).join(', ')) || contProj((M.kd && M.kd.ulke) || {}, league.map(n => [n, M.strength(n)]).sort((a, b) => b[1] - a[1]).findIndex(x => x[0] === p.n) + 1) || '—' }]
@@ -345,6 +388,8 @@ class Component extends DCLogic {
     const winners = (txt, max) => String(txt || '').split('\n').filter(Boolean).slice(0, max || 40).map(l => { const q = l.split(' · '); return it(q[0] || '', q[1] || '', q[2] || ''); });
     const fmtMoney = (x, pb) => (pb === '₺' || !pb) ? money(x / 55.93) : Number(x).toLocaleString() + ' ' + pb;
     if (v !== 'oyuncu') this._edTarget = null;
+    if (v !== 'kisi') this._stTarget = null;
+    this._clubTarget = p.n ? { c: p.c, club: p.n, own: !vpOn } : { c: M.p.c, club: M.p.n, own: true };
     const contL = contOf(p.n);
     const projTxt = vpOn ? '' : contProj(ulk, (c.league || []).map(n => [n, M.strength(n)]).sort((a, b) => b[1] - a[1]).findIndex(x => x[0] === p.n) + 1);
     const contCard = () => card('KITASAL TURNUVALAR', { rows: projTxt ? [{ k: 'Güç sırasına göre hak', v: projTxt }] : [], items: contL.map(x => it(x.t.kita || 'Kıtasal', x.t.ad, x.t.tur, { cur: 'pointer', pick: openT(x.i) })), note: contL.length ? '' : (info.hd_kitasal ? 'Kıtasal hedef: ' + info.hd_kitasal : 'Bu kulüp kıtasal turnuva katılımcı listesinde yok.') });
@@ -422,15 +467,17 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
     } else if (v === 'kisi') {
       const q = ((kd && kd.staff && kd.staff[p.n]) || []).concat((kd && kd.sfree) || []).find(z => z[0] === st.ssel) || (st.ssel === (this.items[st.mi] || {}).name ? meRow : null);
       if (q) {
+        this._stTarget = { c: p.c, club: ((kd && kd.staff && kd.staff[p.n]) || []).indexOf(q) >= 0 ? p.n : 'Serbest', name: q[0], row: q, own: q === meRow };
         out.hasHead = true; out.headTitle = q[0]; out.headSub = q[3] + ' · ' + (q[1] ? (2026 - q[1]) + ' yaş · ' : '') + q[2];
-        out.cols = 3; out.cards = [card('KİMLİK', { rows: rowsOf([row('Ad Soyad', q[0]), row('Görev', q[3]), row('Doğum yılı', q[1] || null), row('Yaş', q[1] ? 2026 - q[1] : null), row('Uyruk', q[2]), row('Tanınırlık', q[7])]) }), card('SÖZLEŞME VE LİSANS', { rows: rowsOf([row('Sözleşme bitişi', q[4]), row('Lisans', q[5])]) }), card('İTİBAR', { bars: [bar('İtibar', q[6], 20)].filter(Boolean) })];
+        const sa = staffAttrs(q); const gp = (a0, b0) => ST_KEYS.slice(a0, b0).map((k, i) => bar(k, sa[a0 + i], 20));
+        out.cols = 3; out.cards = [card('KİMLİK', { rows: rowsOf([row('Ad Soyad', q[0]), row('Görev', q[3]), row('Doğum yılı', q[1] || null), row('Yaş', q[1] ? 2026 - q[1] : null), row('Uyruk', q[2]), row('Tanınırlık', q[7])]) }), card('SÖZLEŞME VE LİSANS', { rows: rowsOf([row('Sözleşme bitişi', q[4]), row('Lisans', q[5])]) }), card('İTİBAR', { bars: [bar('İtibar', q[6], 20)].filter(Boolean) }), card('ANTRENÖRLÜK', { bars: gp(0, 5).filter(Boolean) }), card('YÖNETİM', { bars: gp(5, 9).filter(Boolean) }), card('DEĞERLENDİRME', { bars: gp(9, 12).filter(Boolean) })];
       } else out.cards = [card('KİŞİ', { note: 'Kişi bulunamadı.' })];
     } else if (v === 'oyuncu') {
       const pcl = st.pclub; const kdP = pcl ? ((window.VE_KD && window.VE_KD[pcl.c]) || null) : kd; const x = (pcl ? ((kdP && kdP.clubs && kdP.clubs[pcl.n]) || []) : poolOf(kd, p, st.psrc || 'A')).find(z => z[0] === st.psel) || (pcl ? null : allPools(kd, p).find(z => z[0] === st.psel)) || null;
       if (x) {
         const age = 2026 - x[1]; const gen = genAttrs(x[0], x[3], x[5], age); const real = Array.isArray(x[10]) ? x[10] : null; const ks = AT_TECH.concat(AT_MENT, AT_PHYS, AT_GK);
         const A = {}; ks.forEach((k, i) => { A[k] = (real && real[i] > 0) ? real[i] : gen[k]; });
-        this._edTarget = { c: pcl ? pcl.c : p.c, club: pcl ? pcl.n : p.n, name: x[0], row: x }; out.hasHead = true; out.headTitle = x[0]; out.headSub = x[3] + ' · ' + age + ' yaş · ' + x[2]; out.headLinks = [{ label: pcl ? pcl.n : p.n, pick: () => this.openClub(pcl ? pcl.n : p.n, pcl ? pcl.c : p.c, '') }, { label: x[2], pick: () => this.openCountry(x[2]) }].concat(x[18] && x[18] !== x[2] ? [{ label: x[18], pick: () => this.openCountry(x[18]) }] : []);
+        this._edTarget = { c: pcl ? pcl.c : p.c, club: pcl ? pcl.n : p.n, name: x[0], row: x }; this._edAttrs = ALL_AT.map(k => A[k]); out.hasHead = true; out.headTitle = x[0]; out.headSub = x[3] + ' · ' + age + ' yaş · ' + x[2]; out.headLinks = [{ label: pcl ? pcl.n : p.n, pick: () => this.openClub(pcl ? pcl.n : p.n, pcl ? pcl.c : p.c, '') }, { label: x[2], pick: () => this.openCountry(x[2]) }].concat(x[18] && x[18] !== x[2] ? [{ label: x[18], pick: () => this.openCountry(x[18]) }] : []);
         out.hasKpis = true;
         out.kpis = [{ label: 'GÜÇ', value: String(x[5]), color: powCol(x[5]), sub: '1–20' }, { label: 'POTANSİYEL', value: String(x[6]), color: powCol(x[6]), sub: '1–20' }, { label: 'DEĞER', value: x[7] ? money(x[7]) : '—', color: fg, sub: 'piyasa değeri' }, { label: 'SÖZLEŞME', value: x[8] || '—', color: fg, sub: 'bitiş yılı' }, { label: 'AYAK', value: x[4], color: fg, sub: 'tercih' }, { label: 'FORMA', value: x[9] ? '#' + x[9] : '—', color: fg, sub: 'numara' }];
         const grp = (title, arr) => card(title, { bars: arr.map(k => bar(k, A[k], 20)).filter(Boolean) });
