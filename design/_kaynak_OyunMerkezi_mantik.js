@@ -150,7 +150,7 @@ class Component extends DCLogic {
     this.sample = picks.length === 0;
     this.items = this.sample ? [{ name: 'Menajer', pick: SAMPLE }] : picks.map((p, i) => { const a = dm[i] || {}; const nm = ((a.ad || '') + ' ' + (a.soyad || '')).trim() || ('Menajer ' + (i + 1)); return { name: nm, first: (a.ad || '').trim() || nm, m: a, pick: p }; });
     this.game = tdLoad(GAME_KEY, null) || {}; this.game.k = this.game.k || {};
-    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
+    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', vp: null, back: null, hsort: '', hdir: 1, fsel: -1, rep: null, cg: '', ssel: '', pclub: null, fopen: '', kpos10: '', knat: '', kcon: '', kpow: '', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
     this.loadFor(0);
   }
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
@@ -240,9 +240,10 @@ class Component extends DCLogic {
     const sorted = fl;
     const heads = [['no', '#'], ['name', 'OYUNCU'], ['pos', 'MEVKİ'], ['age', 'YAŞ'], ['nat', 'UYRUK'], ['pow', 'GÜÇ'], ['pot', 'POT.'], ['val', 'DEĞER'], ['end', 'SÖZLEŞME']].map(h => ({ l: h[1], arrow: st.ksort === h[0] ? ((st.kdir || 1) > 0 ? ' ▲' : ' ▼') : '', col: st.ksort === h[0] ? 'var(--td-text,#F4F6FB)' : 'var(--td-mut2,#8C96B2)', pick: () => this.setState({ ksort: h[0], kdir: st.ksort === h[0] ? -(st.kdir || 1) : ((h[0] === 'name' || h[0] === 'pos' || h[0] === 'nat' || h[0] === 'end') ? 1 : -1) }) }));
     const chip = (label, on, fn, cnt) => ({ label, cnt: cnt === undefined ? '' : String(cnt), bg: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: on ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: fn });
-    const grpOf = (title, key, opts) => ({ title, chips: opts.map(o => chip(o[1], (st[key] || '') === o[0], () => this.setState({ [key]: o[0] }))) });
+    const mkG = (title, key, opts, curKey, onPick) => { const curV = curKey === 'kteam' ? team : (st[key] || ''); const op = opts.find(o => o[0] === curV) || opts[0]; const open = st.fopen === key; return { title, cur: op[1], open, active: curKey === 'kteam' ? false : !!curV, toggle: () => this.setState({ fopen: open ? '' : key }), chips: opts.map(o => ({ label: o[1], cnt: '', bg: o[0] === curV ? 'rgba(var(--td-accent-rgb,200,16,46),0.28)' : 'transparent', col: 'var(--td-text,#F4F6FB)', pick: () => onPick(o[0]) })) }; };
+    const grpOf = (title, key, opts) => mkG(title, key, opts, key, (v) => this.setState({ [key]: v, fopen: '' }));
     const fgroups = [
-      { title: 'TAKIM', chips: TEAM_LIST.map(t => chip(t[1], team === t[0], () => this.setState({ kteam: t[0], ksort: '' }), poolOf(M.kd, p, t[0]).length)) },
+      mkG('TAKIM', 'kteam', TEAM_LIST.map(t => [t[0], t[1] + ' (' + poolOf(M.kd, p, t[0]).length + ')']), 'kteam', (v) => this.setState({ kteam: v, ksort: '', fopen: '' })),
       grpOf('MEVKİ GRUBU', 'kpos', [['', 'Hepsi'], ['Kaleci', 'Kaleci'], ['Defans', 'Defans'], ['Orta saha', 'Orta saha'], ['Forvet', 'Forvet']]),
       grpOf('MEVKİ', 'kpos10', [['', 'Hepsi'], ['Kaleci', 'Kaleci'], ['Stoper', 'Stoper'], ['Sağ bek', 'Sağ bek'], ['Sol bek', 'Sol bek'], ['Ön libero', 'Ön libero'], ['Merkez orta saha', 'Merkez orta saha'], ['Ofansif orta saha', 'Ofansif orta saha'], ['Sağ kanat', 'Sağ kanat'], ['Sol kanat', 'Sol kanat'], ['Santrfor', 'Santrfor']]),
       grpOf('YAŞ', 'kage', [['', 'Tüm yaşlar'], ['19', '19 ve altı'], ['23', '20–23'], ['29', '24–29'], ['30', '30+']]),
@@ -251,7 +252,7 @@ class Component extends DCLogic {
       grpOf('GÜÇ', 'kpow', [['', 'Hepsi'], ['16', '16+'], ['13', '13–15'], ['10', '10–12'], ['0', '10 altı']])
     ];
     const anyF = !!(st.kpos10 || st.kpos || st.kage || st.knat || st.kcon || st.kpow || st.fq);
-    const clearF = () => this.setState({ kpos10: '', kpos: '', kage: '', knat: '', kcon: '', kpow: '', fq: '' });
+    const clearF = () => this.setState({ fopen: '', kpos10: '', kpos: '', kage: '', knat: '', kcon: '', kpow: '', fq: '' });
     const squadRows = sorted.map(x => ({ pick: () => this.openPlayer(x, null), no: x[9] || '', name: x[0], pos: x[3], age: 2026 - x[1], nat: x[2], pow: x[5], pot: x[6], col: powCol(x[5]), val: x[7] ? money(x[7]) : '—', end: x[8] || '—' }));
     const fixKey = (f) => f.i + '|' + f.h + '|' + f.a;
     const fixtures = myFix.map((f, i) => { const done = !!G.sim[f.i]; const r = G.res[fixKey(f)]; const mine = f.h === p.n ? 0 : 1; let res = '', col = 'var(--td-text3,#C9D0E2)', ico = '', icoBg = 'transparent'; if (done && r) { res = r[0] + ' – ' + r[1]; const d = mine === 0 ? r[0] - r[1] : r[1] - r[0]; col = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? 'var(--td-accent2,#FF6B76)' : 'var(--td-gold,#F2C14E)'; ico = d > 0 ? '✓' : d < 0 ? '✕' : '='; icoBg = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? '#E5484D' : '#E5B93C'; } const selI = st.fsel >= 0 ? st.fsel : -1; return { n: i + 1, date: fmtDate(f.date), lg: p.lg || '—', home: f.h, away: f.a, res, col, ico, icoBg, hasIco: !!ico, bg: i === selI ? 'rgba(var(--td-fg-rgb,255,255,255),0.10)' : f.i === my ? 'rgba(var(--td-accent-rgb,200,16,46),0.10)' : 'transparent', pick: () => this.setState({ fsel: i, rep: null }), goH: () => this.openClub(f.h, p.c, p.lg), goA: () => this.openClub(f.a, p.c, p.lg) }; });
