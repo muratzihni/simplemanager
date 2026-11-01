@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Onur Listesi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F1C}
+a{color:#C9D0E2;text-decoration:none}a:hover{color:#FFFFFF}
+.ghost:hover{background:rgba(255,255,255,0.08) !important}
+.tab:hover{color:#FFFFFF !important}
+.card{transition:transform .18s ease, border-color .18s ease}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.28) !important}
+.scroll{overflow-y:auto;min-height:0}.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:4px}
+.go:hover{background:#DD1838 !important;color:#FFFFFF !important}
+</style>
+</helmet>
+<div style="height: 100vh; min-height: 760px; position: relative; overflow: hidden; background: #0A0F1C; color: #F4F6FB; font-family: 'Manrope', system-ui, sans-serif">
+<img src="/_blob/37d3311d36b777efbeea9c38beb02667" alt="" aria-hidden="true" style="position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(18px) brightness(0.3) saturate(0.85)">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(10,15,28,0.55)"></div>
+
+<div style="position: relative; z-index: 1; box-sizing: border-box; padding: 24px 56px; height: 100%; display: flex; flex-direction: column; gap: 16px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<div style="display: flex; align-items: center; gap: 18px">
+<a href="Main.dc.html" class="ghost" aria-label="Ana menüye dön" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F6FB" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg>
+</a>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.22em; color: #FF6B76">ANA MENÜ</span>
+<h1 style="margin: 0; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; letter-spacing: 0.04em">ONUR LİSTESİ</h1>
+</div>
+</div>
+<span style="font-size: 13px; color: #8C96B2">Tüm kariyerlerin · kayıtlar silinse de korunur</span>
+</header>
+
+<!-- Menajer kartı -->
+<section aria-label="Menajer özeti" style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 14px">
+<div style="flex: 2 1 360px; box-sizing: border-box; display: flex; align-items: center; gap: 18px; padding: 18px 22px; border-radius: 18px; border: 1px solid rgba(200,16,46,0.45); background: linear-gradient(120deg, rgba(200,16,46,0.22), rgba(10,15,28,0.65) 70%); backdrop-filter: blur(10px)">
+<span style="flex: none; width: 64px; height: 64px; border-radius: 16px; background: rgba(255,255,255,0.10); display: flex; align-items: center; justify-content: center; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 28px; color: #8C96B2">—</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 32px; line-height: 1; letter-spacing: 0.03em">HENÜZ KARİYER YOK</span>
+<span style="font-size: 14px; color: #A7B0C8">İlk kariyerini başlattığında kupaların, rekorların ve istatistiklerin burada birikir.</span>
+</div>
+</div>
+<sc-for list="{{summary}}" as="m" hint-placeholder-count="4">
+<div style="flex: 1 1 140px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 16px 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.62); backdrop-filter: blur(10px)">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 36px; line-height: 1">{{m.v}}</span>
+<span style="font-size: 13px; color: #A7B0C8">{{m.k}}</span>
+</div>
+</sc-for>
+</section>
+
+<!-- Sekmeler -->
+<nav aria-label="Onur listesi bölümleri" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid rgba(255,255,255,0.12)">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<button class="tab" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="min-height: 48px; padding: 0 18px; border: none; border-bottom: 3px solid {{t.bar}}; margin-bottom: -1px; background: transparent; color: {{t.fg}}; font: 700 15px 'Manrope', sans-serif; cursor: pointer">{{t.label}}</button>
+</sc-for>
+</nav>
+
+<div class="scroll" style="flex: 1; display: flex; flex-direction: column; box-sizing: border-box; padding: 22px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.62); backdrop-filter: blur(10px)">
+
+<!-- KUPA DOLABI -->
+<sc-if value="{{isKupa}}" hint-placeholder-val="{{ true }}">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 20px; text-align: center">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.06em; color: #DCE2F0">KUPA DOLABI BOŞ</span>
+<span style="max-width: 460px; font-size: 14px; line-height: 1.5; color: #8C96B2">Kazandığın lig, kupa ve Avrupa kupaları burada sezonuyla birlikte sergilenir.</span>
+<a href="UlkeSecimi.dc.html" class="go" style="margin-top: 6px; display: flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 10px; background: #C8102E; color: #FFFFFF; font-weight: 700; font-size: 14px">Yeni Kariyer başlat</a>
+</div>
+</sc-if>
+
+<!-- KARİYERLERİM -->
+<sc-if value="{{isKariyer}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 20px; text-align: center">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.06em; color: #DCE2F0">HENÜZ KARİYER YOK</span>
+<span style="max-width: 460px; font-size: 14px; line-height: 1.5; color: #8C96B2">Her kariyerin çalıştığın kulüpler, sezonlar ve nasıl bittiğiyle birlikte burada listelenir. Kariyer kaydı silinse bile bu liste korunur.</span>
+<a href="UlkeSecimi.dc.html" class="go" style="margin-top: 6px; display: flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 10px; background: #C8102E; color: #FFFFFF; font-weight: 700; font-size: 14px">Yeni Kariyer başlat</a>
+</div>
+</sc-if>
+
+<!-- REKORLAR -->
+<sc-if value="{{isRekor}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 0.06em">REKORLAR</span>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px">
+<sc-for list="{{records}}" as="r" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: rgba(5,8,16,0.45)">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: #FF6B76">{{r.k}}</span>
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 30px; line-height: 1">{{r.v}}</span>
+<span style="font-size: 13px; color: #A7B0C8">{{r.d}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- BAŞARIMLAR -->
+<sc-if value="{{isBasarim}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 0.06em">BAŞARIMLAR</span>
+<span style="font-size: 13px; color: #8C96B2">{{achSummary}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px">
+<sc-for list="{{achievements}}" as="b" hint-placeholder-count="9">
+<div style="display: flex; gap: 14px; padding: 16px; border-radius: 14px; border: 1px solid {{b.border}}; background: {{b.bg}}; opacity: {{b.opacity}}">
+<span style="flex: none; width: 48px; height: 48px; border-radius: 12px; background: {{b.iconBg}}; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #FFFFFF">{{b.mark}}</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 800; font-size: 15px">{{b.name}}</span>
+<span style="font-size: 13px; line-height: 1.4; color: #A7B0C8">{{b.desc}}</span>
+<span style="height: 6px; border-radius: 3px; background: rgba(255,255,255,0.10); overflow: hidden; display: block; margin-top: 4px"><span style="display: block; height: 100%; width: {{b.pct}}; background: {{b.barColor}}"></span></span>
+<span style="font-size: 12px; font-weight: 700; color: {{b.stateColor}}">{{b.state}}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- İSTATİSTİKLER -->
+<sc-if value="{{isIstat}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 20px; text-align: center">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.06em; color: #DCE2F0">İSTATİSTİK YOK</span>
+<span style="max-width: 460px; font-size: 14px; line-height: 1.5; color: #8C96B2">Maç sonuçların, gol ortalaman ve sezon sezon itibar grafiğin ilk maçından itibaren burada oluşur.</span>
+<a href="UlkeSecimi.dc.html" class="go" style="margin-top: 6px; display: flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 10px; background: #C8102E; color: #FFFFFF; font-weight: 700; font-size: 14px">Yeni Kariyer başlat</a>
+</div>
+</sc-if>
+</div>
+
+<footer style="display: flex; flex-wrap: wrap; gap: 18px; font-size: 12px; color: #8C96B2">
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">Esc</kbd> Ana menüye dön</span>
+<span>Kayıtlar profil dosyasında tutulur: profil/onur.dat</span>
+</footer>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+// ===== Ortak tercihler: Ayarlar'daki Ölçek, Yüksek kontrast ve Hareketi azalt tüm ekranlara uygulanır =====
+(function tdPrefs() {
+  function read() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } try { const s = JSON.parse(r || '{}'); return s && typeof s === 'object' ? s : {}; } catch (e) { return {}; } }
+  function apply() {
+    try {
+      const s = read(); const root = document.documentElement; if (!root) return;
+      let st = document.getElementById('td-prefs-style');
+      if (!st) { st = document.createElement('style'); st.id = 'td-prefs-style'; (document.head || root).appendChild(st); }
+      const sc = s.scale === undefined ? 100 : Number(s.scale); let css = '';
+      if (sc && sc !== 100) css += 'html{zoom:' + (sc / 100) + '}';
+      if (s.contrast) css += 'html{filter:contrast(1.2) brightness(1.05)}';
+      if (s.motion) css += '*,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;scroll-behavior:auto!important}';
+      st.textContent = css;
+    } catch (e) {}
+  }
+  apply();
+  try { window.addEventListener('storage', apply); window.__tdApplyPrefs = apply; window.__tdReadPrefs = read; } catch (e) {}
+})();
+
+const TIER = {
+  major: { label: 'BÜYÜK KUPA', color: '#E8C15A', fill: 'rgba(232,193,90,0.25)', chipBg: 'rgba(232,193,90,0.14)' },
+  euro: { label: 'AVRUPA', color: '#8FB8FF', fill: 'rgba(143,184,255,0.25)', chipBg: 'rgba(143,184,255,0.14)' },
+  minor: { label: 'ALT LİG', color: '#C9D0E2', fill: 'rgba(201,208,226,0.18)', chipBg: 'rgba(201,208,226,0.10)' }
+};
+const TROPHIES = [];
+const CAREERS = [];
+const RECORDS = ['EN FARKLI GALİBİYET', 'EN UZUN YENİLMEZLİK SERİSİ', 'BİR SEZONDA EN ÇOK PUAN', 'EN ÇOK GOL ATILAN SEZON', 'EN PAHALI TRANSFER', 'EN KÂRLI SATIŞ', 'A TAKIMA ALDIĞIN EN GENÇ OYUNCU', 'BİR KULÜPTE EN UZUN SÜRE'].map(k => ({ k: k, v: '—', d: 'Henüz kayıt yok' }));
+const ACH = [
+  { name: 'Amatörden Zirveye', desc: 'Amatör bir ligden başlayıp Süper Lig’e çık.', cur: 0, max: 1 },
+  { name: 'Kupa Canavarı', desc: 'Aynı sezonda lig ve Türkiye Kupası’nı kazan.', cur: 0, max: 1 },
+  { name: 'Avrupa Fatihi', desc: 'Bir UEFA kupası kazan.', cur: 0, max: 1 },
+  { name: 'Merdiven', desc: 'Art arda 3 sezon üst lige yüksel.', cur: 0, max: 3 },
+  { name: 'Hanedan', desc: 'Üst üste 3 lig şampiyonluğu kazan.', cur: 0, max: 3 },
+  { name: 'Altyapı Ustası', desc: 'Altyapıdan 10 oyuncuyu A takıma kazandır.', cur: 0, max: 10 },
+  { name: 'Sadık', desc: 'Aynı kulüpte 10 sezon çalış.', cur: 0, max: 10 },
+  { name: 'Yenilmez', desc: 'Bir lig sezonunu hiç yenilmeden bitir.', cur: 0, max: 1 },
+  { name: 'Kurtarıcı', desc: 'Sezon ortasında son sıradaki takımı devralıp küme düşmekten kurtar.', cur: 0, max: 1 }
+];
+const TABS = [['kupa', 'Kupa Dolabı'], ['kariyer', 'Kariyerlerim'], ['rekor', 'Rekorlar'], ['basarim', 'Başarımlar'], ['istat', 'İstatistikler']];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'kupa' }; }
+  renderVals() {
+    const tab = this.state.tab;
+    const tabs = TABS.map(t => ({ label: t[1], pressed: t[0] === tab ? 'true' : 'false', fg: t[0] === tab ? '#FFFFFF' : '#A7B0C8', bar: t[0] === tab ? '#C8102E' : 'transparent', pick: () => this.setState({ tab: t[0] }) }));
+    const trophies = TROPHIES.map(t => Object.assign({}, t, { tierLabel: TIER[t.tier].label, color: TIER[t.tier].color, fill: TIER[t.tier].fill, chipBg: TIER[t.tier].chipBg }));
+    const done = ACH.filter(a => a.cur >= a.max).length;
+    const achievements = ACH.map(a => {
+      const ok = a.cur >= a.max;
+      return { name: a.name, desc: a.desc, mark: ok ? '✓' : a.cur + '/' + a.max,
+        pct: Math.round(a.cur / a.max * 100) + '%', barColor: ok ? '#E8C15A' : '#6F7A99',
+        state: ok ? 'Açıldı · ' + a.when : (a.cur > 0 ? 'İlerleme: ' + a.cur + ' / ' + a.max : 'Kilitli'),
+        stateColor: ok ? '#E8C15A' : '#8C96B2',
+        iconBg: ok ? '#C8102E' : 'rgba(255,255,255,0.10)', border: ok ? 'rgba(232,193,90,0.45)' : 'rgba(255,255,255,0.10)',
+        bg: ok ? 'rgba(232,193,90,0.06)' : 'rgba(5,8,16,0.45)', opacity: ok || a.cur > 0 ? '1' : '0.7' };
+    });
+    return {
+      tabs, trophies, careers: CAREERS, records: RECORDS, achievements,
+      achSummary: done + ' / ' + ACH.length + ' açıldı',
+      summary: [ { k: 'kupa', v: '0' }, { k: 'maç', v: '0' }, { k: 'galibiyet oranı', v: '—' }, { k: 'kariyer', v: '0' } ],
+      isKupa: tab === 'kupa', isKariyer: tab === 'kariyer', isRekor: tab === 'rekor', isBasarim: tab === 'basarim', isIstat: tab === 'istat'
+    };
+  }
+}
+</script>
+</body>
+</html>

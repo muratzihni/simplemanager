@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Maç Motoru · The Simple Game</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#05080F}
+a{color:#C9D0E2;text-decoration:none}
+.ghost:hover{background:rgba(255,255,255,0.08) !important}
+.go:hover{background:#DD1838 !important}
+.seg:hover{border-color:rgba(255,255,255,0.35) !important}
+.scroll{overflow-y:auto;min-height:0}.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:4px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+</style>
+</helmet>
+<div style="height: 100vh; min-height: 720px; box-sizing: border-box; padding: 18px 28px; display: flex; flex-direction: column; gap: 12px; background: #05080F; color: #F4F6FB; font-family: 'Manrope', system-ui, sans-serif">
+
+<header style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+<div style="display: flex; align-items: center; gap: 16px">
+<a href="Main.dc.html" class="ghost" aria-label="Ana menüye dön" style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F6FB" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: #FF6B76">MAÇ MOTORU · PROTOTİP</span>
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 30px; line-height: 1; letter-spacing: 0.03em">SİMÜLASYON + YAYIN KAMERASI</span>
+</div>
+</div>
+<span style="font-size: 12px; color: #8C96B2; text-align: right">Senaryo yok: her an olasılık, fizik ve taktikle hesaplanır · 105×68 m · saniyede 20 tick · tohum #{{seed}}</span>
+</header>
+
+<div style="flex: 1; min-height: 0; display: flex; gap: 14px">
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<div style="position: relative; flex: 1; min-height: 0; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); background: #0B1222">
+<canvas id="mm-cam" style="position: absolute; inset: 0; width: 100%; height: 100%"></canvas>
+<div style="position: absolute; left: 16px; top: 14px; display: flex; align-items: stretch; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5); font-weight: 800">
+<span style="padding: 7px 12px; background: #0B1F4D; color: #F4D21F; font-family: 'Saira Condensed', sans-serif; font-size: 20px; letter-spacing: 0.06em">{{hs}}</span>
+<span style="padding: 7px 14px; background: #F4F6FB; color: #0A0F1C; font-family: 'Saira Condensed', sans-serif; font-size: 20px">{{score}}</span>
+<span style="padding: 7px 12px; background: #F4F4F2; color: #8a6d12; font-family: 'Saira Condensed', sans-serif; font-size: 20px; letter-spacing: 0.06em; border-left: 1px solid #ddd">{{as}}</span>
+<span style="padding: 7px 12px; background: #C8102E; color: #FFF; font-family: 'Saira Condensed', sans-serif; font-size: 20px; min-width: 64px; text-align: center">{{clock}}</span>
+</div>
+<div style="position: absolute; left: 16px; bottom: 14px; padding: 7px 12px; border-radius: 8px; background: rgba(5,8,15,0.75); font-size: 13px; font-weight: 700; color: {{lastColor}}">{{last}}</div>
+<sc-if value="{{goalFlash}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none"><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 120px; letter-spacing: 0.08em; color: #FFF; text-shadow: 0 10px 50px rgba(200,16,46,0.9)">GOL!</span></div>
+</sc-if>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<button class="go" onClick="{{toggle}}" style="min-height: 40px; padding: 0 18px; border-radius: 10px; border: none; background: #C8102E; color: #FFF; font: 800 14px 'Manrope', sans-serif; cursor: pointer">{{playLabel}}</button>
+<sc-for list="{{speeds}}" as="s" hint-placeholder-count="4"><button class="seg" onClick="{{s.pick}}" style="min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid {{s.bd}}; background: {{s.bg}}; color: #F4F6FB; font: 700 13px 'Manrope', sans-serif; cursor: pointer">{{s.t}}</button></sc-for>
+<span style="width: 1px; height: 26px; background: rgba(255,255,255,0.15); margin: 0 4px"></span>
+<button class="ghost" onClick="{{finish}}" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 13px 'Manrope', sans-serif; cursor: pointer">Maçı anında bitir</button>
+<button class="ghost" onClick="{{newMatch}}" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 13px 'Manrope', sans-serif; cursor: pointer">Yeni maç (yeni tohum)</button>
+<button class="ghost" onClick="{{batch}}" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(242,193,78,0.5); background: transparent; color: #F2C14E; font: 700 13px 'Manrope', sans-serif; cursor: pointer">{{batchLabel}}</button>
+</div>
+</div>
+
+<aside class="scroll" style="flex: 0 0 360px; display: flex; flex-direction: column; gap: 12px; padding-right: 4px">
+<section style="padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.8)">
+<div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px 10px; font-size: 13px">
+<span style="font-weight: 800; color: #F4D21F">FENERBAHÇE</span><span></span><span style="font-weight: 800; text-align: right">REAL MADRID</span>
+<sc-for list="{{stats}}" as="r" hint-placeholder-count="6"><span style="font-weight: 700">{{r.h}}</span><span style="color: #8C96B2; text-align: center; font-size: 12px">{{r.k}}</span><span style="font-weight: 700; text-align: right">{{r.a}}</span></sc-for>
+</div>
+</section>
+<section style="padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.8); display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: #FF6B76">SKOR DENGELEME (ScorePacingController)</span>
+<sc-for list="{{pacing}}" as="p" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 800">{{p.n}} · <span style="color: #F2C14E">{{p.label}}</span></span>
+<div style="display: grid; grid-template-columns: 70px 1fr; gap: 3px 8px; font-size: 11px; color: #A7B0C8; align-items: center">
+<sc-for list="{{p.bars}}" as="b" hint-placeholder-count="4"><span>{{b.k}}</span><span style="height: 5px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden"><span style="display: block; height: 100%; width: {{b.w}}; background: {{b.c}}"></span></span></sc-for>
+</div>
+</div>
+</sc-for>
+</section>
+<section style="padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.8); display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: #FF6B76">TAKTİK GÖRÜNÜM (2D)</span>
+<canvas id="mm-radar" width="336" height="218" style="width: 336px; height: 218px; border-radius: 6px"></canvas>
+</section>
+<section style="padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.8); display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: #FF6B76">TICK EVENT BUFFER</span>
+<sc-for list="{{events}}" as="e" hint-placeholder-count="8"><span class="mono" style="font-size: 11px; line-height: 1.45; color: {{e.c}}">{{e.t}}</span></sc-for>
+</section>
+<sc-if value="{{hasBatch}}" hint-placeholder-val="{{ false }}">
+<section style="padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(242,193,78,0.4); background: rgba(10,15,28,0.8); display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: #F2C14E">TOPLU SİMÜLASYON · {{bN}} MAÇ</span>
+<span style="font-size: 12px; color: #C9D0E2">{{bSummary}}</span>
+<sc-for list="{{bRows}}" as="r" hint-placeholder-count="8"><div style="display: grid; grid-template-columns: 44px 1fr 34px; gap: 8px; align-items: center; font-size: 12px"><span style="font-weight: 800">{{r.k}}</span><span style="height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden"><span style="display: block; height: 100%; width: {{r.w}}; background: {{r.c}}"></span></span><span style="text-align: right; color: #A7B0C8">{{r.n}}</span></div></sc-for>
+</section>
+</sc-if>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+// ===== Ortak tercihler: Ayarlar'daki Ölçek, Yüksek kontrast ve Hareketi azalt tüm ekranlara uygulanır =====
+(function tdPrefs() {
+  function read() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } try { const s = JSON.parse(r || '{}'); return s && typeof s === 'object' ? s : {}; } catch (e) { return {}; } }
+  function apply() {
+    try {
+      const s = read(); const root = document.documentElement; if (!root) return;
+      let st = document.getElementById('td-prefs-style');
+      if (!st) { st = document.createElement('style'); st.id = 'td-prefs-style'; (document.head || root).appendChild(st); }
+      const sc = s.scale === undefined ? 100 : Number(s.scale); let css = '';
+      if (sc && sc !== 100) css += 'html{zoom:' + (sc / 100) + '}';
+      if (s.contrast) css += 'html{filter:contrast(1.2) brightness(1.05)}';
+      if (s.motion) css += '*,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;scroll-behavior:auto!important}';
+      st.textContent = css;
+    } catch (e) {}
+  }
+  apply();
+  try { window.addEventListener('storage', apply); window.__tdApplyPrefs = apply; window.__tdReadPrefs = read; } catch (e) {}
+})();
+
+// ===== THE SIMPLE GAME · MAÇ MOTORU (Katman 1: headless, deterministik) =====
+const MATCH_CFG = { W: 105, H: 68, TICK: 20, HALF_MIN: 45, SIM_SCALE: 15, GOAL_W: 7.32, GOAL_H: 2.44 };
+// SIM_SCALE: 1 sim saniyesi = SIM_SCALE oyun saniyesi değil; oyun saati = sim süresi * TIME_K (aşağıda). Fizik gerçek zamanlı akar.
+const TIME_K = 6; // 90 dk oyun = 15 dk sim (gerçek zamanlı fizik, saat 6 kat hızlı)
+
+function mulberry(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const dist = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
+
+// --- PlayerAttributes (1-20) ve dinamik çarpanlar
+function makePlayer(team, idx, role, base, attrs) {
+  const A = Object.assign({ pace: 12, acc: 12, pass: 12, vision: 12, shoot: 12, finish: 12, drib: 12, tackle: 12, mark: 12, posit: 12, head: 12, comp: 12, stam: 12, gk: 1, reflex: 1 }, attrs);
+  return { team, idx, role, base, A, x: 0, y: 0, vx: 0, vy: 0, hd: 0, fat: 0, morale: 1, num: idx + 1, cool: 0, tx: 0, ty: 0 };
+}
+// Elo benzeri güç: nitelik -> puan; yorgunluk ve soğukkanlılık anlık çarpan
+function eloOf(p, keys, pressure) {
+  const v = keys.reduce((s, k) => s + p.A[k], 0) / keys.length;
+  const fatK = 1 - 0.35 * p.fat;                       // yorgunluk düşürür
+  const compK = pressure ? (0.85 + 0.15 * p.A.comp / 20) : 1; // baskı altında soğukkanlılık
+  return 1000 + 40 * v * fatK * compK * p.morale;
+}
+// --- DuelResolver: P(başarı) = 1 / (1 + 10^((Savunma - Hücum)/400))
+const DuelResolver = {
+  p(att, def) { return 1 / (1 + Math.pow(10, (def - att) / 400)); },
+  tackle(carrier, defender, rnd) { const a = eloOf(carrier, ['drib', 'acc', 'comp'], true), d = eloOf(defender, ['tackle', 'posit', 'acc'], false); const p = this.p(a, d); return { carrierWins: rnd() < p, p }; },
+  aerial(att, def, rnd) { const a = eloOf(att, ['head', 'posit'], true), d = eloOf(def, ['head', 'mark'], false); const p = this.p(a, d); return { attWins: rnd() < p, p }; },
+  dribble(carrier, defender, rnd) { const a = eloOf(carrier, ['drib', 'pace', 'acc'], true), d = eloOf(defender, ['tackle', 'pace', 'posit'], false); const p = this.p(a, d); return { carrierWins: rnd() < p, p }; }
+};
+
+// --- Formasyonlar (kendi kalesine göre 0..1; x: savunmadan hücuma)
+const F433 = [['KL', .04, .5], ['SĞB', .22, .86], ['STP', .18, .62], ['STP', .18, .38], ['SLB', .22, .14], ['DOS', .36, .5], ['OS', .46, .7], ['OS', .46, .3], ['SĞK', .66, .84], ['SNT', .72, .5], ['SLK', .66, .16]];
+const F4231 = [['KL', .04, .5], ['SĞB', .22, .86], ['STP', .18, .62], ['STP', .18, .38], ['SLB', .22, .14], ['DOS', .34, .6], ['DOS', .34, .4], ['SĞK', .58, .82], ['OOS', .56, .5], ['SLK', .58, .18], ['SNT', .72, .5]];
+
+// --- ScorePacingController: skor farkına göre tempo, pres, kompaktlık, risk iştahı
+const ScorePacingController = {
+  update(team, gd, minute) {
+    const t = team.tac; const late = minute > 75;
+    let press = t.press, tempo = t.tempo, compact = t.compact, risk = t.risk, label = 'Plan uygulanıyor';
+    if (gd >= 3) { press *= 0.4; tempo *= 0.45; risk *= 0.3; compact += 0.1; label = 'Maç koptu · rölanti, top çevir'; }
+    else if (gd >= 2) { press *= 0.7; tempo *= 0.75; risk *= 0.6; compact += 0.06; label = 'Fark açıldı · top çevir, tempo düşük'; }
+    else if (gd === 1 && late) { press *= 0.8; tempo *= 0.8; risk *= 0.7; compact += 0.06; label = 'Skoru koru'; }
+    else if (gd <= -2 && !late) { compact += 0.26; press *= 0.8; risk *= 0.9; label = 'Ağır yenilgiyi önle · blok kompakt'; }
+    else if (gd < 0 && late) { press *= 1.25; tempo *= 1.25; risk *= 1.4; label = 'Beraberlik için baskı'; }
+    team.live = { press: clamp(press, 0.2, 1.5), tempo: clamp(tempo, 0.3, 1.5), compact: clamp(compact, 0, 0.5), risk: clamp(risk, 0.2, 1.6), label };
+  }
+};
+
+function makeTeam(side, name, short, colors, form, strength, tac) {
+  const players = form.map(([role, fx, fy], i) => {
+    const gk = role === 'KL'; const s = strength; const j = (k) => clamp(Math.round(s + (((i * 7 + k * 13) % 7) - 3) * 0.6), 4, 20);
+    const attrs = gk ? { gk: s + 1, reflex: s + 1, posit: s, comp: s, pace: 8, pass: s - 4, drib: 4, shoot: 3, finish: 3, tackle: 6, head: 10, stam: 14, acc: 9, mark: 6, vision: 8 }
+      : { pace: j(1), acc: j(2), pass: j(3), vision: j(4), shoot: j(5) - (fx < .3 ? 5 : 0), finish: j(6) - (fx < .4 ? 6 : 0) + (role === 'SNT' ? 2 : 0), drib: j(7) - (fx < .3 ? 3 : 0), tackle: j(8) + (fx < .4 ? 3 : -4), mark: j(9) + (fx < .4 ? 3 : -4), posit: j(10), head: j(11), comp: j(12), stam: j(13) };
+    return makePlayer(side, i, role, [fx, fy], attrs);
+  });
+  return { side, name, short, colors, players, tac, live: Object.assign({ label: 'Plan uygulanıyor' }, tac), stats: { goals: 0, shots: 0, onT: 0, xg: 0, passA: 0, passC: 0, poss: 0, duelW: 0, duelT: 0, tklW: 0 } };
+}
+
+class MatchEngine {
+  constructor(opts) {
+    this.seed = opts.seed || 1; this.rnd = mulberry(this.seed);
+    this.home = makeTeam(0, opts.home.name, opts.home.short, opts.home.colors, F4231, opts.home.str, opts.home.tac);
+    this.away = makeTeam(1, opts.away.name, opts.away.short, opts.away.colors, F433, opts.away.str, opts.away.tac);
+    this.teams = [this.home, this.away]; for (const p of this.home.players) p.morale = 1.03; // iç saha
+    this.ball = { x: 52.5, y: 34, z: 0, vx: 0, vy: 0, vz: 0, spin: 0, owner: null, lastTouch: null, flight: null };
+    this.tick = 0; this.simT = 0; this.half = 1; this.over = false; this.events = []; this.buffer = []; this.goalPause = 0;
+    this.kickoff(0);
+  }
+  get minute() { return Math.min(90, (this.simT * TIME_K) / 60 + (this.half === 2 ? 0 : 0)); }
+  clock() { const s = Math.floor(this.simT * TIME_K); const m = Math.floor(s / 60), ss = s % 60; return (m < 10 ? '0' : '') + m + ':' + (ss < 10 ? '0' : '') + ss; }
+  attDir(team) { const right = (team.side === 0) === (this.half === 1); return right ? 1 : -1; } // +1: sağa hücum
+  toWorld(team, fx, fy) { const d = this.attDir(team); return d > 0 ? [fx * 105, fy * 68] : [105 - fx * 105, 68 - fy * 68]; }
+  log(type, text, extra) { const e = Object.assign({ tick: this.tick, t: this.clock(), type, text }, extra || {}); this.events.push(e); this.buffer.push(e); if (this.buffer.length > 60) this.buffer.shift(); }
+  kickoff(sideToKick) {
+    for (const t of this.teams) for (const p of t.players) { const [fx, fy] = p.base; const [x, y] = this.toWorld(t, Math.min(fx, .47) * 0.95, fy); p.x = x; p.y = y; p.vx = p.vy = 0; }
+    const t = this.teams[sideToKick]; const st = t.players.find(p => p.role === 'SNT') || t.players[10];
+    st.x = 52.5 - this.attDir(t) * 0.6; st.y = 34; this.give(st); this.ball.x = 52.5; this.ball.y = 34; this.ball.z = 0;
+    this.log('kickoff', t.name + ' santra yapıyor');
+  }
+  give(p) { const b = this.ball; b.owner = p; b.flight = null; b.vx = b.vy = b.vz = 0; b.z = 0; b.lastTouch = p; p.cool = 0.25 + this.rnd() * 0.3; }
+  opp(team) { return team === this.home ? this.away : this.home; }
+  goalX(team) { return this.attDir(team) > 0 ? 105 : 0; }
+  // xG: mesafe + açı + savunma yoğunluğu (+ kompakt blok)
+  xg(p, team) {
+    const gx = this.goalX(team), gy = 34; const d = dist(p.x, p.y, gx, gy);
+    const a1 = Math.atan2(gy - 3.66 - p.y, gx - p.x), a2 = Math.atan2(gy + 3.66 - p.y, gx - p.x); let ang = Math.abs(a1 - a2); if (ang > Math.PI) ang = 2 * Math.PI - ang;
+    let blockers = 0; const opp = this.opp(team);
+    for (const o of opp.players) { if (o.role === 'KL') continue; const od = dist(o.x, o.y, gx, gy); if (od < d && Math.abs(Math.atan2(o.y - p.y, o.x - p.x) - Math.atan2(gy - p.y, gx - p.x)) < 0.35 && dist(o.x, o.y, p.x, p.y) < d) blockers++; }
+    const base = 1 / (1 + Math.exp(-(-1.9 + 2.2 * ang - 0.12 * d)));
+    const nd = opp.players.reduce((m, o) => o.role === 'KL' ? m : Math.min(m, dist(o.x, o.y, p.x, p.y)), 99);
+    const press = 0.4 + 0.6 * clamp(nd / 4, 0, 1); // yakın baskı şut kalitesini düşürür
+    return clamp(0.4 * base * press * Math.pow(0.7, blockers) * (1 - opp.live.compact * 0.6), 0.004, 0.8);
+  }
+  // pas güvenliği: rakibin araya girme süresi < topun varış süresi ise risk
+  passRisk(from, to, team) {
+    const opp = this.opp(team); const L = dist(from.x, from.y, to.x, to.y); const speed = clamp(8 + L * 0.5, 9, 26); const tBall = L / speed; let risk = 0;
+    for (const o of opp.players) {
+      const ux = (to.x - from.x) / (L || 1), uy = (to.y - from.y) / (L || 1); const px = o.x - from.x, py = o.y - from.y; const along = clamp(px * ux + py * uy, 0, L);
+      const cx = from.x + ux * along, cy = from.y + uy * along; const dOpp = dist(o.x, o.y, cx, cy); const tOpp = dOpp / (5 + o.A.pace * 0.18) + 0.25; const tB = along / speed;
+      if (tOpp < tB + 0.1) risk = Math.max(risk, clamp(1 - (tOpp - 0.0) / (tB + 0.35), 0, 1) * (0.55 + 0.45 * o.A.posit / 20));
+    }
+    return { risk, speed, tBall };
+  }
+  // --- Utility AI: Score = Kazanç * Taktik ağırlığı - Risk maliyeti
+  decide(p) {
+    const team = this.teams[p.team], opp = this.opp(team), dir = this.attDir(team), live = team.live; const gx = this.goalX(team);
+    const near = opp.players.reduce((m, o) => Math.min(m, dist(o.x, o.y, p.x, p.y)), 99);
+    const pressure = clamp(1 - near / 6, 0, 1);
+    const opts = [];
+    // Şut
+    const dGoal = dist(p.x, p.y, gx, 34);
+    if (dGoal < 32) { const x = this.xg(p, team); const thresh = 0.04 / clamp(live.risk, 0.4, 1.5); opts.push({ k: 'shoot', s: (x - thresh) * 10 * (0.6 + p.A.shoot / 25), xg: x }); }
+    // Paslar
+    for (const m of team.players) {
+      if (m === p || m.role === 'KL' && dir * (m.x - p.x) > -5) continue;
+      const lead = 1.2 * (m.A.pace / 15); const tx = clamp(m.x + dir * lead, 1, 104), ty = m.y; const pr = this.passRisk(p, { x: tx, y: ty }, team);
+      const prog = dir * (tx - p.x); const space = opp.players.reduce((mm, o) => Math.min(mm, dist(o.x, o.y, tx, ty)), 99);
+      const toGoal = dist(tx, ty, gx, 34);
+      const gain = 0.35 + prog * 0.035 * live.tempo + clamp(space, 0, 8) * 0.05 + (toGoal < 20 ? 0.35 : 0) + (p.A.vision - 10) * 0.01;
+      const s = gain * (0.8 + live.tempo * 0.2) - pr.risk * (2.2 / clamp(live.risk, 0.3, 1.6)) * (1.1 - p.A.pass / 40);
+      opts.push({ k: 'pass', s, to: m, tx, ty, speed: pr.speed, risk: pr.risk, long: dist(p.x, p.y, tx, ty) > 28 });
+    }
+    // Dribbling / ilerleme
+    const dribGain = 0.25 + 0.3 * live.tempo + (p.A.drib - 10) * 0.03; opts.push({ k: 'drib', s: dribGain - pressure * (1.3 - p.A.drib / 25) });
+    // Topu sakla / geri çevir (öndeyken değer kazanır)
+    opts.push({ k: 'hold', s: 0.15 + (1 - live.tempo) * 0.35 - pressure * 0.4 });
+    // gürültü: aynı durumda hep aynı kararı vermesin (deterministik tohumlu)
+    for (const o of opts) o.s += (this.rnd() - 0.5) * 0.18;
+    opts.sort((a, b) => b.s - a.s); return opts[0];
+  }
+  act(p, o) {
+    const team = this.teams[p.team], b = this.ball, dir = this.attDir(team);
+    if (o.k === 'shoot') {
+      team.stats.shots++; team.stats.xg += o.xg; const gx = this.goalX(team); const gk = this.opp(team).players[0];
+      const fin = eloOf(p, ['finish', 'comp', 'shoot'], true), keep = eloOf(gk, ['reflex', 'gk', 'posit'], false);
+      const goal = this.rnd() < clamp(o.xg * (0.55 + 0.9 * DuelResolver.p(fin, keep)), 0.003, 0.8);
+      const onT = goal || this.rnd() < clamp(0.22 + p.A.shoot / 60 + o.xg * 0.5, 0.15, 0.7);
+      const ty = goal ? 34 + (this.rnd() - 0.5) * 6.4 : onT ? 34 + (this.rnd() - 0.5) * 5 : 34 + (this.rnd() < .5 ? -1 : 1) * (4.2 + this.rnd() * 6);
+      const L = dist(p.x, p.y, gx, ty), sp = 24 + p.A.shoot * 0.5;
+      b.owner = null; b.flight = { kind: 'shot', team: team.side, shooter: p, goal, onT, xg: o.xg }; b.vx = (gx - p.x) / L * sp; b.vy = (ty - p.y) / L * sp; b.vz = goal || !onT ? 2 + this.rnd() * 4 : 3; b.spin = (this.rnd() - .5) * 2; b.lastTouch = p;
+      if (onT) team.stats.onT++;
+      this.log('shot', '#' + p.num + ' ' + team.short + ' şut · xG ' + o.xg.toFixed(2), { x: p.x, y: p.y });
+    } else if (o.k === 'pass') {
+      team.stats.passA++; const L = dist(p.x, p.y, o.tx, o.ty); const err = (1 - p.A.pass / 22) * (o.long ? 3.2 : 1.4) * (1 + p.fat);
+      const tx = o.tx + (this.rnd() - .5) * err * 2, ty = o.ty + (this.rnd() - .5) * err * 2; const sp = o.speed;
+      b.owner = null; b.flight = { kind: 'pass', team: team.side, from: p, to: o.to }; b.vx = (tx - p.x) / L * sp; b.vy = (ty - p.y) / L * sp; b.vz = o.long ? 6 + L * 0.12 : 0.6; b.spin = (this.rnd() - .5); b.lastTouch = p;
+      this.log('pass', '#' + p.num + ' → #' + o.to.num + (o.long ? ' uzun top' : dir * (o.tx - p.x) > 12 ? ' ara pası' : ' pas') + ' (hedef ' + tx.toFixed(1) + ', ' + ty.toFixed(1) + ' · hız ' + sp.toFixed(1) + ' m/s)', { from: p.num, to: o.to.num });
+    } else if (o.k === 'drib') { p.drib = 0.6; } else { p.drib = 0; }
+    p.cool = (o.k === 'drib' ? 0.45 : o.k === 'hold' ? 0.5 : 0.3) / clamp(team.live.tempo, 0.5, 1.4) + this.rnd() * 0.2;
+  }
+  // takım şekli: formasyon + top konumu + kompaktlık + pres
+  targets(team) {
+    const b = this.ball, opp = this.opp(team), dir = this.attDir(team); const has = b.owner && b.owner.team === team.side; const live = team.live;
+    const bxN = dir > 0 ? b.x / 105 : 1 - b.x / 105; // hücum yönünde 0..1
+    const shift = has ? 0.18 + 0.32 * bxN : -0.05 + 0.32 * bxN; const sq = has ? 1 : 0.78 - live.compact * 0.6;
+    for (const p of team.players) {
+      let [fx, fy] = p.base; if (p.role === 'KL') { fx = 0.03 + bxN * 0.07; fy = 0.5 + (((dir > 0 ? b.y : 68 - b.y) / 68) - 0.5) * 0.25; }
+      else { fx = clamp(fx * (has ? 1 : 0.85 - live.compact * 0.4) + shift * (1 - live.compact * 0.5), 0.05, 0.93); const by = dir > 0 ? b.y / 68 : 1 - b.y / 68; fy = 0.5 + (fy - 0.5) * sq + (by - 0.5) * (has ? 0.18 : 0.3); }
+      const [x, y] = this.toWorld(team, fx, fy); p.tx = x; p.ty = y;
+    }
+    if (!has) { // pres: en yakın 1-2 oyuncu topa
+      const pr = team.players.filter(p => p.role !== 'KL').map(p => [p, dist(p.x, p.y, b.x, b.y)]).sort((a, c) => a[1] - c[1]);
+      const n = live.press > 0.8 ? 2 : 1; for (let i = 0; i < n && i < pr.length; i++) { const p = pr[i][0]; if (pr[i][1] < 14 + 10 * live.press) { p.tx = b.x; p.ty = b.y; } }
+    }
+    if (b.owner && b.owner.team === team.side) { // koşular: forvetler derinlik
+      for (const p of team.players) if ((p.role === 'SNT' || /K$/.test(p.role)) && p !== b.owner) { p.tx = clamp(p.tx + dir * 4 * live.tempo, 2, 103); }
+    }
+  }
+  step(dt) {
+    if (this.over) return; this.tick++; this.simT += dt;
+    if (this.goalPause > 0) { this.goalPause -= dt; if (this.goalPause <= 0) this.kickoff(this.pendingKick); return; }
+    const b = this.ball;
+    for (const t of this.teams) { const gd = t.stats.goals - this.opp(t).stats.goals; ScorePacingController.update(t, gd, this.minute); this.targets(t); }
+    // oyuncu hareketi
+    for (const t of this.teams) for (const p of t.players) {
+      let tx = p.tx, ty = p.ty; if (b.owner === p) { const dir = this.attDir(t); tx = p.x + dir * (p.drib ? 6 : 1.2); ty = p.y + (34 - p.y) * 0.04; }
+      if (!b.owner && b.flight == null) { /* serbest top: en yakınlar kovalar */ }
+      const dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy); const vmax = (3.2 + p.A.pace * 0.24) * (1 - 0.3 * p.fat) * (d < 3 ? d / 3 : 1);
+      const ax = (d > 0.01 ? dx / d * vmax : 0) - p.vx, ay = (d > 0.01 ? dy / d * vmax : 0) - p.vy; const acc = (4 + p.A.acc * 0.3) * dt;
+      const al = Math.hypot(ax, ay); p.vx += al > acc ? ax / al * acc : ax; p.vy += al > acc ? ay / al * acc : ay;
+      p.x = clamp(p.x + p.vx * dt, -1, 106); p.y = clamp(p.y + p.vy * dt, -1, 69); if (Math.hypot(p.vx, p.vy) > 0.3) p.hd = Math.atan2(p.vy, p.vx);
+      const sp = Math.hypot(p.vx, p.vy); p.fat = clamp(p.fat + dt * (sp > 5 ? 0.0009 : 0.0002) * (25 - p.A.stam) / 12 - dt * (sp < 2 ? 0.0002 : 0), 0, 0.8);
+    }
+    // top
+    if (b.owner) {
+      const p = b.owner, t = this.teams[p.team]; t.stats.poss += dt; const dir = this.attDir(t);
+      b.x = p.x + Math.cos(p.hd) * 0.7; b.y = p.y + Math.sin(p.hd) * 0.7; b.z = 0;
+      // ikili mücadele: yakın rakip
+      const opp = this.opp(t); for (const o of opp.players) { if (dist(o.x, o.y, p.x, p.y) < 1.4 && this.rnd() < dt * 3) { t.stats.duelT++; opp.stats.duelT++; const r = DuelResolver.tackle(p, o, this.rnd); if (r.carrierWins) { t.stats.duelW++; p.cool = Math.min(p.cool, 0.1); } else { opp.stats.duelW++; opp.stats.tklW++; this.log('tackle', '#' + o.num + ' ' + opp.short + ' topu kaptı (P=' + (1 - r.p).toFixed(2) + ')'); this.give(o); } break; } }
+      if (b.owner === p) { p.cool -= dt; if (p.cool <= 0) this.act(p, this.decide(p)); }
+    } else {
+      b.vz -= 9.81 * dt; b.x += b.vx * dt; b.y += b.vy * dt; b.z += b.vz * dt; // Magnus (falso): yana kuvvet
+      const sp = Math.hypot(b.vx, b.vy); if (sp > 1) { b.vx += -b.vy / sp * b.spin * 0.8 * dt; b.vy += b.vx / sp * b.spin * 0.8 * dt; }
+      if (b.z <= 0) { b.z = 0; if (b.vz < -2) b.vz = -b.vz * 0.45; else b.vz = 0; const f = Math.pow(0.55, dt); b.vx *= f; b.vy *= f; } else { const f = Math.pow(0.97, dt); b.vx *= f; b.vy *= f; }
+      const fl = b.flight;
+      if (fl && fl.kind === 'shot') {
+        const t = this.teams[fl.team]; const gx = this.goalX(t);
+        if ((gx === 105 && b.x >= 104.5) || (gx === 0 && b.x <= 0.5)) {
+          if (fl.goal) { t.stats.goals++; this.log('goal', 'GOL! #' + fl.shooter.num + ' ' + t.name + ' · ' + this.home.stats.goals + '-' + this.away.stats.goals, { team: t.side }); b.vx *= 0.1; b.vy *= 0.1; this.goalPause = 3; this.pendingKick = 1 - t.side; b.flight = null; return; }
+          const gk = this.opp(t).players[0];
+          if (fl.onT) { this.log('save', '#' + gk.num + ' ' + this.opp(t).short + ' kurtardı'); this.give(gk); }
+          else { this.log('miss', 'Auta gitti · kale vuruşu'); this.give(gk); gk.x = gx === 105 ? 99.5 : 5.5; gk.y = 34; }
+          return;
+        }
+      }
+      // kontrol / araya girme: topa en yakın, ulaşabilen oyuncu
+      let best = null, bd = 99;
+      for (const t of this.teams) for (const p of t.players) { const d = dist(p.x, p.y, b.x, b.y); if (d < bd && b.z < 1.8) { bd = d; best = p; } }
+      if (best && bd < 1.1 && !(fl && fl.kind === 'shot')) {
+        if (fl && fl.kind === 'pass') { const t = this.teams[fl.team]; if (best.team === fl.team) t.stats.passC++; else this.log('intercept', '#' + best.num + ' ' + this.teams[best.team].short + ' pası kesti'); }
+        if (b.z > 0.9 && fl && fl.kind === 'pass') { // hava topu
+          const rival = this.teams[1 - best.team].players.find(o => dist(o.x, o.y, b.x, b.y) < 1.8);
+          if (rival) { const r = DuelResolver.aerial(best, rival, this.rnd); this.teams[best.team].stats.duelT++; this.teams[rival.team].stats.duelT++; const w = r.attWins ? best : rival; this.teams[w.team].stats.duelW++; this.give(w); return; }
+        }
+        this.give(best); return;
+      }
+      // serbest topu kovala
+      for (const t of this.teams) { const c = t.players.filter(p => p.role !== 'KL').map(p => [p, dist(p.x, p.y, b.x, b.y)]).sort((a, c2) => a[1] - c2[1])[0]; if (c && c[1] < 25) { c[0].tx = b.x + b.vx * 0.35; c[0].ty = b.y + b.vy * 0.35; } }
+      // saha dışı
+      if (b.x < 0 || b.x > 105 || b.y < 0 || b.y > 68) {
+        const last = b.lastTouch ? b.lastTouch.team : 0; const t = this.teams[1 - last]; const rx = clamp(b.x, 1, 104), ry = clamp(b.y, 0.5, 67.5);
+        const taker = t.players.filter(p => p.role !== 'KL').map(p => [p, dist(p.x, p.y, rx, ry)]).sort((a, c) => a[1] - c[1])[0][0];
+        if (b.x < 0 || b.x > 105) { const own = this.goalX(this.opp(t)) === (b.x < 0 ? 0 : 105); if (own) { const gk = t.players[0]; gk.x = b.x < 0 ? 5.5 : 99.5; gk.y = 34; this.give(gk); this.log('restart', 'Kale vuruşu'); } else { taker.x = b.x < 0 ? 0.5 : 104.5; taker.y = b.y < 34 ? 0.5 : 67.5; this.give(taker); this.log('restart', 'Korner · ' + t.short); } }
+        else { taker.x = rx; taker.y = ry; this.give(taker); this.log('restart', 'Taç · ' + t.short); }
+      }
+    }
+    // devre / maç sonu
+    const sec = this.simT * TIME_K;
+    if (this.half === 1 && sec >= 45 * 60) { this.half = 2; this.log('half', 'İlk yarı bitti · ' + this.home.stats.goals + '-' + this.away.stats.goals); for (const t of this.teams) for (const p of t.players) p.fat *= 0.7; this.kickoff(1); }
+    else if (sec >= 90 * 60 + 120) { this.over = true; this.log('end', 'Maç sonu · ' + this.home.name + ' ' + this.home.stats.goals + '-' + this.away.stats.goals + ' ' + this.away.name); }
+  }
+  runToEnd() { const dt = 1 / MATCH_CFG.TICK; let guard = 0; while (!this.over && guard++ < 400000) this.step(dt); return this; }
+}
+const TEAMS_DEMO = {
+  home: { name: 'Fenerbahçe', short: 'FB', colors: ['#0B1F4D', '#F4D21F'], str: 14, tac: { press: 0.85, tempo: 0.9, compact: 0.12, risk: 0.9 } },
+  away: { name: 'Real Madrid', short: 'RM', colors: ['#F4F4F2', '#C9A227'], str: 16, tac: { press: 0.95, tempo: 1.05, compact: 0.08, risk: 1.0 } }
+};
+
+
+// ===== Katman 2: yayın kamerası + perspektif çizim (Canvas, harici kütüphane yok) =====
+const CAM = { x: 52.5, tx: 52.5, ty: 34, fov: 26, z: 19, back: -31 };
+const CROWD = (() => { const r = mulberry(7); const a = []; for (let i = 0; i < 1600; i++) a.push([r() * 150 - 22, r(), r()]); return a; })();
+function camBasis(c) {
+  const cam = [c.x, c.back, c.z], tgt = [c.tx, c.ty, 0];
+  let f = [tgt[0] - cam[0], tgt[1] - cam[1], tgt[2] - cam[2]]; let l = Math.hypot(...f); f = f.map(v => v / l);
+  let r = [f[1] * 1 - f[2] * 0, f[2] * 0 - f[0] * 1, 0]; // f x up(0,0,1)
+  r = [f[1], -f[0], 0]; l = Math.hypot(...r); r = r.map(v => v / l);
+  const u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
+  return { cam, f, r, u };
+}
+function makeProj(c, W, H) {
+  const B = camBasis(c); const foc = (H / 2) / Math.tan(c.fov * Math.PI / 360);
+  return (x, y, z) => { const d = [x - B.cam[0], y - B.cam[1], (z || 0) - B.cam[2]]; const zc = d[0] * B.f[0] + d[1] * B.f[1] + d[2] * B.f[2]; if (zc < 0.5) return null; const xc = d[0] * B.r[0] + d[1] * B.r[1]; const yc = d[0] * B.u[0] + d[1] * B.u[1] + d[2] * B.u[2]; return [W / 2 + foc * xc / zc, H / 2 - foc * yc / zc, foc / zc, zc]; };
+}
+function updateCam(m, dt) {
+  const b = m.ball; const k = 1 - Math.pow(0.12, dt);
+  const tx = clamp(b.x, 16, 89); CAM.x += (tx - CAM.x) * k * 0.9; CAM.tx += (clamp(b.x, 10, 95) - CAM.tx) * k;
+  CAM.ty += ((34 + (b.y - 34) * 0.45) - CAM.ty) * k;
+  const nearBox = b.x < 22 || b.x > 83; const sp = Math.hypot(b.vx, b.vy);
+  const fovT = (nearBox ? 28 : 25) + clamp(sp, 0, 25) * 0.18; CAM.fov += (fovT - CAM.fov) * k * 0.6;
+}
+function poly(ctx, P, pts, fill, stroke, lw) { const q = pts.map(p => P(p[0], p[1], p[2] || 0)); if (q.some(v => !v)) return; ctx.beginPath(); q.forEach((v, i) => i ? ctx.lineTo(v[0], v[1]) : ctx.moveTo(v[0], v[1])); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); } }
+function line3(ctx, P, pts, lw, col) { const q = pts.map(p => P(p[0], p[1], p[2] || 0)); ctx.beginPath(); let started = false; for (const v of q) { if (!v) { started = false; continue; } if (!started) { ctx.moveTo(v[0], v[1]); started = true; } else ctx.lineTo(v[0], v[1]); } ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.stroke(); }
+function drawBroadcast(ctx, m, W, H) {
+  const P = makeProj(CAM, W, H);
+  // gökyüzü + tribün
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#05080F'); g.addColorStop(1, '#0B1222'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  poly(ctx, P, [[-25, 74, 0], [130, 74, 0], [130, 104, 30], [-25, 104, 30]], '#141A2B');
+  for (const [cx, cy, cc] of CROWD) { const y = 74 + cy * 30, z = cy * 30; const v = P(cx, y, z); if (!v) continue; const s = Math.max(1, v[2] * 0.35); ctx.fillStyle = cc < 0.45 ? m.home.colors[1] : cc < 0.75 ? m.home.colors[0] : cc < 0.85 ? '#E8E8E8' : '#2A3146'; ctx.globalAlpha = 0.55; ctx.fillRect(v[0], v[1], s, s * 1.2); }
+  ctx.globalAlpha = 1;
+  poly(ctx, P, [[-25, 70, 0], [130, 70, 0], [130, 74, 0], [-25, 74, 0]], '#0E1A12'); // reklam şeridi zemini
+  poly(ctx, P, [[-6, 71.5, 0], [111, 71.5, 0], [111, 71.5, 1.1], [-6, 71.5, 1.1]], '#C8102E');
+  // çim şeritleri
+  for (let i = -3; i < 15; i++) { const x0 = i * 8.75, x1 = x0 + 8.75; poly(ctx, P, [[x0, -14, 0], [x1, -14, 0], [x1, 71, 0], [x0, 71, 0]], i % 2 ? '#2F7A35' : '#2A6E30'); }
+  // çizgiler
+  const L = 'rgba(255,255,255,0.85)', lw = Math.max(1, P(52.5, 34, 0)[2] * 0.12);
+  line3(ctx, P, [[0, 0], [105, 0], [105, 68], [0, 68], [0, 0]], lw, L); line3(ctx, P, [[52.5, 0], [52.5, 68]], lw, L);
+  const circ = (cx, cy, r, a0, a1) => { const pts = []; for (let i = 0; i <= 40; i++) { const a = a0 + (a1 - a0) * i / 40; pts.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); } line3(ctx, P, pts, lw, L); };
+  circ(52.5, 34, 9.15, 0, Math.PI * 2);
+  for (const s of [0, 1]) { const X = s ? 105 : 0, d = s ? -1 : 1;
+    line3(ctx, P, [[X, 13.84], [X + d * 16.5, 13.84], [X + d * 16.5, 54.16], [X, 54.16]], lw, L);
+    line3(ctx, P, [[X, 24.84], [X + d * 5.5, 24.84], [X + d * 5.5, 43.16], [X, 43.16]], lw, L);
+    const a = Math.acos(5.5 / 9.15); circ(X + d * 11, 34, 9.15, s ? Math.PI - a : -a, s ? Math.PI + a : a); }
+  // kaleler (direk + üst direk + ağ)
+  for (const X of [0, 105]) { const d = X ? 1 : -1; const y0 = 34 - 3.66, y1 = 34 + 3.66, h = 2.44;
+    for (let i = 0; i <= 8; i++) { const yy = y0 + (y1 - y0) * i / 8; line3(ctx, P, [[X, yy, h], [X + d * 2, yy, h * 0.7], [X + d * 2, yy, 0]], 1, 'rgba(255,255,255,0.25)'); }
+    for (let k = 0; k <= 4; k++) { const z = h * k / 4; line3(ctx, P, [[X + d * 2, y0, z * 0.7 + (k ? 0 : 0)], [X + d * 2, y1, z * 0.7]], 1, 'rgba(255,255,255,0.2)'); }
+    const pw = Math.max(2, P(X, 34, 0)[2] * 0.14); line3(ctx, P, [[X, y0, 0], [X, y0, h], [X, y1, h], [X, y1, 0]], pw, '#FFFFFF'); }
+  // oyuncular + top (derinliğe göre)
+  const ents = [];
+  for (const t of m.teams) for (const p of t.players) { const v = P(p.x, p.y, 0); if (v) ents.push({ z: v[3], f: () => drawPlayer(ctx, P, p, t, m) }); }
+  const b = m.ball; const bv = P(b.x, b.y, 0); if (bv) ents.push({ z: bv[3] - 0.01, f: () => drawBall(ctx, P, b) });
+  ents.sort((a, c) => c.z - a.z).forEach(e => e.f());
+}
+function drawPlayer(ctx, P, p, t, m) {
+  const feet = P(p.x, p.y, 0), head = P(p.x, p.y, 1.82); if (!feet || !head) return; const s = feet[2];
+  ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.ellipse(feet[0] + s * 0.25, feet[1], s * 0.45, s * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+  const gk = p.role === 'KL'; const shirt = gk ? (t.side ? '#2BB673' : '#F28C28') : t.colors[0], trim = gk ? '#111' : t.colors[1];
+  const run = Math.hypot(p.vx, p.vy) > 1 ? Math.sin(m.simT * 11 + p.idx) * s * 0.12 : 0; const w = s * 0.24;
+  const hip = P(p.x, p.y, 0.95), sh = P(p.x, p.y, 1.5);
+  ctx.lineCap = 'round'; ctx.strokeStyle = gk ? '#222' : (t.side ? '#F4F4F2' : '#F4F4F2');
+  ctx.lineWidth = w * 0.55; ctx.beginPath(); ctx.moveTo(hip[0] - w * 0.25, hip[1]); ctx.lineTo(feet[0] - w * 0.25 + run, feet[1]); ctx.moveTo(hip[0] + w * 0.25, hip[1]); ctx.lineTo(feet[0] + w * 0.25 - run, feet[1]); ctx.stroke();
+  ctx.strokeStyle = t.side === 0 && !gk ? '#0B1F4D' : '#FFFFFF'; ctx.lineWidth = w * 0.95; ctx.beginPath(); ctx.moveTo(hip[0], hip[1] - s * 0.05); ctx.lineTo(hip[0], hip[1] + s * 0.12); ctx.stroke();
+  ctx.strokeStyle = shirt; ctx.lineWidth = w * 1.15; ctx.beginPath(); ctx.moveTo(hip[0], hip[1] - s * 0.05); ctx.lineTo(sh[0], sh[1]); ctx.stroke();
+  ctx.lineWidth = w * 0.4; ctx.beginPath(); ctx.moveTo(sh[0] - w * 0.55, sh[1]); ctx.lineTo(sh[0] - w * 0.75 - run * 0.5, hip[1] - s * 0.05); ctx.moveTo(sh[0] + w * 0.55, sh[1]); ctx.lineTo(sh[0] + w * 0.75 + run * 0.5, hip[1] - s * 0.05); ctx.stroke();
+  ctx.fillStyle = '#C99A7A'; ctx.beginPath(); ctx.arc(head[0], head[1] + s * 0.06, s * 0.11, 0, Math.PI * 2); ctx.fill();
+  if (s > 11) { ctx.fillStyle = trim; ctx.font = '700 ' + Math.round(s * 0.2) + 'px Manrope, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(String(p.num), (hip[0] + sh[0]) / 2, (hip[1] + sh[1]) / 2 + s * 0.06); }
+  if (m.ball.owner === p) { ctx.strokeStyle = '#F2C14E'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(feet[0], feet[1], s * 0.5, s * 0.16, 0, 0, Math.PI * 2); ctx.stroke(); }
+}
+function drawBall(ctx, P, b) {
+  const sh = P(b.x, b.y, 0), v = P(b.x, b.y, b.z + 0.11); if (!sh || !v) return; const r = Math.max(2, v[2] * 0.12);
+  ctx.fillStyle = 'rgba(0,0,0,' + clamp(0.4 - b.z * 0.04, 0.08, 0.4) + ')'; ctx.beginPath(); ctx.ellipse(sh[0], sh[1], r * 1.1, r * 0.4, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(v[0], v[1], r, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#333'; ctx.lineWidth = 0.6; ctx.stroke();
+}
+function drawRadar(ctx, m, W, H) {
+  ctx.fillStyle = '#1F5A27'; ctx.fillRect(0, 0, W, H); const sx = W / 105, sy = H / 68; ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1;
+  ctx.strokeRect(0.5, 0.5, W - 1, H - 1); ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.stroke(); ctx.beginPath(); ctx.arc(W / 2, H / 2, 9.15 * sx, 0, Math.PI * 2); ctx.stroke();
+  ctx.strokeRect(0, 13.84 * sy, 16.5 * sx, 40.32 * sy); ctx.strokeRect(W - 16.5 * sx, 13.84 * sy, 16.5 * sx, 40.32 * sy);
+  for (const t of m.teams) for (const p of t.players) { ctx.fillStyle = p.role === 'KL' ? (t.side ? '#2BB673' : '#F28C28') : t.colors[0]; ctx.strokeStyle = t.colors[1]; ctx.beginPath(); ctx.arc(p.x * sx, p.y * sy, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.arc(m.ball.x * sx, m.ball.y * sy, 2.5, 0, Math.PI * 2); ctx.fill();
+  // kamera görüş alanı
+  ctx.strokeStyle = 'rgba(242,193,78,0.8)'; ctx.setLineDash([4, 3]); ctx.strokeRect((CAM.tx - 22) * sx, 2, 44 * sx, H - 4); ctx.setLineDash([]);
+}
+
+const EVC = { goal: '#FF6B76', shot: '#F2C14E', save: '#8FB8FF', tackle: '#C9D0E2', intercept: '#C9D0E2', pass: '#7D879F', restart: '#7D879F', kickoff: '#7FD8AF', half: '#7FD8AF', end: '#7FD8AF', miss: '#F2C14E' };
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.seed = 1; this.m = new MatchEngine({ seed: this.seed, home: TEAMS_DEMO.home, away: TEAMS_DEMO.away });
+    const pv = (function () { try { return window.__tdReadPrefs().speed; } catch (e) { return undefined; } })();
+    this.state = { tick: 0, playing: true, speed: pv === 'Yavaş' ? 0.5 : pv === 'Hızlı' ? 2 : 1, batch: null, batchRun: false, goalUntil: 0 };
+    if (pv === 'Anında sonuç') { try { this.m.runToEnd(); this.state.tick = this.m.tick; } catch (e) {} }
+    this.acc = 0; this.last = 0; this.lastUi = 0; this.lastGoals = 0;
+    const loop = (ts) => { try { this.frame(ts); } catch (e) {} try { requestAnimationFrame(loop); } catch (e) {} };
+    try { requestAnimationFrame(loop); } catch (e) {}
+  }
+  frame(ts) {
+    const dt = this.last ? Math.min(0.1, (ts - this.last) / 1000) : 0; this.last = ts; const m = this.m;
+    if (this.state.playing && !m.over) { this.acc += dt * this.state.speed; const step = 1 / 20; let n = 0; while (this.acc >= step && n < 400) { m.step(step); this.acc -= step; n++; } }
+    updateCam(m, dt);
+    const c = document.getElementById('mm-cam'); if (c) { const r = c.getBoundingClientRect(); const dpr = Math.min(2, window.devicePixelRatio || 1); const W = Math.max(10, Math.round(r.width * dpr)), H = Math.max(10, Math.round(r.height * dpr)); if (c.width !== W || c.height !== H) { c.width = W; c.height = H; } const ctx = c.getContext('2d'); ctx.setTransform(1, 0, 0, 1, 0, 0); drawBroadcast(ctx, m, W, H); }
+    const rd = document.getElementById('mm-radar'); if (rd) drawRadar(rd.getContext('2d'), m, rd.width, rd.height);
+    const goals = m.home.stats.goals + m.away.stats.goals; if (goals !== this.lastGoals) { this.lastGoals = goals; this.setState({ goalUntil: ts + 2200 }); }
+    if (ts - this.lastUi > 250) { this.lastUi = ts; this.setState({ tick: m.tick, now: ts }); }
+  }
+  newMatch(seed) { this.seed = seed || (2 + Math.floor(Math.random() * 1e6)); this.m = new MatchEngine({ seed: this.seed, home: TEAMS_DEMO.home, away: TEAMS_DEMO.away }); this.lastGoals = 0; this.acc = 0; this.setState({ playing: true, tick: 0 }); }
+  runBatch() {
+    if (this.state.batchRun) return; const N = 50; const res = {}; let i = 0, hw = 0, d = 0, aw = 0, g = 0, maxd = 0, xg = 0; this.setState({ batchRun: true, batch: { n: 0, res: {}, N } });
+    const chunk = () => { const end = Math.min(N, i + 2); for (; i < end; i++) { const mm = new MatchEngine({ seed: 1000 + i, home: TEAMS_DEMO.home, away: TEAMS_DEMO.away }).runToEnd(); const H = mm.home.stats.goals, A = mm.away.stats.goals; const k = H + '-' + A; res[k] = (res[k] || 0) + 1; if (H > A) hw++; else if (H < A) aw++; else d++; g += H + A; maxd = Math.max(maxd, Math.abs(H - A)); xg += mm.home.stats.xg + mm.away.stats.xg; }
+      this.setState({ batch: { n: i, res: Object.assign({}, res), N, hw, d, aw, g, maxd, xg } }); if (i < N) { try { setTimeout(chunk, 0); } catch (e) {} } else this.setState({ batchRun: false }); };
+    try { setTimeout(chunk, 30); } catch (e) {}
+  }
+  renderVals() {
+    const m = this.m, H = m.home.stats, A = m.away.stats, st = this.state; const tp = H.poss + A.poss || 1;
+    const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+    const stats = [
+      { k: 'Topla oynama', h: Math.round(H.poss / tp * 100) + '%', a: Math.round(A.poss / tp * 100) + '%' },
+      { k: 'Şut (isabet)', h: H.shots + ' (' + H.onT + ')', a: A.shots + ' (' + A.onT + ')' },
+      { k: 'xG', h: H.xg.toFixed(2), a: A.xg.toFixed(2) },
+      { k: 'Pas isabeti', h: pct(H.passC, H.passA), a: pct(A.passC, A.passA) },
+      { k: 'İkili mücadele', h: pct(H.duelW, H.duelT), a: pct(A.duelW, A.duelT) },
+      { k: 'Ort. yorgunluk', h: Math.round(m.home.players.reduce((s, p) => s + p.fat, 0) / 11 * 100) + '%', a: Math.round(m.away.players.reduce((s, p) => s + p.fat, 0) / 11 * 100) + '%' }
+    ];
+    const pacing = m.teams.map(t => ({ n: t.short, label: t.live.label, bars: [['Pres', t.live.press / 1.5, '#C8102E'], ['Tempo', t.live.tempo / 1.5, '#F2C14E'], ['Kompaktlık', t.live.compact / 0.5, '#8FB8FF'], ['Risk iştahı', t.live.risk / 1.6, '#7FD8AF']].map(([k, v, c]) => ({ k, w: Math.round(v * 100) + '%', c })) }));
+    const ev = m.buffer.slice(-12).reverse().map(e => ({ t: 'T' + e.tick + ' · ' + e.t + ' · ' + e.text, c: EVC[e.type] || '#A7B0C8' }));
+    const lastE = m.buffer.filter(e => e.type !== 'pass').slice(-1)[0];
+    const b = st.batch; let bRows = [], bSummary = '';
+    if (b) { const ent = Object.entries(b.res).sort((x, y) => y[1] - x[1]).slice(0, 10); const mx = Math.max(1, ...ent.map(x => x[1]));
+      bRows = ent.map(([k, n]) => { const [h, a] = k.split('-').map(Number); return { k, n: String(n), w: Math.round(n / mx * 100) + '%', c: h > a ? '#F4D21F' : h < a ? '#F4F6FB' : '#8C96B2' }; });
+      bSummary = b.n ? ('FB galibiyet ' + b.hw + ' · beraberlik ' + b.d + ' · RM galibiyet ' + b.aw + ' · maç başı ' + (b.g / b.n).toFixed(2) + ' gol, ' + (b.xg / b.n).toFixed(2) + ' xG · en büyük fark ' + b.maxd) : 'Hesaplanıyor…'; }
+    return {
+      seed: String(this.seed), hs: 'FB', as: 'RM', score: H.goals + ' – ' + A.goals, clock: m.over ? 'MS' : m.clock(),
+      last: lastE ? lastE.t + ' · ' + lastE.text : '', lastColor: lastE ? (EVC[lastE.type] || '#F4F6FB') : '#F4F6FB',
+      goalFlash: (st.now || 0) < st.goalUntil,
+      playLabel: m.over ? 'Maç bitti' : st.playing ? '❚❚ Duraklat' : '▶ Oynat', toggle: () => this.setState({ playing: !this.state.playing }),
+      speeds: [0.5, 1, 2, 4, 16, 64].map(v => ({ t: v + '×', bg: st.speed === v ? 'rgba(200,16,46,0.25)' : 'transparent', bd: st.speed === v ? '#C8102E' : 'rgba(255,255,255,0.16)', pick: () => this.setState({ speed: v }) })),
+      finish: () => { this.m.runToEnd(); this.setState({ tick: this.m.tick }); }, newMatch: () => this.newMatch(),
+      batch: () => this.runBatch(), batchLabel: st.batchRun ? 'Simüle ediliyor… ' + ((b && b.n) || 0) + '/50' : '50 maç simüle et',
+      stats, pacing, events: ev, hasBatch: !!b, bN: String(b ? b.N : 0), bSummary, bRows
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Yapımcılar · The Simple Game</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F1C}
+a{color:#C9D0E2;text-decoration:none}a:hover{color:#FFFFFF}
+.ghost:hover{background:rgba(255,255,255,0.08) !important}
+</style>
+</helmet>
+<div style="min-height: 100vh; position: relative; overflow: hidden; background: #0A0F1C; color: #F4F6FB; font-family: 'Manrope', system-ui, sans-serif">
+<img src="/_blob/37d3311d36b777efbeea9c38beb02667" alt="" aria-hidden="true" style="position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(16px) brightness(0.35) saturate(0.85)">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 40%, rgba(10,15,28,0.35) 0%, rgba(10,15,28,0.85) 75%)"></div>
+
+<div style="position: relative; z-index: 1; box-sizing: border-box; padding: 28px 56px 40px; min-height: 100vh; display: flex; flex-direction: column; gap: 28px">
+
+<header style="display: flex; align-items: center; gap: 18px">
+<a href="Main.dc.html" class="ghost" aria-label="Ana menüye dön" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F6FB" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg>
+</a>
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.22em; color: #FF6B76">ANA MENÜ</span>
+</header>
+
+<main style="flex: 1; width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 44px; text-align: center">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<span style="width: 56px; height: 60px; border-radius: 13px; background: #C8102E; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="34" height="46" viewBox="30 10 160 240"><g fill="currentColor"><circle cx="113" cy="30" r="13"/><path d="M104.0 46.5 L102.0 57.5 L114.0 58.5 L114.0 47.5 Z"/><circle cx="109.0" cy="47.0" r="5.0"/><circle cx="108.0" cy="58.0" r="6.0"/> <path d="M93 58 Q109 52 125 61 L116 124 Q103 128 91 121 Z"/> <path d="M90 116 L117 118 L124 146 L106 150 L100 138 L94 150 L78 142 Z"/> <path d="M88.7 53.8 L64.7 80.8 L71.3 87.2 L97.3 62.2 Z"/><circle cx="93.0" cy="58.0" r="6.0"/><circle cx="68.0" cy="84.0" r="4.6"/> <path d="M69.9 79.8 L47.4 70.9 L44.6 77.1 L66.1 88.2 Z"/><circle cx="68.0" cy="84.0" r="4.6"/><circle cx="46.0" cy="74.0" r="3.4"/> <path d="M121.4 65.8 L147.2 83.7 L152.8 76.3 L128.6 56.2 Z"/><circle cx="125.0" cy="61.0" r="6.0"/><circle cx="150.0" cy="80.0" r="4.6"/> <path d="M152.3 84.0 L174.7 70.0 L171.3 64.0 L147.7 76.0 Z"/><circle cx="150.0" cy="80.0" r="4.6"/><circle cx="173.0" cy="67.0" r="3.4"/> <path d="M96.7 129.9 L109.3 177.4 L122.7 174.6 L115.3 126.1 Z"/><circle cx="106.0" cy="128.0" r="9.5"/><circle cx="116.0" cy="176.0" r="6.8"/> <path d="M109.3 174.9 L103.9 225.3 L112.1 226.7 L122.7 177.1 Z"/><circle cx="116.0" cy="176.0" r="6.8"/><circle cx="108.0" cy="226.0" r="4.2"/> <path d="M106.6 230.0 L126.8 236.4 L129.2 229.6 L109.4 222.0 Z"/><circle cx="108.0" cy="226.0" r="4.2"/><circle cx="128.0" cy="233.0" r="3.6"/> <path d="M86.2 118.5 L69.7 167.5 L82.3 172.5 L103.8 125.5 Z"/><circle cx="95.0" cy="122.0" r="9.5"/><circle cx="76.0" cy="170.0" r="6.8"/> <path d="M72.0 175.5 L116.5 204.4 L121.5 197.6 L80.0 164.5 Z"/><circle cx="76.0" cy="170.0" r="6.8"/><circle cx="119.0" cy="201.0" r="4.2"/> <path d="M117.0 204.7 L132.3 212.2 L135.7 205.8 L121.0 197.3 Z"/><circle cx="119.0" cy="201.0" r="4.2"/><circle cx="134.0" cy="209.0" r="3.6"/></g><text x="104" y="102" font-family="Saira Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="22" fill="#0A0F1C" text-anchor="middle" transform="rotate(-6 104 94)">14</text><circle cx="148" cy="219" r="9" fill="#0A0F1C"/></svg>
+</span>
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: 0.14em; color: #A7B0C8">THE SIMPLE GAME</span>
+<h1 style="margin: 0; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: clamp(48px, 6vw, 72px); line-height: 0.9; letter-spacing: 0.04em">YAPIMCILAR</h1>
+</div>
+
+<!-- Yapımcı -->
+<section aria-label="Yapımcı" style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px">
+<span style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.24em; color: #FF6B76"><span style="width: 28px; height: 2px; background: #C8102E"></span>YAPIMCI<span style="width: 28px; height: 2px; background: #C8102E"></span></span>
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: clamp(36px, 4.4vw, 52px); line-height: 1; letter-spacing: 0.03em">MURAT ZİHNİ</span>
+<span style="font-size: 15px; font-weight: 600; letter-spacing: 0.08em; color: #C9D0E2">Fikir · Tasarım · Geliştirme</span>
+<p style="margin: 6px 0 0; max-width: 520px; font-size: 15px; line-height: 1.6; color: #A7B0C8">Kişisel bir tutku projesi olarak, Türk futbolunun her kademesini yaşatmak için geliştirildi.</p>
+</section>
+
+<!-- Teşekkürler -->
+<section aria-label="Teşekkürler" style="width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 28px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.55); backdrop-filter: blur(10px)">
+<span style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.24em; color: #FF6B76"><span style="width: 28px; height: 2px; background: #C8102E"></span>TEŞEKKÜRLER<span style="width: 28px; height: 2px; background: #C8102E"></span></span>
+<p style="margin: 0; max-width: 520px; font-size: 15px; line-height: 1.6; color: #C9D0E2">Oyunu ilk günden test eden, hataları yakalayan ve fikirleriyle şekillendiren herkese.</p>
+<div style="width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<div style="padding: 16px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.03em">Burak Zihni</span>
+<span style="font-size: 12px; color: #8C96B2">Test ve geri bildirim</span>
+</div>
+<div style="padding: 16px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.03em">Gökdeniz Öksüz</span>
+<span style="font-size: 12px; color: #8C96B2">Test ve geri bildirim</span>
+</div>
+<div style="padding: 16px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.03em">Muhlis Güven</span>
+<span style="font-size: 12px; color: #8C96B2">Test ve geri bildirim</span>
+</div>
+<div style="padding: 16px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.03em">Orkun Nural</span>
+<span style="font-size: 12px; color: #8C96B2">Test ve geri bildirim</span>
+</div>
+<div style="padding: 16px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.03em">Emir Güven</span>
+<span style="font-size: 12px; color: #8C96B2">Test ve geri bildirim</span>
+</div>
+<div style="padding: 16px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.03em">Mert Güven</span>
+<span style="font-size: 12px; color: #8C96B2">Test ve geri bildirim</span>
+</div>
+</div>
+</section>
+
+<!-- Yasal not -->
+<section aria-label="Yasal not" style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px">
+<span style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.24em; color: #8C96B2"><span style="width: 28px; height: 1px; background: #5F6987"></span>YASAL NOT<span style="width: 28px; height: 1px; background: #5F6987"></span></span>
+<p style="margin: 0; max-width: 620px; font-size: 13px; line-height: 1.7; color: #A7B0C8">The Simple Game ticari olmayan, kişisel kullanım için geliştirilmiş bir oyundur ve satışa sunulmaz. Oyunda yer alan kulüp, oyuncu, teknik adam ve lig isimleri ile ilgili markalar sahiplerine aittir; oyun bu kişi ve kurumlarla bağlantılı değildir ve onlar tarafından onaylanmamıştır. Açılıştaki söz Johan Cruyff’a aittir ve alıntı olarak kullanılmıştır; oyun Cruyff ailesi ya da kurumlarıyla bağlantılı değildir.</p>
+</section>
+</main>
+
+<footer style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; color: #8C96B2">
+<span>v0.1 · Erken Erişim</span>
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">Esc</kbd> Ana menüye dön</span>
+</footer>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+// ===== Ortak tercihler: Ayarlar'daki Ölçek, Yüksek kontrast ve Hareketi azalt tüm ekranlara uygulanır =====
+(function tdPrefs() {
+  function read() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } try { const s = JSON.parse(r || '{}'); return s && typeof s === 'object' ? s : {}; } catch (e) { return {}; } }
+  function apply() {
+    try {
+      const s = read(); const root = document.documentElement; if (!root) return;
+      let st = document.getElementById('td-prefs-style');
+      if (!st) { st = document.createElement('style'); st.id = 'td-prefs-style'; (document.head || root).appendChild(st); }
+      const sc = s.scale === undefined ? 100 : Number(s.scale); let css = '';
+      if (sc && sc !== 100) css += 'html{zoom:' + (sc / 100) + '}';
+      if (s.contrast) css += 'html{filter:contrast(1.2) brightness(1.05)}';
+      if (s.motion) css += '*,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;scroll-behavior:auto!important}';
+      st.textContent = css;
+    } catch (e) {}
+  }
+  apply();
+  try { window.addEventListener('storage', apply); window.__tdApplyPrefs = apply; window.__tdReadPrefs = read; } catch (e) {}
+})();
+
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Açılış Ekranı",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "LigPiramidi.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "Yeni Kariyer: Menajer Profili",
+      "w": 1440,
+      "x": 1520,
+      "y": 0,
+      "expand": "fill"
+    },
+    "Ayarlar.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Ayarlar",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "Yapimcilar.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "Yapımcılar",
+      "w": 1440,
+      "x": 4560,
+      "y": 0
+    },
+    "VeriEditoru.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Veri Editörü",
+      "w": 1440,
+      "x": 6080,
+      "y": 0
+    },
+    "OnurListesi.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Onur Listesi",
+      "w": 1440,
+      "x": 7600,
+      "y": 0
+    },
+    "UlkeSecimi.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Yeni Kariyer: Ülke ve Lig Seçimi",
+      "w": 1440,
+      "x": 9120,
+      "y": 0
+    },
+    "Intro.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "İntro",
+      "w": 1440,
+      "x": -1520,
+      "y": 0
+    },
+    "KayitliOyunlar.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Kayıtlı Oyunlar",
+      "w": 1440,
+      "x": 10640,
+      "y": 0
+    },
+    "MacMotoru.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Maç Motoru (prototip)",
+      "w": 1440,
+      "x": 12160,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-01T06:35:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "focused",
+    "file": "Intro.dc.html"
+  },
+  "notes": {},
+  "order": [
+    "Intro.dc.html",
+    "Main.dc.html",
+    "KayitliOyunlar.dc.html",
+    "UlkeSecimi.dc.html",
+    "LigPiramidi.dc.html",
+    "Ayarlar.dc.html",
+    "Yapimcilar.dc.html",
+    "VeriEditoru.dc.html",
+    "OnurListesi.dc.html",
+    "MacMotoru.dc.html"
+  ],
+  "pages": [],
+  "title": "Menajer Oyunu Açılış Ekranı"
+}

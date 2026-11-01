@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intro · The Simple Game</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#05080F}
+@keyframes kb{0%{transform:scale(1.22)}100%{transform:scale(1.02)}}
+@keyframes bgLight{0%{opacity:0}11%{opacity:0}16%{opacity:.35}44%{opacity:.35}47%{opacity:.75}52%{opacity:.5}80%{opacity:.45}100%{opacity:.6}}
+@keyframes scene{0%{opacity:0;transform:scale(1.05)}12%{opacity:1;transform:none}88%{opacity:1;transform:none}100%{opacity:0;transform:scale(.97)}}
+@keyframes ln{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{0%{opacity:0;transform:scale(.4) rotate(-10deg)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(24px);letter-spacing:.3em}to{opacity:1;transform:none;letter-spacing:.06em}}
+@keyframes grow{from{width:0}to{width:100%}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes lineX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes sweep{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@keyframes flash{0%{opacity:.0}10%{opacity:.35}100%{opacity:0}}
+.bg,.sc,.ln,.fin,.load,.press,.hint,.flash{opacity:0}
+.pitch path,.pitch circle,.pitch rect{stroke-dasharray:2400;stroke-dashoffset:2400}
+.cr,.quote{opacity:0}
+@keyframes crIn{from{opacity:0;transform:translateX(-60px) scale(.96)}to{opacity:1;transform:none}}
+.go .cr{animation:crIn 1.1s 18.74s cubic-bezier(.2,.8,.2,1) both}
+.go .quote{animation:ln 1s 19.3s ease both}
+.go .bg{animation:kb 23s ease-out both, bgLight 23s linear both}
+.sc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;pointer-events:none}
+.go .sc{animation-name:scene;animation-timing-function:ease;animation-fill-mode:both}
+.go .ln{animation:ln .8s ease both}
+.go .pitch path,.go .pitch circle,.go .pitch rect{animation:draw 2.6s 10.4s ease-out forwards}
+.go .flash{animation:flash .9s ease both}
+.go .fin{animation:fadeIn .5s 15.35s ease both}
+.go .title{animation:rise 1.1s 15.8s cubic-bezier(.2,.8,.2,1) both}
+.go .rule{animation:lineX .7s 17s ease both}
+.go .sweep{animation:sweep 1.4s 17.3s ease-in-out both}
+.go .load{animation:fadeIn .5s 19.6s ease both}
+.go .bar{animation:grow 1.7s 19.7s cubic-bezier(.4,0,.2,1) both}
+.go .press{animation:fadeIn .6s 21.4s ease both}
+.go .press span{animation:pulse 1.6s 22s ease-in-out infinite}
+.go .hint{animation:fadeIn .6s 15s ease both}
+.go .hint span{animation:pulse 2.2s 15.6s ease-in-out infinite}
+.gate:hover .gbtn{background:#DD1838 !important}
+.reduce .sc,.reduce .hint,.reduce .flash{display:none}
+.reduce *{animation-duration:.01s !important;animation-delay:0s !important;animation-iteration-count:1 !important}
+@media (prefers-reduced-motion: reduce){.sc,.hint,.flash{display:none}.root *{animation-duration:.01s !important;animation-delay:0s !important;animation-iteration-count:1 !important}}
+</style>
+</helmet>
+<div class="root {{rootClass}}" style="position: relative; width: 100%; height: 100vh; min-height: 700px; overflow: hidden; background: #05080F; color: #F4F6FB; font-family: 'Manrope', system-ui, sans-serif">
+<audio id="td-intro-audio" src="/_blob/9409672dd014ee1b44583d05a7be2cf0" preload="auto"></audio>
+
+<img class="bg" src="/_blob/37d3311d36b777efbeea9c38beb02667" alt="" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(5,8,15,0.05) 0%, rgba(5,8,15,0.65) 60%, rgba(5,8,15,0.95) 100%)"></div>
+<svg class="pitch" aria-hidden="true" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid meet" style="position: absolute; left: 50%; top: 50%; width: 1100px; max-width: 92%; transform: translate(-50%, -50%); opacity: 0.16" fill="none" stroke="#FFFFFF" stroke-width="2">
+<rect x="20" y="20" width="1160" height="720" rx="4"></rect><path d="M600 20 V740"></path><circle cx="600" cy="380" r="96"></circle>
+<rect x="20" y="200" width="170" height="360"></rect><rect x="1010" y="200" width="170" height="360"></rect>
+<rect x="20" y="300" width="60" height="160"></rect><rect x="1120" y="300" width="60" height="160"></rect>
+</svg>
+<div class="flash" aria-hidden="true" style="position: absolute; inset: 0; background: #FFFFFF; animation-delay: 6.3s"></div>
+<div class="flash" aria-hidden="true" style="position: absolute; inset: 0; background: #C8102E; animation-delay: 9.2s"></div>
+<div class="flash" aria-hidden="true" style="position: absolute; inset: 0; background: #FFFFFF; animation-delay: 15.35s"></div>
+<div class="flash" aria-hidden="true" style="position: absolute; inset: 0; background: #FFFFFF; animation-delay: 18.74s"></div>
+
+<div class="sc" style="animation-delay: 0.3s; animation-duration: 2.5s; gap: 14px;"><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 46px; line-height: 1; letter-spacing: 0.06em; color: #F4F6FB; white-space: nowrap; text-shadow: 0 10px 40px rgba(0,0,0,0.85)">MURAT ZİHNİ</span><span style="font-size: 15px; font-weight: 800; letter-spacing: 0.42em; color: #8C96B2">PRESENTS</span></div>
+<div class="sc" style="animation-delay: 2.7s; animation-duration: 3.5s; "><span class="ln" style="animation-delay: 2.8s; font-size: 36px; font-weight: 500; color: #F4F6FB; text-shadow: 0 6px 30px rgba(0,0,0,0.9)">Every weekend,</span><span class="ln" style="animation-delay: 3.6s; font-size: 36px; font-weight: 500; color: #F4F6FB; text-shadow: 0 6px 30px rgba(0,0,0,0.9)">eleven players walk out of a tunnel.</span></div>
+<div class="sc" style="animation-delay: 6.3s; animation-duration: 1.5s; gap: 4px;"><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 180px; line-height: 1; letter-spacing: 0.06em; color: #F4F6FB; white-space: nowrap; text-shadow: 0 10px 40px rgba(0,0,0,0.85)">7,053</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 38px; letter-spacing: 0.4em; color: #F4F6FB">CLUBS</span></div>
+<div class="sc" style="animation-delay: 7.8s; animation-duration: 1.4s; gap: 4px;"><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 180px; line-height: 1; letter-spacing: 0.06em; color: #F4F6FB; white-space: nowrap; text-shadow: 0 10px 40px rgba(0,0,0,0.85)">211</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 38px; letter-spacing: 0.4em; color: #F4F6FB">COUNTRIES</span></div>
+<div class="sc" style="animation-delay: 9.2s; animation-duration: 1.4s; gap: 4px;"><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 180px; line-height: 1; letter-spacing: 0.06em; color: #C8102E; white-space: nowrap; text-shadow: 0 10px 40px rgba(0,0,0,0.85)">1</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 38px; letter-spacing: 0.4em; color: #F4F6FB">MANAGER</span></div>
+<div class="sc" style="animation-delay: 10.6s; animation-duration: 1.9s; "><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 100px; line-height: 1; letter-spacing: 0.06em; color: #F4F6FB; white-space: nowrap; text-shadow: 0 10px 40px rgba(0,0,0,0.85)">IN THE DRESSING ROOM.</span></div>
+<div class="sc" style="animation-delay: 12.45s; animation-duration: 2.9s; gap: 10px;"><span style="font-size: 13px; font-weight: 800; letter-spacing: 0.42em; color: #FF6B76">PRODUCER</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 72px; line-height: 1; letter-spacing: 0.06em; color: #F4F6FB; white-space: nowrap; text-shadow: 0 10px 40px rgba(0,0,0,0.85)">MURAT ZİHNİ</span><span style="font-size: 15px; font-weight: 600; letter-spacing: 0.16em; color: #C9D0E2">Concept · Design · Development</span><span style="height: 26px"></span><span style="font-size: 13px; font-weight: 800; letter-spacing: 0.42em; color: #FF6B76">SPECIAL THANKS</span><div style="display: grid; grid-template-columns: repeat(3, 240px); gap: 14px 28px; text-align: center"><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; white-space: nowrap">BURAK ZİHNİ</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; white-space: nowrap">GÖKDENİZ ÖKSÜZ</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; white-space: nowrap">MUHLİS GÜVEN</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; white-space: nowrap">ORKUN NURAL</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; white-space: nowrap">EMİR GÜVEN</span><span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; white-space: nowrap">MERT GÜVEN</span></div></div>
+
+<div class="fin" style="position: absolute; left: 50%; top: 50%; width: 1100px; max-width: 92%; aspect-ratio: 1200 / 760; transform: translate(-50%, -50%)">
+<div style="position: absolute; left: 9%; right: 9%; top: 0; bottom: 8%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 18px; min-width: 0">
+<div style="position: relative; overflow: hidden; padding: 4px 0; max-width: 100%">
+<h1 class="title" style="margin: 0; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 84px; line-height: 0.95; letter-spacing: 0.06em; white-space: nowrap; text-shadow: 0 10px 40px rgba(0,0,0,0.7)">THE SIMPLE GAME</h1>
+<span class="sweep" aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%); mix-blend-mode: overlay"></span>
+</div>
+<span class="rule" aria-hidden="true" style="width: 220px; height: 3px; border-radius: 2px; background: #C8102E; transform-origin: left"></span>
+<div class="quote" style="display: flex; flex-direction: column; gap: 14px; max-width: 100%; align-self: stretch">
+<span style="font-size: 32px; font-style: italic; font-weight: 500; line-height: 1.4; color: #F4F6FB; text-shadow: 0 8px 36px rgba(0,0,0,0.9)">“Playing football is very simple, but playing simple football is the hardest thing there is.”</span>
+<span style="align-self: flex-end; font-size: 14px; font-weight: 800; letter-spacing: 0.42em; color: #FF6B76">— JOHAN CRUYFF</span>
+</div>
+</div>
+</div>
+
+<div style="position: absolute; left: 50%; bottom: 70px; transform: translateX(-50%); width: 460px; max-width: 80%; display: flex; flex-direction: column; align-items: center; gap: 14px">
+<div class="load" style="width: 100%; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #8C96B2"><span>Loading database</span><span>7,053 clubs · 211 countries</span></div>
+<div style="height: 3px; border-radius: 2px; background: rgba(255,255,255,0.1); overflow: hidden"><div class="bar" style="width: 0; height: 100%; background: linear-gradient(90deg, #C8102E, #FF6B76)"></div></div>
+</div>
+<div class="press" style="font-size: 14px; font-weight: 700; letter-spacing: 0.18em; color: #F4F6FB"><span>PRESS ANY KEY OR CLICK TO CONTINUE</span></div>
+</div>
+
+<div class="hint" style="position: absolute; top: 28px; right: 32px; padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.2); background: rgba(5,8,15,0.5); color: #C9D0E2; font: 700 12px 'Manrope', sans-serif; letter-spacing: 0.14em"><span>PRESS ANY KEY TO SKIP</span></div>
+<span style="position: absolute; left: 32px; bottom: 26px; font-size: 11px; color: #5F6987; letter-spacing: 0.08em">v0.1</span>
+
+<sc-if value="{{canSkip}}" hint-placeholder-val="{{ false }}">
+<a id="td-intro-go" href="Main.dc.html" onClick="{{leave}}" aria-label="Skip intro" style="position: absolute; inset: 0; z-index: 20; cursor: pointer"></a>
+</sc-if>
+
+<sc-if value="{{needGesture}}" hint-placeholder-val="{{ false }}">
+<button class="gate" onClick="{{start}}" style="position: absolute; inset: 0; z-index: 30; border: none; background: #05080F; color: #F4F6FB; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; cursor: pointer; font-family: 'Manrope', sans-serif">
+<span class="gbtn" style="width: 84px; height: 84px; border-radius: 50%; background: #C8102E; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 10px rgba(200,16,46,0.18)"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M8 5v14l11-7z"></path></svg></span>
+<span style="font-size: 13px; font-weight: 800; letter-spacing: 0.32em; color: #C9D0E2">CLICK TO START</span>
+</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+// ===== Ortak tercihler: Ayarlar'daki Ölçek, Yüksek kontrast ve Hareketi azalt tüm ekranlara uygulanır =====
+(function tdPrefs() {
+  function read() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } try { const s = JSON.parse(r || '{}'); return s && typeof s === 'object' ? s : {}; } catch (e) { return {}; } }
+  function apply() {
+    try {
+      const s = read(); const root = document.documentElement; if (!root) return;
+      let st = document.getElementById('td-prefs-style');
+      if (!st) { st = document.createElement('style'); st.id = 'td-prefs-style'; (document.head || root).appendChild(st); }
+      const sc = s.scale === undefined ? 100 : Number(s.scale); let css = '';
+      if (sc && sc !== 100) css += 'html{zoom:' + (sc / 100) + '}';
+      if (s.contrast) css += 'html{filter:contrast(1.2) brightness(1.05)}';
+      if (s.motion) css += '*,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;scroll-behavior:auto!important}';
+      st.textContent = css;
+    } catch (e) {}
+  }
+  apply();
+  try { window.addEventListener('storage', apply); window.__tdApplyPrefs = apply; window.__tdReadPrefs = read; } catch (e) {}
+})();
+
+function tdRaw() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } return r || '{}'; }
+function tdRead() { try { const s = JSON.parse(tdRaw()); return (s && typeof s === 'object') ? s : {}; } catch (e) { return {}; } }
+const SKIP_AFTER = 15000;
+function introVolume() { const s = tdRead(); const m = s.vMaster === undefined ? 80 : s.vMaster; const u = s.vMusic === undefined ? 60 : s.vMusic; return Math.max(0, Math.min(1, (m / 100) * (0.35 + 0.65 * u / 100))); }
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let reduce = false; try { reduce = !!tdRead().motion; } catch (e) {}
+    this.state = { started: false, canSkip: false, needGesture: false, reduce: reduce };
+    this.tries = 0;
+    try { setTimeout(() => this.tryAuto(), 60); } catch (e) {}
+    try {
+      const go = (e) => { if (!this.state.started) { if (this.state.needGesture) this.start(); return; } if (!this.state.canSkip) return; if (e && (e.ctrlKey || e.altKey || e.metaKey)) return; this.stopAudio(); const a = document.getElementById('td-intro-go'); if (a) { window.removeEventListener('keydown', go); a.click(); } };
+      window.addEventListener('keydown', go);
+    } catch (e) {}
+  }
+  audio() { try { return document.getElementById('td-intro-audio'); } catch (e) { return null; } }
+  stopAudio() { const a = this.audio(); if (a) { try { a.pause(); } catch (e) {} } }
+  begin() { if (this.state.started) return; this.setState({ started: true, needGesture: false }); try { setTimeout(() => this.setState({ canSkip: true }), SKIP_AFTER); } catch (e) {} }
+  tryAuto() {
+    const a = this.audio();
+    if (!a) { if (this.tries++ < 20) setTimeout(() => this.tryAuto(), 100); else this.begin(); return; }
+    try { a.volume = introVolume(); a.currentTime = 0; } catch (e) {}
+    let p; try { p = a.play(); } catch (e) { p = null; }
+    if (p && p.then) p.then(() => this.begin()).catch(() => this.setState({ needGesture: true }));
+    else this.begin();
+  }
+  start() {
+    const a = this.audio();
+    if (a) { try { a.volume = introVolume(); a.currentTime = 0; const p = a.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+    this.begin();
+  }
+  renderVals() {
+    const cls = (this.state.started ? 'go' : '') + (this.state.reduce ? ' reduce' : '');
+    return { rootClass: cls, canSkip: this.state.canSkip, needGesture: this.state.needGesture, start: () => this.start(), leave: () => this.stopAudio() };
+  }
+}
+</script>
+</body>
+</html>

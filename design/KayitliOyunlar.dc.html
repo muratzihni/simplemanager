@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Kayıtlı Oyunlar · The Simple Game</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F1C}
+a{color:#C9D0E2;text-decoration:none}
+.ghost:hover{background:rgba(255,255,255,0.08) !important;color:#FFFFFF !important}
+.tab:hover{color:#FFFFFF !important}
+.row{transition:background .15s ease,border-color .15s ease}
+.row:hover{border-color:rgba(255,255,255,0.28) !important}
+.go:hover{background:#DD1838 !important}
+.danger:hover{background:rgba(232,72,85,0.18) !important;color:#FFB3B9 !important}
+.scroll{overflow-y:auto;min-height:0}.scroll > *{flex-shrink:0}.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:4px}
+.flag{flex:none;display:inline-block;width:24px;height:18px;border-radius:3px;background-image:url(/_blob/75fab712f3b0f95f5e4913eb6f0f5f7b);background-size:360px 270px;background-repeat:no-repeat;box-shadow:0 0 0 1px rgba(255,255,255,0.18)}
+.inp{box-sizing:border-box;height:40px;padding:0 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.16);background:rgba(15,21,41,0.92);color:#F4F6FB;font:600 13px 'Manrope',sans-serif;color-scheme:dark}
+.inp:focus{outline:none;border-color:#C8102E;box-shadow:inset 0 0 0 1px #C8102E}
+.dd{appearance:none;-webkit-appearance:none;padding-right:30px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FF6B76' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.dd option{background:#0F1529;color:#F4F6FB}
+.file{position:absolute;inset:0;opacity:0;cursor:pointer}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+</style>
+</helmet>
+<div style="height: 100vh; min-height: 760px; position: relative; overflow: hidden; background: #0A0F1C; color: #F4F6FB; font-family: 'Manrope', system-ui, sans-serif">
+<img src="/_blob/37d3311d36b777efbeea9c38beb02667" alt="" aria-hidden="true" style="position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(18px) brightness(0.3) saturate(0.85)">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(10,15,28,0.55)"></div>
+
+<div style="position: relative; z-index: 1; box-sizing: border-box; padding: 24px 56px; height: 100%; display: flex; flex-direction: column; gap: 16px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<div style="display: flex; align-items: center; gap: 18px">
+<a id="ko-back" href="Main.dc.html" class="ghost" aria-label="Ana menüye dön" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F6FB" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg>
+</a>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.22em; color: #FF6B76">ANA MENÜ</span>
+<h1 style="margin: 0; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; letter-spacing: 0.04em">KAYITLI OYUNLAR</h1>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<span style="font-size: 13px; color: #8C96B2; margin-right: 6px">{{storeInfo}}</span>
+<span class="ghost" style="position: relative; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.16); color: #DCE2F0; font: 600 14px 'Manrope', sans-serif; cursor: pointer">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M5 21h14"></path></svg>İçe aktar
+<input class="file" type="file" accept=".tsg,.json,application/json" aria-label="Kayıt dosyası içe aktar" onChange="{{importFile}}">
+</span>
+<a href="UlkeSecimi.dc.html" onClick="{{newCareer}}" class="go" style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 10px; background: #C8102E; color: #FFFFFF; font-weight: 700; font-size: 14px">Yeni Kariyer</a>
+</div>
+</header>
+
+<sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.62); backdrop-filter: blur(10px)">
+<svg aria-hidden="true" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#6F7A99" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v15H5z"></path><path d="M8 3v6h8V3M8 21v-7h8v7"></path></svg>
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: 0.06em; color: #DCE2F0">HENÜZ KAYITLI OYUN YOK</span>
+<span style="max-width: 520px; font-size: 14px; line-height: 1.55; color: #8C96B2">Yeni bir kariyer başlattığında ilk kayıt otomatik oluşur. Oyun sırasında Ctrl+S ile hızlı kayıt alabilir, başka bir bilgisayardan getirdiğin .tsg dosyalarını içe aktarabilirsin.</span>
+<a href="UlkeSecimi.dc.html" onClick="{{newCareer}}" class="go" style="margin-top: 6px; display: flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 10px; background: #C8102E; color: #FFFFFF; font-weight: 700; font-size: 14px">Yeni Kariyer başlat</a>
+</div>
+</sc-if>
+
+<sc-if value="{{hasSaves}}" hint-placeholder-val="{{ true }}">
+<div style="flex: 1; min-height: 0; display: flex; gap: 18px">
+
+<!-- Liste -->
+<section aria-label="Kayıtlar" style="flex: 1 1 58%; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px; box-sizing: border-box; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.62); backdrop-filter: blur(10px)">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px">
+<nav aria-label="Kayıt türü" style="display: flex; gap: 2px">
+<sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+<button class="tab" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="min-height: 38px; padding: 0 12px; border: none; border-bottom: 3px solid {{f.bar}}; background: transparent; color: {{f.fg}}; font: 700 14px 'Manrope', sans-serif; cursor: pointer">{{f.label}} <span style="color: #6F7A99; font-weight: 600">{{f.n}}</span></button>
+</sc-for>
+</nav>
+<div style="display: flex; gap: 8px">
+<input class="inp" type="search" value="{{q}}" onChange="{{setQ}}" placeholder="Kayıt, menajer ya da ülke ara…" aria-label="Kayıtlarda ara" style="width: 240px">
+<select class="inp dd" value="{{sort}}" onChange="{{setSort}}" aria-label="Sırala"><sc-for list="{{sorts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.v}}</option></sc-for></select>
+</div>
+</div>
+
+<div class="scroll" role="listbox" aria-label="Kayıt listesi" style="flex: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 4px">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+<button class="row" role="option" aria-selected="{{r.pressed}}" onClick="{{r.pick}}" style="display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 12px; border: 1px solid {{r.border}}; background: {{r.bg}}; color: #F4F6FB; text-align: left; cursor: pointer; font-family: 'Manrope', sans-serif">
+<span style="width: 56px; height: 56px; border-radius: 12px; background: {{r.tileBg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 20px; line-height: 1">{{r.initials}}</span>
+<span style="font-size: 9px; font-weight: 800; letter-spacing: 0.1em; color: rgba(255,255,255,0.75)">{{r.season}}</span>
+</span>
+<span style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<span style="display: flex; align-items: center; gap: 8px; min-width: 0">
+<span style="flex: none; padding: 2px 7px; border-radius: 5px; background: {{r.typeBg}}; color: {{r.typeFg}}; font-size: 10px; font-weight: 800; letter-spacing: 0.1em">{{r.type}}</span>
+<span style="font-weight: 800; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span>
+</span>
+<span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #A7B0C8; min-width: 0">
+<span class="flag" aria-hidden="true" style="background-position: {{r.flag}}"></span>
+<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.line}}</span>
+</span>
+<span style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{r.badges}}" as="b" hint-placeholder-count="1"><span style="padding: 1px 7px; border-radius: 999px; border: 1px solid {{b.c}}; color: {{b.c}}; font-size: 10px; font-weight: 800; letter-spacing: 0.08em">{{b.t}}</span></sc-for>
+</span>
+</span>
+<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-size: 12px; color: #8C96B2; white-space: nowrap">
+<span style="font-weight: 700; color: #DCE2F0">{{r.gameDate}}</span>
+<span>{{r.ago}}</span>
+<span>{{r.size}}</span>
+</span>
+</button>
+</sc-for>
+<sc-if value="{{noMatch}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 40px 10px; text-align: center; font-size: 14px; color: #8C96B2">Bu filtreyle eşleşen kayıt yok.</div>
+</sc-if>
+</div>
+</section>
+
+<!-- Ayrıntı -->
+<section aria-label="Kayıt ayrıntısı" class="scroll" style="flex: 1 1 42%; min-width: 360px; max-width: 620px; display: flex; flex-direction: column; gap: 16px; padding: 22px; box-sizing: border-box; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,15,28,0.72); backdrop-filter: blur(10px)">
+<div style="display: flex; align-items: center; gap: 16px">
+<span style="flex: none; width: 76px; height: 76px; border-radius: 16px; background: {{d.tileBg}}; display: flex; align-items: center; justify-content: center; font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 30px">{{d.initials}}</span>
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 4px; flex: 1">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.18em; color: {{d.typeFg}}">{{d.typeLong}}</span>
+<sc-if value="{{d.notRenaming}}" hint-placeholder-val="{{ true }}">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: 0.02em; overflow-wrap: anywhere">{{d.name}}</span>
+</sc-if>
+<sc-if value="{{d.renaming}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 8px"><input id="ko-rename" class="inp" value="{{d.draftName}}" onChange="{{d.setDraftName}}" maxlength="48" aria-label="Kayıt adı" style="flex: 1; min-width: 0"><button class="go" onClick="{{d.commitRename}}" style="min-height: 40px; padding: 0 14px; border-radius: 9px; border: none; background: #C8102E; color: #FFFFFF; font: 700 13px 'Manrope', sans-serif; cursor: pointer">Kaydet</button><button class="ghost" onClick="{{d.cancelRename}}" style="min-height: 40px; padding: 0 12px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 13px 'Manrope', sans-serif; cursor: pointer">Vazgeç</button></div>
+</sc-if>
+<span style="font-size: 13px; color: #A7B0C8">{{d.stage}}</span>
+</div>
+</div>
+
+<a id="ko-load" href="{{d.loadHref}}" onClick="{{d.load}}" class="go" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 12px; background: #C8102E; color: #FFFFFF; font: 800 16px 'Manrope', sans-serif; letter-spacing: 0.06em">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M8 5v14l11-7z"></path></svg>{{d.loadLabel}}</a>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{d.facts}}" as="x" hint-placeholder-count="6">
+<div style="display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); background: rgba(5,8,16,0.45)">
+<span style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #8C96B2">{{x.k}}</span>
+<span style="font-weight: 700; font-size: 14px; color: #F4F6FB">{{x.v}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.18em; color: #FF6B76">MENAJERLER</span>
+<sc-for list="{{d.managers}}" as="m" hint-placeholder-count="1">
+<div style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,0.03)">
+<span class="flag" aria-hidden="true" style="background-position: {{m.flag}}"></span>
+<span style="flex: 1; min-width: 0; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.name}}</span>
+<span style="font-size: 12px; color: #A7B0C8">{{m.rep}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.18em; color: #FF6B76">KONTROL EDİLEN LİGLER</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{d.leagues}}" as="l" hint-placeholder-count="3">
+<span style="display: flex; align-items: center; gap: 7px; padding: 5px 10px 5px 6px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14); font-size: 12px; font-weight: 600; color: #DCE2F0"><span class="flag" aria-hidden="true" style="background-position: {{l.flag}}"></span>{{l.t}}</span>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08)">
+<button class="ghost" onClick="{{d.rename}}" style="min-height: 38px; padding: 0 14px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 13px 'Manrope', sans-serif; cursor: pointer">Yeniden adlandır</button>
+<button class="ghost" onClick="{{d.copy}}" style="min-height: 38px; padding: 0 14px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 13px 'Manrope', sans-serif; cursor: pointer">Kopya oluştur</button>
+<button class="ghost" onClick="{{d.export}}" style="min-height: 38px; padding: 0 14px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 13px 'Manrope', sans-serif; cursor: pointer">Dışa aktar (.tsg)</button>
+<button class="danger" onClick="{{d.askDelete}}" style="margin-left: auto; min-height: 38px; padding: 0 14px; border-radius: 9px; border: 1px solid rgba(232,72,85,0.5); background: transparent; color: #FF8A93; font: 700 13px 'Manrope', sans-serif; cursor: pointer">Sil</button>
+</div>
+<span style="font-size: 12px; color: #6F7A99">{{d.file}}</span>
+</section>
+</div>
+</sc-if>
+
+<footer style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; color: #8C96B2">
+<span style="display: flex; flex-wrap: wrap; gap: 16px">
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">↑ ↓</kbd> Seç</span>
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">Enter</kbd> Yükle</span>
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">F2</kbd> Yeniden adlandır</span>
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">Del</kbd> Sil</span>
+<span><kbd style="padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.18); font: 600 11px 'Manrope', sans-serif; color: #C9D0E2">Esc</kbd> Ana menü</span>
+</span>
+<span>{{autoInfo}} · <a href="Ayarlar.dc.html" style="color: #FF6B76; font-weight: 700">Ayarlar</a></span>
+</footer>
+</div>
+
+<sc-if value="{{confirmOpen}}" hint-placeholder-val="{{ false }}">
+<div role="dialog" aria-modal="true" aria-label="Kaydı sil" style="position: absolute; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; background: rgba(5,8,15,0.72); backdrop-filter: blur(4px)">
+<div style="width: 440px; max-width: 90%; display: flex; flex-direction: column; gap: 14px; padding: 24px; border-radius: 16px; border: 1px solid rgba(232,72,85,0.5); background: #0F1529; box-shadow: 0 30px 80px rgba(0,0,0,0.6)">
+<span style="font-family: 'Saira Condensed', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 0.04em">KAYDI SİL</span>
+<span style="font-size: 14px; line-height: 1.55; color: #C9D0E2">“{{confirmName}}” kalıcı olarak silinecek. Bu işlem geri alınamaz. Onur Listesi'ndeki kariyer geçmişin etkilenmez.</span>
+<div style="display: flex; justify-content: flex-end; gap: 10px">
+<button class="ghost" onClick="{{cancelDelete}}" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.16); background: transparent; color: #DCE2F0; font: 600 14px 'Manrope', sans-serif; cursor: pointer">Vazgeç</button>
+<button onClick="{{doDelete}}" style="min-height: 42px; padding: 0 18px; border-radius: 10px; border: none; background: #E84855; color: #FFFFFF; font: 800 14px 'Manrope', sans-serif; cursor: pointer">Sil</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{toastOn}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; left: 50%; bottom: 64px; z-index: 50; transform: translateX(-50%); padding: 12px 18px; border-radius: 12px; border: 1px solid {{toastBorder}}; background: #0F1529; color: #F4F6FB; font-size: 14px; font-weight: 600; box-shadow: 0 18px 40px rgba(0,0,0,0.5); animation: toastIn .25s ease both">{{toast}}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+// ===== Ortak tercihler: Ayarlar'daki Ölçek, Yüksek kontrast ve Hareketi azalt tüm ekranlara uygulanır =====
+(function tdPrefs() {
+  function read() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } try { const s = JSON.parse(r || '{}'); return s && typeof s === 'object' ? s : {}; } catch (e) { return {}; } }
+  function apply() {
+    try {
+      const s = read(); const root = document.documentElement; if (!root) return;
+      let st = document.getElementById('td-prefs-style');
+      if (!st) { st = document.createElement('style'); st.id = 'td-prefs-style'; (document.head || root).appendChild(st); }
+      const sc = s.scale === undefined ? 100 : Number(s.scale); let css = '';
+      if (sc && sc !== 100) css += 'html{zoom:' + (sc / 100) + '}';
+      if (s.contrast) css += 'html{filter:contrast(1.2) brightness(1.05)}';
+      if (s.motion) css += '*,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;scroll-behavior:auto!important}';
+      st.textContent = css;
+    } catch (e) {}
+  }
+  apply();
+  try { window.addEventListener('storage', apply); window.__tdApplyPrefs = apply; window.__tdReadPrefs = read; } catch (e) {}
+})();
+
+const FLAG = {"ABD":[0,0],"ABD Virjin Adaları":[1,0],"Afganistan":[2,0],"Almanya":[3,0],"Amerikan Samoası":[4,0],"Andorra":[5,0],"Angola":[6,0],"Anguilla":[7,0],"Antigua ve Barbuda":[8,0],"Arjantin":[9,0],"Arnavutluk":[10,0],"Aruba":[11,0],"Avustralya":[12,0],"Avusturya":[13,0],"Azerbaycan":[14,0],"Bahamalar":[0,1],"Bahreyn":[1,1],"Bangladeş":[2,1],"Barbados":[3,1],"Belarus":[4,1],"Belize":[5,1],"Belçika":[6,1],"Benin":[7,1],"Bermuda":[8,1],"Birleşik Arap Emirlikleri":[9,1],"Bolivya":[10,1],"Bosna-Hersek":[11,1],"Botsvana":[12,1],"Brezilya":[13,1],"Britanya Virjin Adaları":[14,1],"Brunei":[0,2],"Bulgaristan":[1,2],"Burkina Faso":[2,2],"Burundi":[3,2],"Butan":[4,2],"Cayman Adaları":[5,2],"Cebelitarık":[6,2],"Cezayir":[7,2],"Cibuti":[8,2],"Cook Adaları":[9,2],"Curaçao":[10,2],"Danimarka":[11,2],"Dominik Cumhuriyeti":[12,2],"Dominika":[13,2],"Doğu Timor":[14,2],"Ekvador":[0,3],"Ekvator Ginesi":[1,3],"El Salvador":[2,3],"Endonezya":[3,3],"Eritre":[4,3],"Ermenistan":[5,3],"Estonya":[6,3],"Esvatini":[7,3],"Etiyopya":[8,3],"Faroe Adaları":[9,3],"Fas":[10,3],"Fiji":[11,3],"Fildişi Sahili":[12,3],"Filipinler":[13,3],"Filistin":[14,3],"Finlandiya":[0,4],"Fransa":[1,4],"Gabon":[2,4],"Galler":[3,4],"Gambiya":[4,4],"Gana":[5,4],"Gine":[6,4],"Gine-Bissau":[7,4],"Grenada":[8,4],"Guam":[9,4],"Guatemala":[10,4],"Guyana":[11,4],"Güney Afrika":[12,4],"Güney Kore":[13,4],"Güney Sudan":[14,4],"Gürcistan":[0,5],"Haiti":[1,5],"Hindistan":[2,5],"Hollanda":[3,5],"Honduras":[4,5],"Hong Kong":[5,5],"Hırvatistan":[6,5],"Irak":[7,5],"Jamaika":[8,5],"Japonya":[9,5],"Kamboçya":[10,5],"Kamerun":[11,5],"Kanada":[12,5],"Karadağ":[13,5],"Katar":[14,5],"Kazakistan":[0,6],"Kenya":[1,6],"Kolombiya":[2,6],"Komorlar":[3,6],"Kongo":[4,6],"Kongo DC":[5,6],"Kosova":[6,6],"Kosta Rika":[7,6],"Kuveyt":[8,6],"Kuzey Kore":[9,6],"Kuzey Makedonya":[10,6],"Kuzey İrlanda":[11,6],"Küba":[12,6],"Kıbrıs":[13,6],"Kırgızistan":[14,6],"Laos":[0,7],"Lesotho":[1,7],"Letonya":[2,7],"Liberya":[3,7],"Libya":[4,7],"Lihtenştayn":[5,7],"Litvanya":[6,7],"Lübnan":[7,7],"Lüksemburg":[8,7],"Macaristan":[9,7],"Madagaskar":[10,7],"Makao":[11,7],"Malavi":[12,7],"Maldivler":[13,7],"Malezya":[14,7],"Mali":[0,8],"Malta":[1,8],"Mauritius":[2,8],"Meksika":[3,8],"Moldova":[4,8],"Montserrat":[5,8],"Moritanya":[6,8],"Mozambik":[7,8],"Moğolistan":[8,8],"Myanmar":[9,8],"Mısır":[10,8],"Namibya":[11,8],"Nepal":[12,8],"Nijer":[13,8],"Nijerya":[14,8],"Nikaragua":[0,9],"Norveç":[1,9],"Orta Afrika Cumhuriyeti":[2,9],"Pakistan":[3,9],"Panama":[4,9],"Papua Yeni Gine":[5,9],"Paraguay":[6,9],"Peru":[7,9],"Polonya":[8,9],"Portekiz":[9,9],"Porto Riko":[10,9],"Romanya":[11,9],"Ruanda":[12,9],"Rusya":[13,9],"Saint Kitts ve Nevis":[14,9],"Saint Lucia":[0,10],"Saint Vincent ve Grenadinler":[1,10],"Samoa":[2,10],"San Marino":[3,10],"Senegal":[4,10],"Seyşeller":[5,10],"Sierra Leone":[6,10],"Singapur":[7,10],"Slovakya":[8,10],"Slovenya":[9,10],"Solomon Adaları":[10,10],"Somali":[11,10],"Sri Lanka":[12,10],"Sudan":[13,10],"Surinam":[14,10],"Suriye":[0,11],"Suudi Arabistan":[1,11],"São Tomé ve Príncipe":[2,11],"Sırbistan":[3,11],"Tacikistan":[4,11],"Tahiti":[5,11],"Tanzanya":[6,11],"Tayland":[7,11],"Togo":[8,11],"Tonga":[9,11],"Trinidad ve Tobago":[10,11],"Tunus":[11,11],"Turks ve Caicos Adaları":[12,11],"Türkiye":[13,11],"Türkmenistan":[14,11],"Uganda":[0,12],"Ukrayna":[1,12],"Umman":[2,12],"Uruguay":[3,12],"Vanuatu":[4,12],"Venezuela":[5,12],"Vietnam":[6,12],"Yemen":[7,12],"Yeni Kaledonya":[8,12],"Yeni Zelanda":[9,12],"Yeşil Burun Adaları":[10,12],"Yunanistan":[11,12],"Zambiya":[12,12],"Zimbabve":[13,12],"Çad":[14,12],"Çekya":[0,13],"Çin":[1,13],"Çin Taipei":[2,13],"Özbekistan":[3,13],"Ürdün":[4,13],"İngiltere":[5,13],"İran":[6,13],"İrlanda":[7,13],"İskoçya":[8,13],"İspanya":[9,13],"İsrail":[10,13],"İsveç":[11,13],"İsviçre":[12,13],"İtalya":[13,13],"İzlanda":[14,13],"Şili":[0,14]}
+;
+const CITIES = {"ABD":["New York","Los Angeles","Şikago","Miami","Philadelphia","Dallas","Atlanta","Boston","Houston","Washington","Detroit","Phoenix","San Francisco","Seattle","Irvine","San Diego","Minneapolis","Tampa","Denver","Baltimore"],"ABD Virjin Adaları":["Christiansted"],"Afganistan":["Kâbil","Kandehar","Celalabad","Herat","Mezar-ı Şerif","Kunduz","Baghlan","Leşkergâh","Meymene","Belh","Gazni","Gardez","Şibirgan","Ferah","Andhoy","Feyzabad","Talukan","Bamyan","Puli Humri","Çarikar"],"Almanya":["Berlin","Stuttgart","Frankfurt","Mannheim","Hamburg","Essen","Duisburg","Münih","Düsseldorf","Köln","Wuppertal","Saarbrücken","Nürnberg","Bremen","Hannover","Bonn","Dresden","Wiesbaden","Dortmund","Leipzig"],"Amerikan Samoası":["Pago Pago"],"Andorra":["Andorra la Vella"],"Angola":["Luanda","Haumbo","Lobito","Benguela","Namibe","Malanje","Lubango","Kuito","Cabinda","Capenda-Camulemba","Soyo","M'banza-Kongo","Uige","Saurimo","Tômbua","Sumbe","Lucapa","Mavinga","Caxito","Luena"],"Anguilla":["The Valley"],"Antigua ve Barbuda":["St. John's"],"Arjantin":["Buenos Aires","Córdoba","Rosario","Mendoza","San Miguel de Tucumán","La Plata","Mar del Plata","SALTA","Santa Fe","San Juan","San Luis","Resistencia","Posadas","Santiago del Estero","Corrientes","San Salvador de Jujuy","Bahía Blanca","Paraná","Neuquén","Formosa"],"Arnavutluk":["Tiran","Elbasan","İşkodra","Dıraç","Avlonya","Fier","Görice","Berat","Lushnja","Pogradec","Ergiri","Akçahisar","Leş","Kukës","Burrel","Saranda","Debre","Çorovoda","Librazhd","Tepelene"],"Aruba":["Oranjestad"],"Avustralya":["Sidney","Melbourne","Brisbane","Perth","Adelaide","Newcastle","Gold Coast","Cranbourne","Canberra","Wollongong","Geelong","Cairns","Townsville","Albury","Nowra","Darwin","Toowoomba","Ballarat","Bendigo","Hobart"],"Avusturya":["Viyana","Linz","Graz","Salzburg","İnnsbruck","Klagenfurt","Wiener Neustadt","Bregenz","Eisenstadt"],"Azerbaycan":["Bakü","Gence","Sumgayıt","Nahçıvan","Şirvan","Şeki","Lenkeran","Hankendi","Yevlah","Kapan","Göyçay","Tovuz","Kebele","Gedebey","Goranboy","Oğuz","Ağdam"],"Bahamalar":["Nassau","Freeport"],"Bahreyn":["Manama"],"Bangladeş":["Dakka","Chittagong","Khulna","Rajshahi","Comilla","Mymensingh","Rangpur","Jashore","Sylhet","Saidpur","Narayanganj","Barisal","Tangail","Jamalpur","Nawabganj","Pabna"],"Barbados":["Bridgetown"],"Belarus":["Minsk","Gomel","Mogilyov","Vitebsk","Grodno","Brest","Bobruysk","Baranovichi","Borisov","Orsha","Pinsk","Mazyr","Maladzyechna","Lida","Polotsk"],"Belize":["Belize","Orange Walk","El Cayo","Belmopán","Dangriga","Corozal","Punta Gorda"],"Belçika":["Brüksel","Anvers","Liège","Gent","Charleroi","Brugge","Namur","Mons","Hasselt","Arlon"],"Benin":["Cotonou","Porto-Novo","Djougou","Parakou","Kandi","Lokossa","Ouidah","Abomey","Naitingou"],"Bermuda":["Hamilton"],"Birleşik Arap Emirlikleri":["Dubai","Şarika","Abu Dabi","Al Ain","Resü'l-Hayme","Füceyre","Cebel Ali","Umm al Qaywayn"],"Bolivya":["Santa Cruz de la Sierra","La Paz","Cochabamba","Oruro","Santa Ana","Quillacollo","Sucre","Potosí","Tarija","Montero","Trinidad","Riberalta","Cobija","Villazon","Bermejo","Guayaramerin","Viacha","Tupiza","Llallagua","Camiri"],"Bosna-Hersek":["Saraybosna","Banya Luka","Zenica","Mostar","Tuzla","Prijedor"],"Botsvana":["Gaborone","Francistown","Lobatse","Molepolole","Mahalapye","Maun","Serove","Kanye","Mochudi","Palapye","Tsabong","Kasane","Ghanzi","Nata","Mopipi","Lehututu","Nokaneng","Lokhwabe","Tsau","Mohembo"],"Brezilya":["São Paulo","Rio de Janeiro","Belo Horizonte","Porto Alegre","Brasília","Recife","Fortaleza","Salvador","Curitiba","Campinas","Belém","Goiânia","Manaus","Santos","Vitória","Niterói","Vila Velha","Maceió","Natal","São Luís"],"Britanya Virjin Adaları":["Road Town"],"Brunei":["Bandar Seri Begavan"],"Bulgaristan":["Sofya","Filibe","Varna","Burgaz","Rusçuk","Eski Zağra","Plevne","İslimiye","Dobriç","Şumnu","Pernik","Hasköy","İvraca","Tırnova","Köstendil","Kutlu Viçe","Lofça","Razgrad"],"Burkina Faso":["Ouagadougou","Bobo-Dioulasso","Koudougou","Ouahigouya","Banfora","Dédougou","Kaya","Tenkodogo","Dori","Réo","Fada N’Gourma","Koupéla","Kombissiri","Nouna","Gaoua","Leo","Diapaga","Zorgo","Yako","Djibo"],"Burundi":["Bujumbura","Muyinga","Ruyigi","Gietaga","Ngozi","Rutana","Bururi","Makamba","Kayanza","Muramvya","Bubanza","Karuzi","Cankuzo","Kirundo"],"Butan":["Thimphu","Paro","Punakha","Wangdue Prodrang"],"Cayman Adaları":["George Town"],"Cebelitarık":["Cebelitarık"],"Cezayir":["Cezayir","Oran","Konstantin","Buleyde","Annaba","Chlef","Arak","Béjaia","Batna","Setif","Tilimsan","Skikda","Sidi Belabbas","Bsikra","Mosteganim","Tiyaret","El Qued","Ouargla","Tébessa","Djelfa"],"Cibuti":["Cibuti","Ali Sabieh","Tadjourah","Obuk","Dikhil"],"Cook Adaları":["Avarua"],"Curaçao":["Willemstad"],"Danimarka":["Kopenhag","Aarhus","Odense","Aalborg","Esbjerg","Vejle","Roskilde","Viborg","Svendborg","Hillerød","Frederikshavn","Sorø"],"Dominik Cumhuriyeti":["Santo Domingo","Santiago de los Caballeros","San Pedro de Macoris","La Romana","La Vega","San Cristobal","San Francisco de Macorís","hüişlkç","San Felipe de Puerto Plata","Barahona","Bonao","San Juan de la Maguana","Bani","Moca","Azua","Mao","Salcedo","Comendador","Cotui","Hato Mayor del Rey"],"Dominika":["Roseau"],"Doğu Timor":["Dili"],"Ekvador":["Guayaquil","Quito","Cuenca","Ambato","Portoviejo","Machala","Manta","Sangolquí","Esmeraldas","Riobamba","Ibarra","Lova","Milagro","Latacunga","Tulcan","Babahoyo","Azogues","Chone","Salinas","Jipijapa"],"Ekvator Ginesi":["Bata","Malabo","Luba","Evinayong","Mongomo","Calatrava"],"El Salvador":["San Salvador","Santa Ana","San Miguel","Sonsonate","Santa Tecla","Usulutan","Cojutepeque","Zacatecoluca","San Vicente","Ahuachapan","Chalatenango","Sensutepeque","La Union","San Francisco Gotera"],"Endonezya":["Cakarta","Surabaya","Bandung","Bekasi","Medan","Palembang","Semarang","Makassar","Cilacap","Bogor","Bandar Lampung","Padang","Malang","Pekanbaru","Denpasar","Yogyakarta","Palu","Pontianak","Banjarmasin","Samarinda"],"Eritre":["Asmara","Mendefera","Keren","Massava","Assab","Agordat","Tessenei"],"Ermenistan":["Erivan","Gümrü","Vanadzor","Gavar","Artaşat","Aştarak","İcevan","Yeğegnadzor"],"Estonya":["Tallinn","Tartu","Narva","Kohtla-Järve","Pärnu","Viljandi","Haapsalu"],"Esvatini":["Manzini Bölgesi","Mbabane","Lobamba","Siteki","Piggs Peak","Golela","Hlatikulu"],"Etiyopya":["Addis Ababa","Adama","Dire Dawa","Bahir Dar","Dessie","Harar","Gondar","Awasawa","Jimma","Giyon","Shashamane","Adigrat","Mek'ele","Hosaina","Asella","Gode","Nekemte","Debre Marqos","Arba Minch","Sodo"],"Faroe Adaları":["Tórshavn","Klaksvík"],"Fas":["Kazablanka","Rabat","Fes","Marakeş","Agadir","Tanca","Meknes","Kenitra","Ucda","Safi","Ksar ek-Kebit","Er Rachidia","Taza","Layun","El Jadida","Settat","Larache","Goulimine","Dakhla","Ouezzane"],"Fiji":["Suva","Lautoka","Nandi","Labasa"],"Fildişi Sahili":["Abidjan","Bouaké","Daloa","San-Pedro","Yamoussoukro","Korhoga","Man","Divo","Gagnoa","Soubre","Abengouro","Agboville","Grand-Bassam","Dabou","Dimbokro","Ferkessédougou","Bouaflé","Bondoukou","Séguéla","Odienné"],"Filipinler":["Manila","Quezon City","Davao City","Cagayan de Oro","General Santos","Bacolod","Cebu City","Zamboanga City","Naga","IIigan","Baguio","Batangas","Pasay","Iloilo City","Legazpi","Angeles","Olongapo","Cadiz","Tacloban","Cotabato"],"Filistin":["Gazze","El Halil","Nablus","Ramallah"],"Finlandiya":["Helsinki","Tampere","Turku","Oulu","Lahti","Jyväskylä","Kuopio","Pori","Lappeenranta","Vaasa","Joensuu","Hämeenlinna","Kokkola","Mikkeli","Rovaniemi","Kouvola","Savonlinna","Kemi","Porvoo","Sodankylä"],"Fransa":["Paris","Lyon","Marsilya","Lille","Nice","Toulouse","Bordeaux","Rouen","Strazburg","Nantes","Metz","Grenoble","Toulon","Montpellier","Nancy","Saint-Étienne","Melun","Le Havre","Tours","Clermont-Ferrand"],"Gabon":["Libreville","Port-Gentil","Oyem","Franceville","Moanda","Mouila","Lambaréné","Ebebiyín","Tchibanga","Bitam","Makokou","Koulamoutou","Gamba","Okandja","Ndende","Mitzik","Mayumba","Mékambo","Omboué","Bifoum"],"Galler":["C","a","r","d","i","f","f"," ","S","w","a","n","s","e","a"," ","N","e","w","p","o","r","t"," ","W","r","e","x","h","a","m"," ","B","a","n","g","o","r"," ","B","a","r","r","y"," ","L","l","a","n","e","l","l","i"," ","M","e","r","t","h","y","r"," ","T","y","d","f","i","l"," ","B","r","i","d","g","e","n","d"," ","N","e","a","t","h"," ","A","b","e","r","y","s","t","w","y","t","h"," ","R","h","y","l"],"Gambiya":["Brikama","Banjul","Mansa Konko","Basse Santa Su","Bansang","Janjanbureh","Kerewan"],"Gana":["Akra","Kumasi","Tamale","Sekondi-Takoradi","Tema","Obuassi","Koforidua","Cape Caost","Ho","Bolgatanga","Wa","Bawku","Sunyani","Nkawkaw","Berekum","Winneba","Yendi"],"Gine":["Konakri","Gueckedougou","Nzerekore","Labe","Kindia","Boke","Kankan","Mamou","Kissidougou","Siguiri","Macenta","Kamsar","Télimélé","Tongue","Fria","Pita","Faranah","Kérouané","Kouroussa","Koundara"],"Gine-Bissau":["Bissau","Bafatá","Gabú","Bolama","Cacheu","Catió","Farim","Fulacunda"],"Grenada":["Saint George's"],"Guam":["Hagåtña"],"Guatemala":["Guatemala","Quetzaltenango","El Progreso","San Luis","Escuintla","Huehuetenango","Chimaltenango","Totonicapán","Coban","Mazatenango","Puerto Barrios","Jutiapa","Jalapa","Sololá","Chiquimula","Salamá","Antigua Guatemala","Flores","Retalhuleu","Zacapa"],"Guyana":["Georgetown","New Amsterdam","Linden","Corriverton","Bartica","Anna Regina","Mabaruma","Kumaka","Lethem","Ituni"],"Güney Afrika":["Johannesburg","Kap Şehri","Benoni","Durban","Pretoria","Vereeniging","Port Elizabeth","Pietermaritzburg","Bloemfontein","Welkom","Nelspruit","East London","Thohoyandou","Springs","Uitenhage","Polokwane","Paarl","Klerksdorp","George","Rustenburg"],"Güney Kore":["Seul","Busan","İncheon","Daegu","Daejeon","Gwangju","Changwon","Suwon","Ulsan","Seongnam","Goyang","Bucheon","Cheongju","Ansan","Jeonju","Pohang","Jeju","Yeosu","Iksan","Mokpo"],"Güney Sudan":["Yei","Malakal","Wau","Cuba","Gogrial","Aweil","Yambio","Rumbek","Bor","Maridi","Bentiu","Kapoeta","Melut","Nasir","Nimule"],"Gürcistan":["Tiflis","Kutaisi","Rustavi","Batum","Sohum","Poti","Tshinvali"],"Haiti":["Port-au-Prince","Cap-Haitien","Les Cayes","Gonaives","Port-de-Paix","Jacmel","Jeremie","Hinche","Fort-Liberté"],"Hindistan":["Mumbai","Delhi","Kalküta","Chennai","Bangalore","Haydarabad","Amaravati","Ahmedabad","Howrah","Pune","Surat","Kanpur","Jaipur","Lucknow","Nagpur","Patna","Indore","Vadodara","Bhopal","Coimbatore"],"Hollanda":["Lahey","Amsterdam","Rotterdam","Utrecht","Eindhoven","Haarlem","Groningen","Arnhem","'s-Hertogenbosch","Leeuwarden","Maastricht","Zwolle","Assen","Middelburg"],"Honduras":["Tegucigalpa","San Pedro Sula","La Ceiba","Choluteca","Comayagua","Nacaome","Juticalpa","Santa Rosa de Copan","La Paz","Yoro","Santa Barbara","Trujillo","Nueva Ocotepeque","Gracias","Roatán","La Esperanza","Puerto Lempira","Brus Laguna","Yuscaran"],"Hong Kong":["Hong Kong"],"Hırvatistan":["Zagreb","Split","Rijeka","Slavonski Brod","Osijek","Zadar","Pula","Karlovac","Şibenik","Dubrovnik"],"Irak":["Bağdat","Musul","Duhok","Erbil","Basra","Süleymaniye","Necef","Kerkük","Hilla","Kerbela","Nasiriye","Divaniye","Amara","Kut","Bakuba","Ramadi","Ez-Zubeyr","Felluce","Samava","Ash Shatrah"],"Jamaika":["Kingston","Spanish Town","May Pen","Montego Bay","Half Way Tree","Mandeville","Savanna-la-Mar","Port Antonio","Saint Ann's Bay","Port Morant","Port Maria","Falmouth","Lucea","Black River"],"Japonya":["Tokyo","Osaka","Yokohama","Nagoya","Fukuoka","Sapporo","Sendai","Hiroşima","Kyoto","Kobe","Kawasaki","Kitakyushu","Hamamatsu","Naha","Okayama","Kumamoto","Shizuoka","Utsunomiya","Nagano","Hachiōji"],"Kamboçya":["Phnom Penh","Battambang","Siem Reap","Kampong Cham","Kampong Chhnang","Prey Veng","Pursat","Sisophon","Kampot","Kampong Spoe","Krong Koh Kong","Stunt Treng","Phnum Tbeng Meanchey","Svay Rieng","Kracheh","Kampong Thum","Lumphat","Takeo","Senmonorom"],"Kamerun":["Douala","Yaoundé","Bamenda","Garoua","Maroua","Bafoussam","Ngaoundéré","Bertoua","Limbe","Edéa","Kumba","Kumbo","Nkongsamba","Bafang","Foumban","Buea","Ebolowa","Guider","Mbalmayo","Meiganga"],"Kanada":["Toronto","Montreal","Vancouver","Ottawa","Calgary","Edmonton","Hamilton","Winnipeg","Québec","Oshawa","Kitchener","Halifax","London","Windsor","Victoria","Saskatoon","Barrie","Regina","Greater Sudbury","Abbotsford"],"Karadağ":["Podgorica"],"Katar":["Doha"],"Kazakistan":["Almatı","Çimkent","Karağandı","Taraz","Nursultan","Pavlodar","Öskemen","Semey","Kızılorda","Aktöbe","Kostanay","Kızılyar","Oral","Atırav","Temirtav","Aktav","Kökşetav","Ekibastuz","Rudni","Jezkazgan"],"Kenya":["Nairobi","Mombasa","Kisumu","Nakuru","Eldoret","Kitale","Machakos","Thika","Kericho","Malindi","Kendu Bay","Kilifi","Sotik","Garissa","Kakamega","Embu","Bungoma","Nyeri","Meru","Wajir"],"Kolombiya":["Bogotá","Medellin","Santiago de Cali","Barranquilla","Bucaramanga","Cartagena","Cúcuta","Soledad","Pereira","Bello","Santa Marta","Ibagué","Pasto","Manizales","Villavicencio","Neiva","Armenia","Valledupar","Monteria","Sincelejo"],"Komorlar":["Moroni"],"Kongo":["Brazzaville","Pointe-Noire","Dolisie","Kayes","Owando","Mossendjo","Ouésso","Sibiti","Madingou","Gamboma","Impfondo","Kinkala","Moloundou","Makoua","Ewo","Sembe","Djambala"],"Kongo DC":["Kinşasa","Lubumbashi","Mbuji-Mayi","Kananga","Kikwit","Kisangani","Bukavu","Likasi","Kolwezi","Beni","Butembo","Mbandaka","Tshikapa","Kindu","Matadi","Kalemie","Gemena","Mbanza-Ngungu","Mwene-Ditu","Boma"],"Kosova":["Priştine","Prizren","İpek","Mitroviça","Gilan","Ferizaj","Yakova"],"Kosta Rika":["San José","Alajuela","Cartago","Limon","Puntarenas","Liberya","Quesada","Heredia","Cañas","Golfito","La Cruz","Ciudad Cortés","Sixaola"],"Kuveyt":["Kuveyt","El Cehre","Havalli","Ahmedi"],"Kuzey Kore":["Pyongyang","Nampo","Hamhung","Chongjin","Sunchon","Kaesong","Wonsan","Kanggye","Sinuiju","Hyesan","Haeju","Kimchaek","Manpo","Sariwon","Chongju","Kilchu","Musan","Munchon","Ongjin","Rason"],"Kuzey Makedonya":["Üsküp","Kalkandelen","Manastır"],"Kuzey İrlanda":["B","e","l","f","a","s","t"," ","D","e","r","r","y"," ","L","i","s","b","u","r","n"," ","N","e","w","r","y"," ","A","r","m","a","g","h"," ","B","a","n","g","o","r"," ","C","r","a","i","g","a","v","o","n"," ","B","a","l","l","y","m","e","n","a"," ","N","e","w","t","o","w","n","a","b","b","e","y"," ","C","o","l","e","r","a","i","n","e"," ","O","m","a","g","h"," ","E","n","n","i","s","k","i","l","l","e","n"," ","L","a","r","n","e"," ","P","o","r","t","a","d","o","w","n"," ","D","u","n","g","a","n","n","o","n"],"Küba":["Havana","Santiago de Cuba","Camagüey","Holguín","Guantanamo","Santa Clara","Las Tunas","Bayamo","Pinar del Rio","Cienfuegos","Matanzas","Ciego de Ávila ili","Manzanillo","Sancti Spíritus","Palma Soriano","Güines","Artemisa","Moron","Colón","Sagua la Grande"],"Kıbrıs":["Lefkoşa","Limasol","Larnaka","Baf"],"Kırgızistan":["Bişkek","Oş","Celal-Abad","Tokmok","Kara-Balta","Karakol","Narın","Balıkçı","Talas","Toktogul","Taş-Kömür","Çolpon-Ata","At-Başı","Kökcangak"],"Laos":["Vientiane","Luang Prabang","Pakse","Savannakhet","Thakhek","Xam Neua","Phonsavan","Sainyabuli","Champasak","Ban Houayxay","Phongsali","Salavan","Attapeu","Luang Namtha"],"Lesotho":["Maseru","Mafetang","Hlotse","Mohales Hoek","Moyeni","Butha-Buthe","Mokhotlong","Teyateyaneng"],"Letonya":["Riga","Daugavpils","Liepāja","Jelgava","Ventspils","Rezekne"],"Liberya":["Monrovia","Buchanan","Gbarnga","Kakata","Harper","Voinjama","Zwedru","Robertsport","Sanniquellie","Greenville","Bensonville","Barclayville","Rivercess"],"Libya":["Trablus","Bingazi","Misurata","Tobruk","Khoms","Zawiya","Zuvare","Marj","Geryan","Ecdebiye","Sirte","Derne","Sebha","Nalut","Bani Walid","Murzuk","Brak","Shahhat","Mizde","Gat"],"Lihtenştayn":["Vaduz"],"Litvanya":["Vilnius","Kaunas","Klaipėda","Siauliai","Panevėžys"],"Lübnan":["Beyrut","Trablusşam","Sayda","Nebatiye","Zahle","Baabda"],"Lüksemburg":["Lüksemburg","Diekirch","Grevenmacher"],"Macaristan":["Budapeşte","Miskolc","Debrecen","Szeged","Pécs","Nyíregyháza","Székesfehérvár","Győr","Kecskemét","Szombathely","Szolnok","Kaposvár","Tatabánya","Békéscsaba","Veszprém","Zalaegerszeg","Eger","Salgótarján","Vác","Szekszárd"],"Madagaskar":["Antananarivo","Antsirabe","Toamasina","Fianarantsoa","Mahajanga","Toliara","Antsiranana","Antalaha","Sambava","Ambatondrazaka","Maroantsetra","Morondava","Marovoay","Ambanja","Mananjary","Farafangana","Andoany","Antsohihy","Miandrivazo","Ihosy"],"Makao":["Makao"],"Malavi":["Lilongwe","Blantyre","Mzuzu","Mangochi","Zomba","Salima","Nkhotakota","Karonga","Chiromo","Nkhata Bay","Nsanje","Mzimba","Mchinji","Mulanje","Dedza","Chitipa","Mwanza","Ntcheu","Chiradzulu","Machinga"],"Maldivler":["Malé"],"Malezya":["George Town","Kuala Lumpur","Klang","Johor Bahru","Butterworth","Malakka","Ipoh","Kuching","Kota Kinabalu","Kota Bharu","Shah Alam","Sandakan","Seremban","Kuantan","Sungai Petani","Kuala Terengganu","Alor Setar","Tawau","Taiping","Miri"],"Mali":["Bamako","Sikasso","Segou","Gao","Mopti","Koutiala","Kayes","Timbuktu","Kati","Markala","Kita","San","Bougouni","Jenne","Banamba","Bourem","Bafoulabé","Koulikoro","Nara","Kangaba"],"Malta":["Valletta"],"Mauritius":["Port Louis","Curepipe"],"Meksika":["Meksiko","Guadalajara","Monterrey","Puebla","Tijuana","Toluca","León","Ciudad Juarez","Torreón","Nezahualcóyotl","San Luis Potosí","Mérida","Santiago de Querétaro","Mexicali","Aguascalientes","Tampico","Cuernavaca","Culiacán","Chihuahua","Saltillo"],"Moldova":["Kişinev","Tiraspol","Bălţi","Cahul","Dubăsari"],"Montserrat":["Brades","Plymouth"],"Moritanya":["Nuakşot","Saint Louis","Néma","Nouadhibou","Kiffa","Zouirat","Rosso","Atar","Tidjikdja","Boutilimit","Bogue","Aleg","Fderik","Ayoun el Atrous","Sélibaby","Akjoujt","Timbedra","Chegga","Magta Lajar","Bir Mogrein"],"Mozambik":["Maputo","Matola","Beira","Nampula","Chimoio","Nacala","Quelimane","Tete","Xai-Xai","Maxixe","Inhambane","Pemba","Lichinga","Dondo","Cuamba","Montepuez","Mocuba","Angoche","Mozambik Adası","Moatize"],"Moğolistan":["Ulan Batur","Erdenet","Darhan","Ulangom","Ölgi","Çoybalsan","Altai","Hovd","Arvayker","Mörön","Bayanhongor","Sühbatur","Tsetserleg","Zünhara","Zunmod","Bulgan","Barun-Urt","Dalanzadgad","Undurhan","Saynşand"],"Myanmar":["Yangon","Mandalay","Naypyidaw","Mawlamyine","Bago","Myeik","Pathein","Monywa","Hinthada","Sittwe","Letpadan","Myingyan","Taunggyi","Mudon","Dawei","Myitkyina","Pyay","Pakokku","Magway","Yenangyaung"],"Mısır":["Kahire","İskenderiye","Gize","İsmailiye","Port Said","Luksor","Mansure","Sevhac","Süveyş","Demenhur","El Minye","Beni Süveyf","Asyut","Tanta","Feyyum","Asvan","Kom Ombo","Kina","Dimyat","Zagazig"],"Namibya":["Windhoek","Rundu","Walvis Bay","Swakopmund","Rehoboth","Ongwediva","Katima Mulilo","Otjiwarongo","Grootfontein","Okahandja","Keetmanshoop","Gobabis","Lüderitz","Tsumeb","Mariental","Oshikango","Omaruru","Bethanie","Usakos","Oranjemund"],"Nepal":["Katmandu","Latilpur","Hetauda","Pokhara","Biratnagar","Birgunj","Dhangadhi","Nepalgunj","Bhairawa","Rajbiraj","Baglung","Dandeldhura","Ilam","Salyan","Ramechhap","Bhimphedi","Jumla"],"Nijer":["Niamey","Maradi","Zinder","Agadez","Tahoua","Arlit","Birni-N'Konni","Dosso","Gaya","Diffa","Ayorou","Madaoua","Tillabéri","Nguigmi","Gouré","Djado"],"Nijerya":["Lagos","Kano","İbadan","Abuja","Kaduna","Benin City","Ikare","Port Harcourt","Ogbomosho","Aba","Maiduguri","Zaria","Warri","Jos","llorin","Oyo","Sokoto","Enugu","Abeokuta","Uyo"],"Nikaragua":["Managua","Leon","Chinandega","Masaya","Matagalpa","Estelí","Granada","Juigalpa","Jinotega","Bluefields","Bilwi","Ocotal","Ricas","Jinotepe","Boaco","Somoto","San Carlos","San Juan del Sur","San Juan de Nicaragua"],"Norveç":["Oslo","Bergen","Stavanger","Trondheim","Baerum","Drammen","Skien","Kristiansand","Tromsø","Ålesund","Sandnes","Haugesund","Tønsberg","Moss","Bodø","Arendal","Hamar","Gjøvik","Mo i Rana","Narvik"],"Orta Afrika Cumhuriyeti":["Bangui","Mbaiki","Bossangoa","Bambari","Berbérati","Kaga-Bandoro","Bozoum","Carnot","Bouar","Sibut","Bangassou","Bria","Nola","Zemio","Mobaye","Obo","Ndélé","Birao","Bossembélé","Ouadda"],"Pakistan":["Karaçi","Lahor","Faysalabad","Saidu","Rawalpindi","Multan","Gujranwala","Haydarabad","Peşaver","Abbottabad","İslamabad","Ketta","Bannu","Bahawalpur","Sargodha","Sialkot","Sukkur","Larkana","Sheikhupura","Mirpur Khas"],"Panama":["Panama","Colón","David","Balboa","Santiago","Chitré","Penonome","Puerto Armuelles","Las Tablas","Bocas del Toro","Almirante","La Palma","Jaqué","El Porvenir"],"Papua Yeni Gine":["Port Moresby","Lae","Madang","Mt. Hagen","Arawa","Goroka","Popondetta","Mendi","Wewak","Kavieng","Kimbe","Daru","Alotau","Vanimo","Kundiawa","Rabaul","Kieta","Lorengau","Kerema","Wabag"],"Paraguay":["Asunción","San Lorenzo","Encarnacion","Ciudad del Este","Pedro Juan Caballero","Coronel Oviedo","Concepcion","Villarrica","Itako","Ypacarai","Pilar","Caacupé","Paraguari","Bella Vista","Horqueta","Villa Hayes","Coronel Bogado","Belén","Filadelfia","San Pedro"],"Peru":["Lima","Callao","Arequipa","Trujillo","Chichlayo","Iquitos","Huancayo","Piura","Cusco","Chimbote","Pucallpa","Tacna","Ica","Juliaca","Ayacucho","Sullana","Huanuco","Chincha Alta","Cajamarca","Cerro de Pasco"],"Polonya":["Katowice","Varşova","Łódź","Kraków","Gdańsk","Bytom","Wrocław","Poznań","Gliwice","Szczecin","Bydgoszcz","Lublin","Gdynia","Białystok","Rzeszów","Kielce","Olsztyn","Opole","Elbląg","Zielona Góra"],"Portekiz":["Lizbon","Porto","Braga","Funchal","Setúbal","Coimbra","Ponta Delgada","Portimão","Évora","Aveiro","Leiria","Faro","Beja","Bragança","Castelo Branco","Guarda","Santarém","Viseu","Covilhã","Vila Real"],"Porto Riko":["San Juan","Mayagüez","Ponce","Arecibo"],"Romanya":["Bükreș","Yaș","Cluj-Napoca","Temeșvar","Galați","Brașov","Craiova","Köstence","Ploiești","Oradea","Brăila","Bacău","Pitești","Arad","Sibiu","Târgu Mureș","Baia Mare","Buzău","Botoșani","Satu Mare"],"Ruanda":["Kigali","Nyanza","Gitarama","Ruhengeri","Gisenyi","Butare","Byumba","Kibuye","Kibungo","Cyangugu","Gikongoro"],"Rusya":["Moskova","Sankt Petersburg","Novosibirsk","Yekaterinburg","Nijniy Novgorod","Samara","Omsk","Kazan","Çelyabinsk","Rostov-na-Donu","Ufa","Perm","Volgograd","Krasnoyarsk","Voronej","Saratov","Tolyatti","Krasnodar","Ulyanovsk","İjevsk"],"Saint Kitts ve Nevis":["Basseterre"],"Saint Lucia":["Castries"],"Saint Vincent ve Grenadinler":["Kingstown"],"Samoa":["Apia"],"San Marino":["San Marino"],"Senegal":["Dakar","Thiès","Kaolack","Ziguinchor","Diourbel","Tambacounda","Louga","Kolda","Fatick","Kaédi","Kédougou"],"Seyşeller":["Victoria"],"Sierra Leone":["Freetown","Bo","Kenema","Makeni","Koidu"],"Singapur":["Singapur"],"Slovakya":["Bratislava","Košice","Prešov","Žilina","Banská Bystrica","Trnava","Zvolen"],"Slovenya":["Ljubljana","Maribor"],"Solomon Adaları":["Honiara","Gizo","Lata"],"Somali":["Mogadişu","Kismayo","Jamaame","Baydabo","Cevher","Beledveyne","Galkayo","Mandera","Bosaso","Luuq","Buurhakaba","Eyl","Bandarbeyla","Garbahare","Ferfer","Buur Gaabo","Garove","Merka","Hudur","Bu'ale"],"Sri Lanka":["Jaffna","Kolombo","Moratuwa","Batticaloa","Anuradhapura","Sri Jayawardenapura-Kotte","Kandy","Trincomalee","Kilinochchi","Galle","Matara","Ratnapura","Badulla","Puttalam"],"Sudan":["Hartum","Omdurman","Port Sudan","Kassala","El Ubeyd","Nyala","Kosti","Vad Medeni","Al-Fashir","El Gadarif","Shendi","Damazin","Kadugli","Atbarah","El Cuneyna","El Manaqil","Sennar","En Nahud","Ed Damir","Ed Dueim"],"Surinam":["Paramaribo","Cottica","Nieuw Nickerie","Brokopondo","Moengo","Nieuw Amsterdam","Brownsweg","Groningen","Onverwacht","Totness"],"Suriye":["Halep","Şam","Humus","Lazkiye","Duma","Hama","Deyrizor","Rakka","Tartus","Dera","İdlip","Hasiçi","Münbiç","Kamışlı","Al-Thawrah","Ebu Kemal","Al-Suwayda","Tadmur","Ad Nabk","Az'ez"],"Suudi Arabistan":["Riyad","Cidde","Ad Dammam","Mekke","Medine","Taif","Hufuf","El-Hille","Tebük","Bureyde","Hail","Necran","Katif","Al Mubarraz","El-Harc","Yenbu","Hafar El-Batin","Jubail","Arar","Abha"],"São Tomé ve Príncipe":["São Tomé","Santo António"],"Sırbistan":["Belgrad","Niş","Novi Sad","Kragujevac","Čačak","Subotica","Zrenjanin"],"Tacikistan":["Duşanbe","Kocand","Kurgantepe","Konibodom","Istarawshan","Kulob","Horog","Leninobod","Kuybyshevskiy"],"Tahiti":["Papeete"],"Tanzanya":["Darüsselam","Moshi","Mwanza","Zanzibar City","Arusha","Mbeya","Morogoro","Tanga","Dodoma","Kigoma","Tabora","Musoma","Tukuyu","Songea","Iringa","Shinyanga","Bukoba","Mtwara","Kilosa","Sumbawanga"],"Tayland":["Bangkok","Chiang Mai","Samut Prakan","Nakhon Ratchasima","Hat Yai","Ubon Ratchathani","Nonthaburi","Khon Kaen","Udon Thani","Nakhon Si Thammarat","Chon Buri","Lampang","Si Racha","Phitsanulok","Surat Thani","Pathum Thani","Pattani","Yala","Trang","Ayutthaya"],"Togo":["Lomé","Sokodé","Kpalimé","Atakpamé","Bassar","Sansanné-Mango","Sotouboua"],"Tonga":["Nuku'alofa","Neiafu"],"Trinidad ve Tobago":["Port of Spain","San Fernando"],"Tunus":["Tunus","Safakes","Susa","Gabes","Zarzis","Kayravan","Bizerte","Kafsa","Nabil","Aryana","Kassarin","Munastır","Tatavin","Medenin","Bace","Cendube","El Kâf","Mehdiye","Sidi Bu Zeyd","Tuzer"],"Turks ve Caicos Adaları":["Cockburn Town"],"Türkiye":["Adana","Adıyaman","Afyonkarahisar","Aksaray","Amasya","Ankara","Antalya","Ardahan","Artvin","Aydın","Ağrı","Balıkesir","Bartın","Batman","Bayburt","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa","Çanakkale","Çankırı","Çorum","Denizli","Diyarbakır","Düzce","Edirne","Elazığ","Erzincan","Erzurum","Eskişehir","Gaziantep","Giresun","Gümüşhane","Hakkari","Hatay","Isparta","İstanbul","İzmir","Iğdır","Kahramanmaraş","Karabük","Karaman","Kars","Kastamonu","Kayseri","Kilis","Kırıkkale","Kırklareli","Kırşehir","Kocaeli","Konya","Kütahya","Malatya","Manisa","Mardin","Mersin","Muğla","Muş","Nevşehir","Niğde","Ordu","Osmaniye","Rize","Sakarya","Samsun","Siirt","Sinop","Sivas","Şanlıurfa","Şırnak","Tekirdağ","Tokat","Trabzon","Tunceli","Uşak","Van","Yalova","Yozgat","Zonguldak"],"Türkmenistan":["Aşkabat","Türkmenabat","Daşoğuz","Mary","Balkanabat","Türkmenbaşı","Tejen","Serdar","Abadan","Kaka","Atamurat","Köhne Ürgenç","Celeken"],"Uganda":["Kampala","Mbale","Jinja","Arua","Entebbe","Tororo","Gulu","Lira","Mbarara","Bombo","Kasese","Masaka","Kitgum","Busia","Iganga","Kabale","Fort Portal","Mityana","Adjumani","Masindi"],"Ukrayna":["Kiev","Harkov","Dnipro","Odessa","Donetsk","Lviv","Zaporijya","Kryvyi Rih","Mıkolayiv","Mariupol","Luhansk","Hmelnitski","Horlivka","Makiivka","Vinnitsya","Herson","Poltava","Çernigiv","Çernivtsi","Çerkassi"],"Umman":["Maskat","Seeb","Salalah","Sahar","Ibri","Nizve","Sur","Alayat Samail","Hilf","Marbat"],"Uruguay":["Montevideo","Rivera","Punta del Este","Salto","Paysandú","Melo","Maldonado","Tacuarembo","Mercedes","Artigas","Minas","San Jose de Mayo","Durazno","Flordia","Treinta y Tres","Rocha","Fray Bentos","Bella Union","Colonia del Sacramento","Trinidad"],"Vanuatu":["Port Vila","Luganville"],"Venezuela":["Caracas","Maracaibo","Valencia","Barquisimeto","Maracay","Ciudad Guayana","Barcelona","Puerto la Cruz","Cabimas","San Cristobal","Maturin","Mérida","Ciudad Bolivar","Cumaná","Maiquetía","Los Teques","Barinas","Acarigua","Punto Fijo","El Tigre"],"Vietnam":["Ho Chi Minh Kenti","Hanoi","Hải Phòng","Cần Thơ","Đà Nẵng","Hué","Qui Nhon","Biên Hòa","Vinh","Thai Nguyen","Nha Trang","Ca Mau","Viet Tri","Long Xuyen","Buôn Ma Thuột","Phan Thiet","Rạch Giá","Soc Trang","Da Lat","Quang Nghai"],"Yemen":["San'a","Aden","El Hudeyde","Taiz","El-Mukelle","Ibb","Hajjah","Dhamar","Zabid","Sa'dah","Saywun","Lahic","Ash Shihr","Rida","Al Bayda","Ataq","Al Ghaydah","Marib","Hadiboh","Sayhut al Ghamirah"],"Yeni Kaledonya":["Nouméa"],"Yeni Zelanda":["Auckland","Wellington","Manukau","Christchurch","Waitakere","North Shore","Hamilton","Tauranga","Dunedin","Lower Hutt","Kuzey Palmerston","Hastings","Nelson","Napier","Rotorua","New Plymouth","Poirua","Whangarei","Invercargill","Whanganui"],"Yeşil Burun Adaları":["Praia","Mindelo"],"Yunanistan":["Atina","Selanik","Pire","Patras","Kandiye","Larissa","Volos","Yanya","Hanya","Agrinion","Halkis","Kalamata","Kavala","Rodos","Serez","Katerin","Dedeağaç","İskeçe","Lamia","Gümülcine"],"Zambiya":["Lusaka","Kitwe","Ndola","Kasama","Kabwe","Chingola","Livingstone","Mufulira","Luanshya","Chipata","Chililabombwe","Solwezi","Mazabuka","Mongu","Kafue","Choma","Mansa","Kapiri Mposhi","Mpika","Nchelenge"],"Zimbabve":["Harare","Bulawayo","Chitungwiza","Mutare","Gweru","Kwekwe","Kadoma","Masvingo","Chinhoyi","Zvishavane","Victoria Falls","Hwange","Chiredzi","Beitbridge","Kariba","Karoi","Gwanda","Shamva","Mazowe","Plumtree"],"Çad":["N'Djamena","Bongor","Sarh","Abéché","Moundou","Kelo","Pala","Am Timan","Doba","Mongo","Ati","Laï","Oum Hadjer","Mao","Faya Largeau","Biltine","Bol","Fada","Zouar"],"Çekya":["Prag","Ostrava","Brno","Plzeň","Zlín","Pardubice","Liberec","Olomouc","České Budějovice","Hradec Králové","Ústí nad Labem","Jihlava"],"Çin":["Şanghay","Pekin","Guangzhou","Shenzhen","Vuhan","Tientsin","Çongçing","Shenyang","Dongguan","Çengdu","Xi'an","Hechi","Nankin","Guiyang","Harbin","Urumçi","Zhangzhou","Çangçun","Dalian","Zibo"],"Çin Taipei":["Taipei","New Taipei","Kaohsiung","Taichung","Tainan","Zhongli","Changhua","Hsinchu","Pingtung","Taoyuan","Keelung","Chiayi","Hualien","Pingzhen","Zhubei","Yangmei","Taitung","Bade","Nantou","Yilan"],"Özbekistan":["Taşkent","Fergana","Namangan","Semerkant","Andican","Şehr-i-Sebz","Karşi","Kokand","Buhara","Kattakurgan","Cizzak","Nukus","Denau","Navoiy","Angren","Iskandar","Tirmiz","Çirçig","Urgenç","Hive"],"Ürdün":["Amman","Zerka","İrbid","Es-Salt","Akabe","El Karak","Mafrak","Ma'an","Tafile"],"İngiltere":["L","o","n","d","r","a"," ","B","i","r","m","i","n","g","h","a","m"," ","M","a","n","c","h","e","s","t","e","r"," ","L","i","v","e","r","p","o","o","l"," ","L","e","e","d","s"," ","S","h","e","f","f","i","e","l","d"," ","B","r","i","s","t","o","l"," ","N","e","w","c","a","s","t","l","e"," ","N","o","t","t","i","n","g","h","a","m"," ","L","e","i","c","e","s","t","e","r"," ","S","o","u","t","h","a","m","p","t","o","n"," ","P","o","r","t","s","m","o","u","t","h"," ","B","r","i","g","h","t","o","n"," ","C","o","v","e","n","t","r","y"," ","H","u","l","l"," ","S","t","o","k","e","-","o","n","-","T","r","e","n","t"," ","D","e","r","b","y"," ","P","l","y","m","o","u","t","h"," ","W","o","l","v","e","r","h","a","m","p","t","o","n"," ","S","u","n","d","e","r","l","a","n","d"," ","M","i","d","d","l","e","s","b","r","o","u","g","h"," ","N","o","r","w","i","c","h"," ","I","p","s","w","i","c","h"," ","R","e","a","d","i","n","g"," ","O","x","f","o","r","d"," ","C","a","m","b","r","i","d","g","e"," ","B","r","a","d","f","o","r","d"," ","B","l","a","c","k","b","u","r","n"," ","B","u","r","n","l","e","y"," ","P","r","e","s","t","o","n"," ","B","o","l","t","o","n"," ","W","i","g","a","n"," ","B","o","u","r","n","e","m","o","u","t","h"," ","L","u","t","o","n"," ","Y","o","r","k"," ","E","x","e","t","e","r"],"İran":["Tahran","Meşhed","İsfahan","Kerec","Tebriz","Şiraz","Ahvaz","Kum","Kirmanşah","Zahidan","Reşt","Kirman","Urmiye","Hamedan","Erak","Yezd","Kazvin","Bender Abbas","Humeynişehr","Erdebil"],"İrlanda":["Dublin","Cork","Limerick","Galway","Waterford","Dundalk","Drogheda","Tralee","Kilkenny","Sligo","Killarney","Shannon","Muineachan","Ros Comain","Donegal"],"İskoçya":["G","l","a","s","g","o","w"," ","E","d","i","n","b","u","r","g","h"," ","A","b","e","r","d","e","e","n"," ","D","u","n","d","e","e"," ","I","n","v","e","r","n","e","s","s"," ","P","e","r","t","h"," ","S","t","i","r","l","i","n","g"," ","K","i","l","m","a","r","n","o","c","k"," ","M","o","t","h","e","r","w","e","l","l"," ","P","a","i","s","l","e","y"," ","A","y","r"," ","D","u","n","f","e","r","m","l","i","n","e"," ","F","a","l","k","i","r","k"," ","H","a","m","i","l","t","o","n"," ","L","i","v","i","n","g","s","t","o","n"],"İspanya":["Madrid","Barselona","Sevilla","Bilbao","Valensiya","Zaragoza","Málaga","Murcia","Granada","Vigo","Las Palmas de Gran Canaria","Palma de Mallorca","A Coruña","San Sebastián","Santa Cruz de Tenerife","Gijón","Valladolid","Córdoba","Alicante","Cádiz"],"İsrail":["Tel Aviv","Kudüs","Hayfa","Beerşeba","Nasıra","Ramla"],"İsveç":["Stockholm","Göteborg","Malmö","Uppsala","Västerås","Örebro","Linköping","Helsingborg","Jönköping","Norrköping","Umeå","Karlstad","Sundsvall","Gävle","Borås","Växjö","Halmstad","Luleå","Östersund","Trollhättan"],"İsviçre":["Cenevre","Zürih","Basel","Bern","Lozan","Luzern","Lugano","Biel/Bienne","St. Gallen","Chur","Schaffhausen","Fribourg","Neuchâtel","Sion","Zug","Frauenfeld","Bellinzona","Aarau","Herisau","Solothurn"],"İtalya":["Roma","Milano","Napoli","Torino","Floransa","Salerno","Palermo","Katanya","Cenova","Bari","Bologna","Verona","Pescara","Cagliari","Venedik","Messina","Caserta","Como","Trieste","Pisa"],"İzlanda":["Reykjavík","Akureyri","Keflavík","Selfoss","Sauðárkrókur","Ísafjörður","Egilsstaðir","Borgarnes","Höfn"],"Şili":["Santiago","Concepcion","Valparaíso","Viña del Mar","Antofagasta","Talcahuano","Temuco","San Bernardo","Rancagua","Iquique","Talca","Arica","Puerto Montt","Coquimbo","Valdivia","La Serena","Osorno","Chillán","Los Angeles","Calama"]};
+const flagPos = (u) => { const p = FLAG[u] || [14, 14]; return (-p[0] * 24) + 'px ' + (-p[1] * 18) + 'px'; };
+function tdStore(key) { let r = null; try { r = localStorage.getItem(key); } catch (e) {} if (!r) { try { r = (window.top.__tdStore || {})[key] || null; } catch (e) {} } if (!r) { try { r = (window.__tdStore || {})[key] || null; } catch (e) {} } return r; }
+function tdLoad(key, def) { try { const r = tdStore(key); return r ? JSON.parse(r) : def; } catch (e) { return def; } }
+function tdSave(key, obj) { const raw = JSON.stringify(obj); try { localStorage.setItem(key, raw); } catch (e) {} try { window.top.__tdStore = window.top.__tdStore || {}; window.top.__tdStore[key] = raw; } catch (e) {} try { window.__tdStore = window.__tdStore || {}; window.__tdStore[key] = raw; } catch (e) {} try { const bc = new BroadcastChannel('td-store'); bc.postMessage(key); bc.close(); } catch (e) {} }
+const SAVES_KEY = 'td-kayitlar-v1', DRAFT_KEY = 'td-taslak-v1';
+function newId() { return 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function tdRaw() { let r = null; try { r = localStorage.getItem('td-ayarlar-v1'); } catch (e) {} if (!r) { try { r = window.top.__tdAyarlar || null; } catch (e) {} } if (!r) { try { r = window.__tdAyarlar || null; } catch (e) {} } return r || '{}'; }
+function tdRead() { try { const s = JSON.parse(tdRaw()); return (s && typeof s === 'object') ? s : {}; } catch (e) { return {}; } }
+
+const TYPES = { elle: ['ELLE', 'ELLE KAYDEDİLDİ', 'rgba(143,184,255,0.18)', '#8FB8FF'], oto: ['OTOMATİK', 'OTOMATİK KAYIT', 'rgba(242,193,78,0.16)', '#F2C14E'], hizli: ['HIZLI', 'HIZLI KAYIT', 'rgba(79,178,134,0.18)', '#7FD8AF'] };
+const STAGES = { kulup: ['Kariyer kurulumu · kulüp seçimi bekleniyor', 'KURULUMA DEVAM ET', 'LigPiramidi.dc.html'] };
+const COLORS = ['#C8102E', '#2E5AAC', '#2EAD6B', '#B5651D', '#7A3FB5', '#1F8A9E', '#B8336A', '#556070'];
+const FILTERS = [['tum', 'Tümü'], ['elle', 'Elle'], ['oto', 'Otomatik'], ['hizli', 'Hızlı']];
+const SORTS = ['Son kaydedilen', 'Oyun tarihine göre', 'Ada göre'];
+const pad = n => (n < 10 ? '0' : '') + n;
+function fmtDate(iso) { const d = new Date(iso); if (isNaN(d)) return '—'; return pad(d.getDate()) + '.' + pad(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+function ago(iso) { const d = new Date(iso); const s = (Date.now() - d.getTime()) / 1000; if (isNaN(s)) return ''; if (s < 60) return 'az önce'; if (s < 3600) return Math.floor(s / 60) + ' dk önce'; if (s < 86400) return Math.floor(s / 3600) + ' saat önce'; if (s < 172800) return 'dün'; if (s < 604800) return Math.floor(s / 86400) + ' gün önce'; return fmtDate(iso).slice(0, 10); }
+function kb(s) { const n = JSON.stringify(s).length * 2; return n > 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+function gameKey(s) { const p = (s.oyunTarihi || '01.01.1900').split('.'); return p[2] + p[1] + p[0]; }
+function colorOf(s) { let h = 0; const k = s.kariyerId || s.id; for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0; return COLORS[h % COLORS.length]; }
+function initialsOf(s) { const m = (s.menajerler || [])[0] || {}; return (((m.ad || '?')[0] || '') + ((m.soyad || '')[0] || '')).toLocaleUpperCase('tr-TR'); }
+function loadSaves() { const a = tdLoad(SAVES_KEY, []); return Array.isArray(a) ? a.filter(x => x && x.id) : []; }
+function slug(t) { return (t || 'kayit').toLocaleLowerCase('tr-TR').replace(/ı/g, 'i').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'kayit'; }
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const saves = loadSaves();
+    const hl = tdLoad('td-son-kayit', null);
+    this.state = { saves: saves, sel: (hl && saves.some(s => s.id === hl)) ? hl : (saves[0] || {}).id || null, filter: 'tum', q: '', sort: SORTS[0], renaming: false, draftName: '', confirm: false, toast: '', toastBad: false };
+    try { tdSave('td-son-kayit', null); } catch (e) {}
+    try {
+      window.addEventListener('keydown', (e) => this.onKey(e));
+      const bc = new BroadcastChannel('td-store'); bc.onmessage = (ev) => { if (ev.data === SAVES_KEY) this.setState({ saves: loadSaves() }); };
+    } catch (e) {}
+  }
+  persist(saves, extra) { tdSave(SAVES_KEY, saves); this.setState(Object.assign({ saves: saves }, extra || {})); }
+  flash(msg, bad) { this.setState({ toast: msg, toastBad: !!bad }); clearTimeout(this.tt); try { this.tt = setTimeout(() => this.setState({ toast: '' }), 2600); } catch (e) {} }
+  visible() {
+    const st = this.state; const q = (st.q || '').toLocaleLowerCase('tr-TR');
+    let list = st.saves.filter(s => st.filter === 'tum' || s.tur === st.filter);
+    if (q) list = list.filter(s => [s.ad, (s.menajerler || []).map(m => m.ad + ' ' + m.soyad).join(' '), Object.keys(s.ulkeler || {}).join(' '), s.kulup || ''].join(' ').toLocaleLowerCase('tr-TR').indexOf(q) >= 0);
+    list = list.slice();
+    if (st.sort === 'Ada göre') list.sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
+    else if (st.sort === 'Oyun tarihine göre') list.sort((a, b) => gameKey(b).localeCompare(gameKey(a)));
+    else list.sort((a, b) => (b.kaydetme || '').localeCompare(a.kaydetme || ''));
+    return list;
+  }
+  onKey(e) {
+    const st = this.state;
+    if (st.renaming) { if (e.key === 'Enter') this.commitRename(); else if (e.key === 'Escape') this.setState({ renaming: false }); return; }
+    if (st.confirm) { if (e.key === 'Escape') this.setState({ confirm: false }); else if (e.key === 'Enter') this.doDelete(); return; }
+    const t = e.target && e.target.tagName; if (t === 'INPUT' || t === 'SELECT') { if (e.key === 'Escape') { try { e.target.blur(); } catch (x) {} } return; }
+    const list = this.visible(); const i = list.findIndex(s => s.id === st.sel);
+    if (e.key === 'ArrowDown' && list.length) { e.preventDefault(); this.setState({ sel: list[Math.min(list.length - 1, i + 1)].id }); }
+    else if (e.key === 'ArrowUp' && list.length) { e.preventDefault(); this.setState({ sel: list[Math.max(0, i - 1)].id }); }
+    else if (e.key === 'Enter' && st.sel) { const a = document.getElementById('ko-load'); if (a) a.click(); }
+    else if (e.key === 'Delete' && st.sel) this.setState({ confirm: true });
+    else if (e.key === 'F2' && st.sel) { e.preventDefault(); this.startRename(); }
+    else if (e.key === 'Escape') { const a = document.getElementById('ko-back'); if (a) a.click(); }
+  }
+  cur() { return this.state.saves.find(s => s.id === this.state.sel) || null; }
+  startRename() { const s = this.cur(); if (s) this.setState({ renaming: true, draftName: s.ad }); }
+  commitRename() { const s = this.cur(); const n = (this.state.draftName || '').trim(); if (!s || !n) { this.setState({ renaming: false }); return; } this.persist(this.state.saves.map(x => x.id === s.id ? Object.assign({}, x, { ad: n.slice(0, 48) }) : x), { renaming: false }); this.flash('Kayıt adı değiştirildi.'); }
+  doDelete() { const s = this.cur(); if (!s) return; const rest = this.state.saves.filter(x => x.id !== s.id); const vis = this.visible().filter(x => x.id !== s.id); this.persist(rest, { confirm: false, sel: (vis[0] || rest[0] || {}).id || null }); this.flash('“' + s.ad + '” silindi.'); }
+  copy() { const s = this.cur(); if (!s) return; const now = new Date().toISOString(); const c = Object.assign({}, JSON.parse(JSON.stringify(s)), { id: newId(), ad: (s.ad + ' (kopya)').slice(0, 48), tur: 'elle', kaydetme: now }); this.persist([c].concat(this.state.saves), { sel: c.id, filter: 'tum' }); this.flash('Kopya oluşturuldu.'); }
+  exportSave() {
+    const s = this.cur(); if (!s) return;
+    try {
+      const blob = new Blob([JSON.stringify({ format: 'the-simple-game-save', surum: 1, kayit: s }, null, 1)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = slug(s.ad) + '.tsg'; document.body.appendChild(a); a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 800);
+      this.flash(slug(s.ad) + '.tsg indirildi.');
+    } catch (e) { this.flash('Dışa aktarma bu ortamda engellendi.', true); }
+  }
+  importFile(e) {
+    const f = e && e.target && e.target.files && e.target.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const o = JSON.parse(rd.result); const list = Array.isArray(o) ? o : (o && o.kayit ? [o.kayit] : (o && o.id && o.menajerler ? [o] : []));
+        const ok = list.filter(x => x && x.ad && Array.isArray(x.menajerler));
+        if (!ok.length) { this.flash('Bu dosya bir The Simple Game kaydı değil.', true); return; }
+        const now = new Date().toISOString();
+        const add = ok.map(x => Object.assign({}, x, { id: newId(), tur: x.tur || 'elle', ice: true, kaydetme: x.kaydetme || now }));
+        this.persist(add.concat(this.state.saves), { sel: add[0].id, filter: 'tum', q: '' });
+        this.flash(add.length + ' kayıt içe aktarıldı.');
+      } catch (err) { this.flash('Dosya okunamadı: geçerli bir .tsg dosyası seç.', true); }
+    };
+    rd.readAsText(f); try { e.target.value = ''; } catch (x) {}
+  }
+  renderVals() {
+    const st = this.state; const set = tdRead();
+    const saves = st.saves; const list = this.visible();
+    const sel = list.find(s => s.id === st.sel) || list[0] || null;
+    const filters = FILTERS.map(f => { const on = st.filter === f[0]; const n = f[0] === 'tum' ? saves.length : saves.filter(s => s.tur === f[0]).length; return { label: f[1], n: String(n), pressed: on ? 'true' : 'false', fg: on ? '#FFFFFF' : '#A7B0C8', bar: on ? '#C8102E' : 'transparent', pick: () => this.setState({ filter: f[0] }) }; });
+    const rows = list.map(s => {
+      const on = sel && s.id === sel.id; const T = TYPES[s.tur] || TYPES.elle; const m = (s.menajerler || [])[0] || {};
+      const countries = Object.keys(s.ulkeler || {}); const lg = (s.ligler || []).length;
+      const badges = [];
+      if (s.eglence && s.eglence.on) badges.push({ t: 'EĞLENCE MODU', c: '#F2C14E' });
+      if (s.editor) badges.push({ t: 'DÜZENLENMİŞ VERİ', c: '#FF8A93' });
+      if ((s.menajerler || []).length > 1) badges.push({ t: s.menajerler.length + ' MENAJER', c: '#8FB8FF' });
+      if (s.ice) badges.push({ t: 'İÇE AKTARILDI', c: '#A7B0C8' });
+      return { pressed: on ? 'true' : 'false', border: on ? '#C8102E' : 'rgba(255,255,255,0.10)', bg: on ? 'rgba(200,16,46,0.12)' : 'rgba(5,8,16,0.4)',
+        tileBg: colorOf(s), initials: initialsOf(s), season: s.sezon || '', type: T[0], typeBg: T[2], typeFg: T[3], name: s.ad,
+        flag: flagPos(m.uyruk || countries[0] || ''), line: ((m.ad || '') + ' ' + (m.soyad || '')).trim() + ' · ' + (s.kulup || 'Kulüp seçilmedi') + ' · ' + (countries.length ? countries.slice(0, 2).join(', ') + (countries.length > 2 ? ' +' + (countries.length - 2) : '') : '') + (lg ? ' · ' + lg + ' lig' : ''),
+        badges: badges, gameDate: s.oyunTarihi || '—', ago: ago(s.kaydetme), size: kb(s), pick: () => this.setState({ sel: s.id, renaming: false }) };
+    });
+    let d = { tileBg: '#556070', initials: '', typeLong: '', typeFg: '#8C96B2', name: '', notRenaming: true, renaming: false, stage: '', loadHref: '#', loadLabel: '', facts: [], managers: [], leagues: [], file: '' };
+    if (sel) {
+      const T = TYPES[sel.tur] || TYPES.elle; const S = STAGES[sel.adim] || ['Kariyer devam ediyor', 'KARİYERE DEVAM ET', 'LigPiramidi.dc.html'];
+      const countries = Object.keys(sel.ulkeler || {});
+      d = { tileBg: colorOf(sel), initials: initialsOf(sel), typeLong: T[1], typeFg: T[3], name: sel.ad, notRenaming: !st.renaming, renaming: st.renaming, draftName: st.draftName,
+        setDraftName: (e) => this.setState({ draftName: e.target.value }), commitRename: () => this.commitRename(), cancelRename: () => this.setState({ renaming: false }),
+        stage: S[0], loadLabel: S[1], loadHref: S[2],
+        load: () => { tdSave(DRAFT_KEY, Object.assign({}, sel.taslak || {}, { kayitId: sel.id, kariyerId: sel.kariyerId })); },
+        facts: [
+          { k: 'OYUN TARİHİ', v: sel.oyunTarihi || '—' }, { k: 'SEZON', v: sel.sezon || '—' },
+          { k: 'KULÜP', v: sel.kulup || 'Seçilmedi' }, { k: 'OYNAMA SÜRESİ', v: (sel.sure || 0) < 60 ? (sel.sure || 0) + ' dk' : Math.floor(sel.sure / 60) + ' sa ' + (sel.sure % 60) + ' dk' },
+          { k: 'VERİTABANI', v: sel.db || 'Varsayılan Veritabanı' }, { k: 'OYUNCU HAVUZU', v: sel.boyut || '—' },
+          { k: 'KURALLAR', v: sel.eglence && sel.eglence.on ? 'Eğlence modu · ' + sel.eglence.n + ' kural' : 'Gerçekçi' }, { k: 'SON KAYIT', v: fmtDate(sel.kaydetme) }
+        ],
+        managers: (sel.menajerler || []).map(m => ({ flag: flagPos(m.uyruk), name: (m.ad + ' ' + m.soyad + (m.lakap ? ' «' + m.lakap + '»' : '')).trim(), rep: 'İtibar ' + (m.itibar || 1) })),
+        leagues: countries.map(u => ({ flag: flagPos(u), t: u + ' · ' + (((sel.ligListesi || {})[u]) || ((sel.ulkeler[u] + 1) + ' lig')) })),
+        rename: () => this.startRename(), copy: () => this.copy(), export: () => this.exportSave(), askDelete: () => this.setState({ confirm: true }),
+        file: 'Belgeler / The Simple Game / Kayıtlar / ' + slug(sel.ad) + '.tsg · ' + kb(sel) + ' · sürüm ' + (sel.surum || '0.1') };
+    }
+    const tot = saves.reduce((a, s) => a + JSON.stringify(s).length * 2, 0);
+    const autoKeep = set.saveCount || '5'; const autoFreq = set.autosave || 'Her hafta';
+    return {
+      empty: saves.length === 0, hasSaves: saves.length > 0, filters, rows, noMatch: saves.length > 0 && rows.length === 0, d,
+      q: st.q, setQ: (e) => this.setState({ q: e.target.value }), sort: st.sort, sorts: SORTS.map(v => ({ v: v })), setSort: (e) => this.setState({ sort: e.target.value }),
+      storeInfo: saves.length ? saves.length + ' kayıt · ' + (tot > 1048576 ? (tot / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(tot / 1024)) + ' KB') : '',
+      autoInfo: autoFreq === 'Kapalı' ? 'Otomatik kayıt kapalı' : 'Otomatik kayıt: ' + autoFreq.toLocaleLowerCase('tr-TR') + ' · son ' + autoKeep + ' otomatik kayıt tutulur',
+      importFile: (e) => this.importFile(e), newCareer: () => tdSave(DRAFT_KEY, null),
+      confirmOpen: st.confirm, confirmName: sel ? sel.ad : '', cancelDelete: () => this.setState({ confirm: false }), doDelete: () => this.doDelete(),
+      toastOn: !!st.toast, toast: st.toast, toastBorder: st.toastBad ? 'rgba(232,72,85,0.6)' : 'rgba(79,178,134,0.6)'
+    };
+  }
+}
+</script>
+</body>
+</html>
