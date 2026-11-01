@@ -145,6 +145,8 @@ const powCol = v => v >= 15 ? 'var(--td-green,#4FB286)' : v >= 11 ? 'var(--td-bl
 class Component extends DCLogic {
   constructor(props) {
     super(props);
+    this._hist = [];
+    try { history.pushState({ g: 1 }, ''); window.addEventListener('popstate', () => { if (this._hist.length) { this.goPrev(); try { history.pushState({ g: 1 }, ''); } catch (e) {} } }); } catch (e) {}
     const dr = tdLoad(DRAFT_KEY, null) || {};
     const picks = Array.isArray(dr.kulupler) ? dr.kulupler.filter(Boolean) : []; const dm = Array.isArray(dr.managers) ? dr.managers : [];
     this.sample = picks.length === 0;
@@ -156,6 +158,11 @@ class Component extends DCLogic {
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
   gs() { const k = this.key(); if (!this.game.k[k] || this.game.k[k].lg !== this.items[this.state.mi].pick.lg) this.game.k[k] = { lg: this.items[this.state.mi].pick.lg, date: START, sim: {}, res: {}, read: {} }; return this.game.k[k]; }
   loadFor(mi) { this.setState({ loaded: false }); const p = this.items[mi].pick; loadKD(p.c, ok => { this.setState({ loaded: true, kdOk: ok, tick: this.state.tick + 1 }); }); }
+  setState(p, cb) {
+    try { const st = this.state; if (p && p.view && st && p.view !== st.view && !this._popping) { this._hist.push({ view: st.view, vp: st.vp, psel: st.psel, psrc: st.psrc, pclub: st.pclub, fsel: st.fsel, ssel: st.ssel, cg: st.cg, tsel: st.tsel, tmode: st.tmode }); if (this._hist.length > 40) this._hist.shift(); } } catch (e) {}
+    return super.setState(p, cb);
+  }
+  goPrev() { const b = this._hist.pop(); if (!b) return; this._popping = true; try { this.setState(Object.assign({ back: null, rep: null }, b)); } finally { this._popping = false; } }
   openView(view, vp) {
     const cu = this.state; const back = { view: cu.view, vp: cu.vp, psel: cu.psel, psrc: cu.psrc, pclub: cu.pclub, fsel: cu.fsel, ssel: cu.ssel, cg: cu.cg };
     const go = () => this.setState({ view, vp, back, cg: '', tick: this.state.tick + 1 });
@@ -170,7 +177,7 @@ class Component extends DCLogic {
   openCountry(c) { if (c) this.openView('ulke', { n: '', c, lg: '' }); }
   openLeague(c, lg) { if (c) this.openView('lig', { n: '', c, lg: lg || '' }); }
   openPlayer(x, pclub) { const cu = this.state; const back = { view: cu.view, vp: cu.vp, psel: cu.psel, psrc: cu.psrc, pclub: cu.pclub, fsel: cu.fsel, ssel: cu.ssel, cg: cu.cg }; this.setState({ view: 'oyuncu', psel: x[0], pclub: pclub || null, psrc: cu.kteam || 'A', back, cg: '' }); }
-  goBackNav(def) { const b = this.state.back; if (b) this.setState({ view: b.view, vp: b.vp, psel: b.psel, psrc: b.psrc, pclub: b.pclub, fsel: b.fsel, ssel: b.ssel, cg: b.cg, back: null }); else this.setState({ view: def || 'pano', vp: null }); }
+  goBackNav(def) { const b = this.state.back; if (b) this.setState({ view: b.view, vp: b.vp, psel: b.psel, psrc: b.psrc, pclub: b.pclub, fsel: b.fsel, ssel: b.ssel, cg: b.cg, back: null }); else if (this._hist.length) this.goPrev(); else this.setState({ view: def || 'pano', vp: null }); }
   save() { tdSave(GAME_KEY, this.game); }
   model() {
     const st = this.state; const it = this.items[st.mi]; const p = it.pick; const kd = (window.VE_KD && window.VE_KD[p.c]) || null;
@@ -276,7 +283,7 @@ class Component extends DCLogic {
     const tabs = this.items.map((x, i) => { const on = i === st.mi; return { name: x.name, pressed: on ? 'true' : 'false', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.14)', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.14)' : 'transparent', pick: () => { this.setState({ mi: i, msg: 0, view: 'inbox' }); this.loadFor(i); } }; });
     const out = {
       crestBg: 'hsl(' + hue + ' 52% 34%)', crestText: initialsOf(p.n), clubName: p.n, 
-      tabs, hasTabs: this.items.length > 1, dateText: fmtDate(G.date), matchDay, notMatchDay: !matchDay,
+      tabs, goPrev: () => this.goPrev(), backOp: this._hist.length > 0 ? '1' : '0.4', hasTabs: this.items.length > 1, dateText: fmtDate(G.date), matchDay, notMatchDay: !matchDay,
       simMatch: () => { this.simRound(M, G, my); G.date = addDays(G.date, 1); M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) this.simRound(M, G, i); }); this.save(); this.setState({ view: 'fikstur', tick: st.tick + 1 }); },
       nextDay: () => this.advance(1, false), toMatch: () => this.advance(0, true),
       nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vHeyet: st.view === 'heyet', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
