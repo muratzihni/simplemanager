@@ -1,0 +1,9 @@
+[project]
+name = "fmdata"
+version = "0.1.0"
+description = "Gerçek futbol verilerini toplayıp oyun veritabanına aktaran veri motoru (yalnızca standart kütüphane)"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+fmdata = "fmdata.cli:main"

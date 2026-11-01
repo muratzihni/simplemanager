@@ -1,0 +1,7 @@
+{
+  "refresh_squads": 86400,
+  "refresh_transfers": 21600,
+  "refresh_injuries": 21600,
+  "refresh_suspensions": 21600,
+  "validate_full": 604800
+}
