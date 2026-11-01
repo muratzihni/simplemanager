@@ -16,3 +16,9 @@ Tasarım çalışma zamanı dinamik `fetch('kd/…json')` dosyalarını paketlem
 artifact **varlıkları** (`/_blob/<id>`) olarak yüklenir: `kd0-4.js` (171 ülke + turnuvalar) ve `op1-5.js`
 (Open Football oyuncuları). Sayfalar bunları `<script>` ile enjekte eder (yedek: fetch + metin).
 `design/kd/*.json` ve `design/ve-op-*.json` kaynak olarak kalır.
+
+## v1.2.2 – tüm editör verisi oyunda
+`export_kd3.js` artık A takım + R (U21) + U (U19) kadroları, serbest/emekli oyuncuları, serbest personeli ve
+ek oyuncu alanlarını (boy, kilo, 2. uyruk, lakap, milli takım, mevki skorları, davranış) ile
+`_dunya.json` (ödül, derbi, şehir, bölge, medya, sakatlık, hava, para, dil, kıta, tanım, etap, sözleşme) üretir.
+Veri `kd0-7.js` varlıkları olarak yüklenir (id'ler `_kaynak_OyunMerkezi_mantik.js` içinde).

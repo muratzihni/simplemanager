@@ -11,8 +11,8 @@ function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^=
 const u01 = (s) => (hash(s) % 100000) / 100000;
 function initialsOf(n) { const w = n.replace(/[^\p{L}0-9 ]/gu, ' ').split(' ').filter(x => x.length > 1 && !/^(FC|SC|CF|AC|CD|SK|FK|AS|SV|CA|CS|AFC|SD|UD|JK|BK|IF|IK)$/i.test(x)); const s = w.length >= 2 ? w[0][0] + w[1][0] : (w[0] || n).slice(0, 2); return s.toLocaleUpperCase('tr-TR'); }
 function slugOf(s) { return String(s).replace(/ı/g, 'i').replace(/İ/g, 'I').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
-const KD_IDS = ["1a8c52684b1c26e2345ba0f054d4185d", "4ac19c9d815b38577bf75043b838c3b5", "ce161f9b80ae913b301435bfe06f0e5e", "5576e995c0b65c31a060120152cdf363", "d8e365875c02f1d4b1c669fa64eeef00"];
-const KD_MAP = {"ingiltere":0,"arjantin":0,"italya":0,"brezilya":0,"meksika":0,"fransa":0,"ozbekistan":0,"urdun":0,"portekiz":1,"ispanya":1,"polonya":1,"turkiye":1,"abd":1,"hollanda":1,"almanya":1,"cekya":1,"romanya":1,"macaristan":1,"suudi-arabistan":1,"sirbistan":1,"rusya":1,"norvec":1,"sudan":1,"bulgaristan":2,"isvec":2,"uruguay":2,"danimarka":2,"hirvatistan":2,"kolombiya":2,"isvicre":2,"ukrayna":2,"belcika":2,"sili":2,"avusturya":2,"israil":2,"japonya":2,"kibris":2,"peru":2,"yunanistan":2,"slovakya":2,"finlandiya":2,"endonezya":2,"paraguay":2,"_turnuvalar":2,"slovenya":2,"nijerya":2,"guney-kore":2,"lubnan":2,"malta":3,"tayland":3,"esvatini":3,"cin":3,"iran":3,"iskocya":3,"fildisi-sahili":3,"ekvador":3,"cezayir":3,"izlanda":3,"azerbaycan":3,"gana":3,"gurcistan":3,"birlesik-arap-emirlikleri":3,"estonya":3,"misir":3,"guney-afrika":3,"ermenistan":3,"avustralya":3,"venezuela":3,"belarus":3,"senegal":3,"kanada":3,"kazakistan":3,"luksemburg":3,"vietnam":3,"benin":3,"letonya":3,"namibya":3,"hindistan":3,"kenya":3,"karadag":3,"tunus":3,"tanzanya":3,"galler":3,"irak":3,"zambiya":3,"gine-bissau":3,"burkina-faso":3,"botsvana":3,"ruanda":3,"guatemala":3,"kongo-dc":3,"arnavutluk":3,"fas":3,"irlanda":3,"libya":3,"kamerun":3,"nijer":3,"angola":3,"faroe-adalari":3,"gambiya":3,"lesotho":3,"komorlar":3,"liberya":3,"curacao":3,"el-salvador":3,"kosova":3,"kuzey-irlanda":3,"ekvator-ginesi":3,"lihtenstayn":3,"bosna-hersek":4,"kuzey-makedonya":4,"malezya":4,"antigua-ve-barbuda":4,"guney-sudan":4,"litvanya":4,"bahreyn":4,"cayman-adalari":4,"saint-kitts-ve-nevis":4,"gabon":4,"aruba":4,"bolivya":4,"uganda":4,"surinam":4,"zimbabve":4,"mali":4,"cibuti":4,"eritre":4,"andorra":4,"madagaskar":4,"moritanya":4,"yeni-zelanda":4,"kuba":4,"myanmar":4,"san-marino":4,"kongo":4,"jamaika":4,"malavi":4,"etiyopya":4,"burundi":4,"mozambik":4,"panama":4,"honduras":4,"gine":4,"saint-vincent-ve-grenadinler":4,"katar":4,"kosta-rika":4,"orta-afrika-cumhuriyeti":4,"cad":4,"britanya-virjin-adalari":4,"trinidad-ve-tobago":4,"bahamalar":4,"cebelitarik":4,"nikaragua":4,"porto-riko":4,"kambocya":4,"hong-kong":4,"dominik-cumhuriyeti":4,"laos":4,"guyana":4,"mauritius":4,"barbados":4,"dominika":4,"grenada":4,"anguilla":4,"bermuda":4,"filipinler":4,"turks-ve-caicos-adalari":4,"moldova":4,"abd-virjin-adalari":4,"singapur":4,"belize":4,"haiti":4};
+const KD_IDS = ["d51da6c00f816c958ab057fb06844638", "e02241c677d6b0b84c26cbf385f44a3c", "911d1fb885e567e137a588f9d77ee1ec", "c86f1efac53852b1d0ffa0ddf10c0047", "3a167cfcda1e9efa8969539a81d9f466", "3c30c1204299f1bbd70f732a652ff18f", "af74558d5bb17a60a402135fe58fea3d", "6f72b046e62a36d8e4e45610da1ee234"];
+const KD_MAP = {"ingiltere":0,"_dunya":0,"arjantin":0,"portekiz":0,"ruanda":0,"italya":1,"meksika":1,"brezilya":1,"fransa":1,"polonya":1,"guney-kore":1,"ispanya":2,"turkiye":2,"abd":2,"suudi-arabistan":2,"hollanda":2,"romanya":2,"cekya":2,"macaristan":2,"sirbistan":2,"norvec":2,"urdun":2,"almanya":3,"bulgaristan":3,"danimarka":3,"isvec":3,"isvicre":3,"rusya":3,"peru":3,"hirvatistan":3,"uruguay":3,"israil":3,"kolombiya":3,"kibris":3,"fildisi-sahili":3,"cin":3,"tayland":4,"slovakya":4,"esvatini":4,"ukrayna":4,"japonya":4,"avusturya":4,"nijerya":4,"ekvador":4,"sili":4,"belcika":4,"finlandiya":4,"endonezya":4,"paraguay":4,"iskocya":4,"iran":4,"slovenya":4,"luksemburg":4,"yunanistan":5,"malta":5,"gana":5,"senegal":5,"kanada":5,"izlanda":5,"cezayir":5,"ozbekistan":5,"azerbaycan":5,"birlesik-arap-emirlikleri":5,"estonya":5,"misir":5,"_turnuvalar":5,"gurcistan":5,"guney-afrika":5,"vietnam":5,"benin":5,"ermenistan":5,"irak":5,"avustralya":5,"hindistan":5,"letonya":5,"namibya":5,"venezuela":5,"karadag":5,"kongo-dc":5,"burkina-faso":5,"galler":5,"bermuda":5,"tanzanya":6,"tunus":6,"belarus":6,"kenya":6,"gine-bissau":6,"zambiya":6,"kazakistan":6,"botsvana":6,"kamerun":6,"irlanda":6,"guatemala":6,"libya":6,"angola":6,"faroe-adalari":6,"nijer":6,"gambiya":6,"lesotho":6,"curacao":6,"liberya":6,"komorlar":6,"kosova":6,"el-salvador":6,"kuzey-irlanda":6,"bosna-hersek":6,"fas":6,"ekvator-ginesi":6,"kuzey-makedonya":6,"antigua-ve-barbuda":6,"guney-sudan":6,"malezya":6,"arnavutluk":6,"bahreyn":6,"sudan":6,"cayman-adalari":6,"gabon":6,"saint-kitts-ve-nevis":6,"uganda":6,"bolivya":6,"mali":6,"aruba":6,"surinam":6,"cibuti":6,"eritre":6,"zimbabve":6,"litvanya":6,"panama":6,"jamaika":6,"andorra":6,"honduras":6,"madagaskar":6,"moritanya":6,"kuba":6,"myanmar":6,"san-marino":6,"etiyopya":6,"kongo":6,"yeni-zelanda":6,"malavi":6,"burundi":6,"mozambik":6,"gine":6,"kosta-rika":6,"saint-vincent-ve-grenadinler":6,"katar":6,"orta-afrika-cumhuriyeti":6,"cad":6,"britanya-virjin-adalari":6,"turks-ve-caicos-adalari":6,"bahamalar":7,"trinidad-ve-tobago":7,"cebelitarik":7,"nikaragua":7,"porto-riko":7,"kambocya":7,"hong-kong":7,"laos":7,"mauritius":7,"guyana":7,"dominika":7,"barbados":7,"grenada":7,"anguilla":7,"dominik-cumhuriyeti":7,"filipinler":7,"moldova":7,"abd-virjin-adalari":7,"singapur":7,"belize":7,"lihtenstayn":7,"haiti":7,"lubnan":7};
 const KD_CH = {}, KD_WAIT = {};
 function injectJs(url, ok, fail) {
   const host = document.head || document.documentElement; const s = document.createElement('script'); s.async = true;
@@ -29,12 +29,25 @@ function getChunk(i, cb) {
   injectJs('/_blob/' + KD_IDS[i], done, done);
 }
 function loadKD(country, done) {
-  window.VE_KD = window.VE_KD || {}; let left = 2, ok = true;
+  window.VE_KD = window.VE_KD || {}; let left = 3, ok = true;
   const fin = () => { if (--left === 0) done(ok); };
   const slug = slugOf(country);
   if (window.VE_KD[country]) fin(); else if (KD_MAP[slug] == null) { ok = false; fin(); } else getChunk(KD_MAP[slug], c => { if (c && c[slug]) window.VE_KD[country] = c[slug]; else ok = false; fin(); });
   if (window.VE_TUR) fin(); else getChunk(KD_MAP['_turnuvalar'], c => { if (c && c['_turnuvalar']) window.VE_TUR = c['_turnuvalar']; fin(); });
+  if (window.VE_DUN) fin(); else getChunk(KD_MAP['_dunya'], c => { if (c && c['_dunya']) window.VE_DUN = c['_dunya']; fin(); });
 }
+const POS_GROUP = { 'Kaleci': 'Kaleci', 'Stoper': 'Defans', 'Sağ bek': 'Defans', 'Sol bek': 'Defans', 'Ön libero': 'Orta saha', 'Merkez orta saha': 'Orta saha', 'Ofansif orta saha': 'Orta saha', 'Sağ kanat': 'Forvet', 'Sol kanat': 'Forvet', 'Santrfor': 'Forvet' };
+const TEAM_LIST = [['A', 'A Takım'], ['U21', 'U21'], ['U19', 'U19'], ['FREE', 'Serbest'], ['RET', 'Emekli']];
+function poolOf(kd, p, team) {
+  if (!kd) return []; const A = (kd.clubs && kd.clubs[p.n]) || [];
+  if (team === 'A') return A;
+  if (team === 'U21') { const seen = {}; const out = []; ((kd.res && kd.res[p.n]) || []).concat(A.filter(x => 2026 - x[1] <= 21)).forEach(x => { if (!seen[x[0]]) { seen[x[0]] = 1; out.push(x); } }); return out; }
+  if (team === 'U19') return (kd.yth && kd.yth[p.n]) || [];
+  if (team === 'FREE') return kd.free || [];
+  if (team === 'RET') return kd.ret || [];
+  return [];
+}
+function allPools(kd, p) { const o = []; TEAM_LIST.forEach(t => { poolOf(kd, p, t[0]).forEach(x => o.push(x)); }); return o; }
 const AT_TECH = ['Bitiricilik', 'Dribbling', 'İlk dokunuş', 'Orta', 'Pas', 'Uzaktan şut', 'Top kesme', 'Markaj', 'Kafa', 'Teknik', 'Korner', 'Serbest vuruş', 'Penaltı', 'Uzun taç atışı'];
 const AT_MENT = ['Karar alma', 'Önsezi', 'Pozisyon alma', 'Liderlik', 'Soğukkanlılık', 'Çalışkanlık', 'Takım oyunu', 'Agresiflik', 'Cesaret', 'Konsantrasyon', 'Kararlılık', 'Yaratıcılık', 'Topsuz hareket', 'Vizyon'];
 const AT_PHYS = ['Hız', 'Hızlanma', 'Çeviklik', 'Dayanıklılık', 'Güç', 'Denge', 'Zıplama', 'Doğal form', 'Sakatlık direnci'];
@@ -96,7 +109,7 @@ class Component extends DCLogic {
     this.sample = picks.length === 0;
     this.items = this.sample ? [{ name: 'Menajer', pick: SAMPLE }] : picks.map((p, i) => { const a = dm[i] || {}; const nm = ((a.ad || '') + ' ' + (a.soyad || '')).trim() || ('Menajer ' + (i + 1)); return { name: nm, first: (a.ad || '').trim() || nm, pick: p }; });
     this.game = tdLoad(GAME_KEY, null) || {}; this.game.k = this.game.k || {};
-    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1 };
+    this.state = { mi: 0, view: 'pano', msg: 0, tick: 0, loaded: false, tq: '', tsel: -1, tmode: 'tur', kteam: 'A', ksort: '', kdir: 1, kpos: '', kage: '', fq: '' };
     this.loadFor(0);
   }
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
@@ -162,8 +175,19 @@ class Component extends DCLogic {
     const vlist = { pano: 1, inbox: 1, kadro: 1, fikstur: 1, tablo: 1, finans: 1, kulup: 1, lig: 1, ulke: 1, turn: 1 };
     const msgRows = vis.map((m, i) => ({ from: m.from, date: fmtShort(m.date), subject: m.subject, weight: G.read[m.id] ? '500' : '800', pressed: i === mi ? 'true' : 'false', bar: !G.read[m.id] ? 'var(--td-accent,#C8102E)' : 'transparent', bg: i === mi ? 'rgba(var(--td-fg-rgb,255,255,255),0.06)' : 'transparent', pick: () => { G.read[m.id] = 1; this.save(); this.setState({ msg: i }); } }));
     if (cur && !G.read[cur.id] && st.view === 'inbox') { G.read[cur.id] = 1; this.save(); }
-    const sorted = squad.slice().sort((a, b) => (POS_ORDER[a[3]] - POS_ORDER[b[3]]) || (b[5] - a[5]));
-    const squadRows = sorted.map(x => ({ pick: () => this.setState({ view: 'oyuncu', psel: x[0] }), no: x[9] || '', name: x[0], pos: x[3], age: 2026 - x[1], nat: x[2], pow: x[5], pot: x[6], col: powCol(x[5]), val: x[7] ? money(x[7]) : '—', end: x[8] || '—' }));
+    const team = st.kteam || 'A'; const pool = poolOf(M.kd, p, team); const fq = (st.fq || '').toLocaleLowerCase('tr-TR');
+    const ageR = { '19': [0, 19], '23': [20, 23], '29': [24, 29], '30': [30, 99] };
+    let fl = pool.filter(x => (!st.kpos || POS_GROUP[x[3]] === st.kpos) && (!st.kage || (2026 - x[1] >= ageR[st.kage][0] && 2026 - x[1] <= ageR[st.kage][1])) && (!fq || (x[0] + ' ' + x[2] + ' ' + (x[17] || '')).toLocaleLowerCase('tr-TR').indexOf(fq) >= 0));
+    const SK = { no: x => x[9] || 0, name: x => x[0], pos: x => POS_ORDER[x[3]], age: x => -x[1], nat: x => x[2], pow: x => x[5], pot: x => x[6], val: x => x[7] || 0, end: x => Number(x[8]) || 0 };
+    if (st.ksort && SK[st.ksort]) { const f = SK[st.ksort], d = st.kdir || 1; fl = fl.slice().sort((a, b) => { const x = f(a), y = f(b); return (typeof x === 'string' ? x.localeCompare(y, 'tr') : x - y) * d || (b[5] - a[5]); }); }
+    else fl = fl.slice().sort((a, b) => (POS_ORDER[a[3]] - POS_ORDER[b[3]]) || (b[5] - a[5]));
+    const sorted = fl;
+    const heads = [['no', '#'], ['name', 'OYUNCU'], ['pos', 'MEVKİ'], ['age', 'YAŞ'], ['nat', 'UYRUK'], ['pow', 'GÜÇ'], ['pot', 'POT.'], ['val', 'DEĞER'], ['end', 'SÖZLEŞME']].map(h => ({ l: h[1], arrow: st.ksort === h[0] ? ((st.kdir || 1) > 0 ? ' ▲' : ' ▼') : '', col: st.ksort === h[0] ? 'var(--td-text,#F4F6FB)' : 'var(--td-mut2,#8C96B2)', pick: () => this.setState({ ksort: h[0], kdir: st.ksort === h[0] ? -(st.kdir || 1) : ((h[0] === 'name' || h[0] === 'pos' || h[0] === 'nat' || h[0] === 'end') ? 1 : -1) }) }));
+    const chip = (label, on, fn, cnt) => ({ label, cnt: cnt === undefined ? '' : String(cnt), bg: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: on ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: fn });
+    const teamTabs = TEAM_LIST.map(t => chip(t[1], team === t[0], () => this.setState({ kteam: t[0], ksort: '', kpos: '', kage: '' }), poolOf(M.kd, p, t[0]).length));
+    const posTabs = [['', 'Hepsi'], ['Kaleci', 'Kaleci'], ['Defans', 'Defans'], ['Orta saha', 'Orta saha'], ['Forvet', 'Forvet']].map(t => chip(t[1], (st.kpos || '') === t[0], () => this.setState({ kpos: t[0] })));
+    const ageTabs = [['', 'Tüm yaşlar'], ['19', '19 ve altı'], ['23', '20–23'], ['29', '24–29'], ['30', '30+']].map(t => chip(t[1], (st.kage || '') === t[0], () => this.setState({ kage: t[0] })));
+    const squadRows = sorted.map(x => ({ pick: () => this.setState({ view: 'oyuncu', psel: x[0], psrc: team }), no: x[9] || '', name: x[0], pos: x[3], age: 2026 - x[1], nat: x[2], pow: x[5], pot: x[6], col: powCol(x[5]), val: x[7] ? money(x[7]) : '—', end: x[8] || '—' }));
     const fixtures = myFix.map((f, i) => { const done = !!G.sim[f.i]; const r = G.res[f.i + '|' + f.h + '|' + f.a]; const mine = f.h === p.n ? 0 : 1; let res = '', col = 'var(--td-text3,#C9D0E2)'; if (done && r) { res = r[0] + ' – ' + r[1]; const d = mine === 0 ? r[0] - r[1] : r[1] - r[0]; col = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? 'var(--td-accent2,#FF6B76)' : 'var(--td-gold,#F2C14E)'; } return { n: i + 1, date: fmtDate(f.date), home: f.h, away: f.a, res, col, bg: f.i === my ? 'rgba(var(--td-accent-rgb,200,16,46),0.10)' : 'transparent' }; });
     const tb = {}; league.forEach(n => { tb[n] = { n, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0 }; });
     Object.keys(G.res).forEach(k => { const [r, h, a] = k.split('|'); const [x, y] = G.res[k]; if (!tb[h] || !tb[a]) return; tb[h].p++; tb[a].p++; tb[h].gf += x; tb[h].ga += y; tb[a].gf += y; tb[a].ga += x; if (x > y) { tb[h].w++; tb[a].l++; } else if (x < y) { tb[a].w++; tb[h].l++; } else { tb[h].d++; tb[a].d++; } });
@@ -179,7 +203,7 @@ class Component extends DCLogic {
       nextDay: () => this.advance(1, false), toMatch: () => this.advance(0, true),
       nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vHeyet: st.view === 'heyet', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
       msgs: msgRows, hasMsg: !!cur, cur: cur || { from: '', subject: '', paras: [], facts: [], hasFacts: false },
-      squad: squadRows, noSquad: !squadRows.length, fixtures, noFix: !fixtures.length, table, fin: finRows, noFin: !has,
+      squad: squadRows, noSquad: !squadRows.length, heads, teamTabs, posTabs, ageTabs, fq: st.fq || '', setFq: (e) => this.setState({ fq: e.target.value }), shown: squadRows.length + ' / ' + pool.length, fixtures, noFix: !fixtures.length, table, fin: finRows, noFin: !has,
       hasNext: !!nx, noNext: !nx, next: nx ? { opp: nx.opp, where: nx.home ? 'Ev sahibi' : 'Deplasman', date: fmtDate(nx.date), days: diffDays(G.date, nx.date) <= 0 ? 'Bugün' : diffDays(G.date, nx.date) + ' gün sonra' } : { opp: '', where: '', date: '', days: '' },
       summary: [{ k: 'Takım gücü (en iyi 11)', v: avg11 ? avg11.toFixed(1) : '—' }, { k: 'Lig sırası', v: myPos && league.length ? myPos + ' / ' + league.length : '—' }, { k: 'Kadro', v: squad.length ? String(squad.length) : '—' }, { k: 'Sezon hedefi', v: has ? EXP_LABEL[s.exp] : '—' }]
     };
@@ -194,8 +218,8 @@ class Component extends DCLogic {
     const bar = (label, val, max, color) => N(val) === null ? null : { label, val: String(val), pct: Math.max(3, Math.min(100, val / max * 100)) + '%', color: color || powCol(val * 20 / max) };
     const it = (a, b, cc, o) => Object.assign({ a: String(a), b: String(b), c: cc === undefined ? '' : String(cc), w: '500', bg: 'transparent', cur: 'default', pick: () => {} }, o || {});
     const card = (title, o) => Object.assign({ title, chips: [], rows: [], bars: [], items: [], note: '', span: 'auto' }, o || {});
-    const out = { cols: 3, hasKpis: false, kpis: [], cards: [], vCards: v === 'pano' || v === 'kulup' || v === 'lig' || v === 'ulke' || v === 'oyuncu', hasHead: false, headTitle: '', headSub: '', goBack: () => this.setState({ view: 'kadro' }), staffRows: [], noStaff: false, vTurn: v === 'turn', tq: st.tq || '', setTq: (e) => this.setState({ tq: e.target.value }), tList: [], tTitle: '', tCards: [],
-      goKulup: () => this.setState({ view: 'kulup' }), goLig: () => this.setState({ view: 'lig' }), goUlke: () => this.setState({ view: 'ulke' }), ligName: p.lg || '—', ulkeName: p.c || '—', mgrName: this.items[st.mi].name };
+    const out = { cols: 3, hasKpis: false, kpis: [], cards: [], vCards: v === 'pano' || v === 'kulup' || v === 'lig' || v === 'ulke' || v === 'oyuncu', hasHead: false, headTitle: '', headSub: '', goBack: () => this.setState({ view: 'kadro' }), staffRows: [], hTabs: [], noStaff: false, vTurn: v === 'turn', tq: st.tq || '', setTq: (e) => this.setState({ tq: e.target.value }), tList: [], tTitle: '', tCards: [],
+      tModes: [['tur', 'Turnuvalar'], ['odul', 'Ödüller'], ['derbi', 'Derbiler'], ['sehir', 'Şehirler'], ['bolge', 'Bölgeler'], ['medya', 'Medya'], ['sakatlik', 'Sakatlıklar'], ['hava', 'Hava durumu'], ['para', 'Para birimleri'], ['dil', 'Diller'], ['kita', 'Kıtalar'], ['tanim', 'Tanımlar'], ['etap', 'Etap isimleri'], ['sozlesme', 'Sözleşme türleri']].map(t => ({ label: t[1], cnt: '', bg: (st.tmode || 'tur') === t[0] ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: (st.tmode || 'tur') === t[0] ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: () => this.setState({ tmode: t[0], tq: '' }) })), goKulup: () => this.setState({ view: 'kulup' }), goLig: () => this.setState({ view: 'lig' }), goUlke: () => this.setState({ view: 'ulke' }), ligName: p.lg || '—', ulkeName: p.c || '—', mgrName: this.items[st.mi].name };
     const neutral = 'rgba(var(--td-fg-rgb,255,255,255),0.08)', fg = 'var(--td-text,#F4F6FB)';
     const stad = (kd && kd.stad && kd.stad[p.n]) || {}; const fin = (x) => x ? money(x / 55.93) : null;
     const ROLE = ['Başkan', 'Sportif direktör', 'Teknik direktör', 'Yardımcı antrenör', 'Kaleci antrenörü', 'Kondisyoner', 'Analist', 'Fizyoterapist', 'Doktor', 'Gözlemci', 'Altyapı sorumlusu'];
@@ -268,9 +292,11 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
         card('TAKIMLAR', { chips: c.league.map(n => ({ t: n, bg: n === p.n ? 'rgba(var(--td-accent-rgb,200,16,46),0.25)' : neutral, fg })) })
       ].filter(cd => cd.rows.length || cd.bars.length || cd.items.length || cd.chips.length || cd.note);
     } else if (v === 'heyet') {
-      out.staffRows = staffSorted.map(q => ({ name: q[0], role: q[3], age: 2026 - q[1], nat: q[2], lic: q[5], rep: q[6], col: powCol(q[6]), end: q[4] || '—' })); out.noStaff = !out.staffRows.length;
+      const hteam = st.hteam || 'club'; const hlist = hteam === 'free' ? ((kd && kd.sfree) || []).slice().sort((a, b) => b[6] - a[6]) : staffSorted;
+      out.hTabs = [['club', 'Kulüp personeli', staffSorted.length], ['free', 'Serbest personel', ((kd && kd.sfree) || []).length]].map(t => ({ label: t[1], cnt: String(t[2]), bg: hteam === t[0] ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.07)', col: hteam === t[0] ? '#fff' : 'var(--td-text2,#DCE2F0)', pick: () => this.setState({ hteam: t[0] }) }));
+      out.staffRows = hlist.map(q => ({ name: q[0], role: q[3], age: 2026 - q[1], nat: q[2], lic: q[5], rep: q[6], col: powCol(q[6]), end: q[4] || '—' })); out.noStaff = !out.staffRows.length;
     } else if (v === 'oyuncu') {
-      const x = squad.find(z => z[0] === st.psel) || null;
+      const x = poolOf(kd, p, st.psrc || 'A').find(z => z[0] === st.psel) || allPools(kd, p).find(z => z[0] === st.psel) || null;
       if (x) {
         const age = 2026 - x[1]; const gen = genAttrs(x[0], x[3], x[5], age); const real = Array.isArray(x[10]) ? x[10] : null; const ks = AT_TECH.concat(AT_MENT, AT_PHYS, AT_GK);
         const A = {}; ks.forEach((k, i) => { A[k] = (real && real[i] > 0) ? real[i] : gen[k]; });
@@ -279,7 +305,22 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
         out.kpis = [{ label: 'GÜÇ', value: String(x[5]), color: powCol(x[5]), sub: '1–20' }, { label: 'POTANSİYEL', value: String(x[6]), color: powCol(x[6]), sub: '1–20' }, { label: 'DEĞER', value: x[7] ? money(x[7]) : '—', color: fg, sub: 'piyasa değeri' }, { label: 'SÖZLEŞME', value: x[8] || '—', color: fg, sub: 'bitiş yılı' }, { label: 'AYAK', value: x[4], color: fg, sub: 'tercih' }, { label: 'FORMA', value: x[9] ? '#' + x[9] : '—', color: fg, sub: 'numara' }];
         const grp = (title, arr) => card(title, { bars: arr.map(k => bar(k, A[k], 20)).filter(Boolean) });
         const hist = String(x[11] || '').split('\n').filter(Boolean).map(l2 => { const q = l2.split(' · '); return it(q[0] || '', q[1] || '', q[2] || ''); });
-        out.cards = [grp('TEKNİK', AT_TECH), grp('ZİHİNSEL', AT_MENT), grp('FİZİKSEL', AT_PHYS)].concat(x[3] === 'Kaleci' ? [grp('KALECİLİK', AT_GK)] : [], [
+        const ex = (x[20] && typeof x[20] === 'object') ? x[20] : {}; const dvx = Array.isArray(ex.dv) ? ex.dv : [];
+        const MEVL = ['Kaleci', 'Stoper', 'Sağ bek', 'Sol bek', 'Ön libero', 'Merkez orta saha', 'Ofansif orta saha', 'Sağ kanat', 'Sol kanat', 'Santrfor'];
+        const NEAR = { 0: [], 1: [4, 2, 3], 2: [3, 7, 5], 3: [2, 8, 5], 4: [1, 5], 5: [4, 6], 6: [5, 7, 8, 9], 7: [2, 8, 6, 9], 8: [3, 7, 6, 9], 9: [6, 7, 8] };
+        const own = MEVL.indexOf(x[3]); const mvA = Array.isArray(x[19]) && x[19].some(v => v > 0) ? x[19] : null;
+        const mvBars = MEVL.map((m, i) => bar(m, mvA ? (mvA[i] > 0 ? mvA[i] : 3) : (i === own ? 20 : ((NEAR[own] || []).indexOf(i) >= 0 ? 13 : (own === 0 || i === 0 ? 2 : 7))), 20)).filter(Boolean);
+        const itb = Math.max(1, Math.min(20, Math.round(x[5] * 0.9))); const tan = x[5] >= 15 ? 'Dünya çapında' : x[5] >= 13 ? 'Kıtasal' : x[5] >= 10 ? 'Ulusal' : x[5] >= 7 ? 'Bölgesel' : 'Yerel';
+        const ret = team0 => team0 === 'RET'; const isRet = (st.psrc === 'RET');
+        const maasAy = x[7] ? Math.max(268, Math.round(x[7] * 0.008 / 100) * 100) : 0;
+        const idRows = rowsOf([row('Ad Soyad', x[0]), row('Lakap', x[17]), row('Doğum yılı', x[1]), row('Yaş', age), row('Uyruk', x[2]), row('İkinci uyruk', x[14]), row('Mevki', x[3]), row('Tercih edilen ayak', x[4]), row('Boy', x[15] ? x[15] + ' cm' : null), row('Kilo', x[16] ? x[16] + ' kg' : null), row('Forma numarası', x[9] ? '#' + x[9] : null), row('Milli takım', x[18])]);
+        const moneyRows = rowsOf([row('Piyasa değeri', x[7] ? money(x[7]) : null), row('Aylık maaş (tahmini)', maasAy ? money(maasAy) : null), row('Serbest kalma bedeli (tahmini)', x[7] ? money(x[7] * 2) : null), row('Sözleşme bitişi', x[8]), row('Kiralık kulüp', ex.kt), row('Kiralık bitişi', ex.kb), row('Kiralık maaşı', ex.km ? money(ex.km) : null)]);
+        const repBars = [bar('Ülke itibarı', itb, 20), bar('Dünya itibarı', Math.max(1, itb - 4), 20), bar('Oyundaki itibar', itb, 20)].filter(Boolean);
+        const dv = [['Öfke kontrolü', dvx[0] || 12], ['Olay çıkarma eğilimi', dvx[1] || 6], ['Küfür etme', 6], ['Rakibe saldırma', 6], ['Hakeme itiraz', 6], ['Kasıtlı faul', dvx[2] || 6], ['Rakibi tahrik etme', 6], ['Seyirciyle tartışma', 6], ['Kırmızı kart eğilimi', 6]].map(a2 => bar(a2[0], a2[1], 20, a2[0] === 'Öfke kontrolü' ? undefined : 'var(--td-accent2,#FF6B76)'));
+        const tr = [['Pres yapmayı sever', 10], ['Uzun topu tercih eder', 10], ['Kısa pası tercih eder', 10], ['Kanatlara açılır', 10], ['Uzaktan şut eğilimi', 10], ['Top sürme eğilimi', 10], ['Takım içi liderlik', 10], ['Büyük maç oyuncusu', dvx[3] || 10], ['Riskli pas eğilimi', 10]].map(a2 => bar(a2[0], a2[1], 20));
+        const planRows = rowsOf([row('Emeklilik sonrası plan', 'Teknik direktör'), row('Yedek plan', 'TV yorumcusu'), row('Tanınırlık', tan), isRet ? row('Son kulübü', x[21]) : null, isRet ? row('Emeklilik yılı', x[22]) : null]);
+        out.cards = [card('KİMLİK', { rows: idRows }), card('SÖZLEŞME VE PARA', { rows: moneyRows }), card('İTİBAR VE TANINIRLIK', { bars: repBars, rows: planRows }), grp('TEKNİK', AT_TECH), grp('ZİHİNSEL', AT_MENT), grp('FİZİKSEL', AT_PHYS)].concat(x[3] === 'Kaleci' ? [grp('KALECİLİK', AT_GK)] : [], [
+          card('MEVKİ SKORLARI', { bars: mvBars }), card('SAHA İÇİ DAVRANIŞ', { bars: dv, note: dvx.length ? '' : 'Kişisel davranış değerleri editördeki varsayılanlardır.' }), card('OYUN TERCİHLERİ', { bars: tr, note: 'Taktik tercihleri editördeki varsayılan değerlerdir.' }),
           card('KARİYER GEÇMİŞİ', { items: hist, note: hist.length ? '' : 'Kariyer geçmişi verisi yok (bu oyuncu otomatik üretildi).', span: '1 / -1' }),
           card('MİLLİ TAKIM', { rows: x[12] ? [{ k: 'A milli maç', v: String(x[12]) }, { k: 'A milli gol', v: String(x[13] || 0) }] : [], note: x[12] ? '' : 'A milli takıma çıkmadı.' })
         ]);
@@ -297,6 +338,20 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
         card('KUPALAR', { items: cups.map(x => it(x.t.tur, x.t.ad, x.t.takim ? x.t.takim + ' takım' : '', { cur: 'pointer', pick: openT(x.i) })) }),
         card('REGEN (ALT YAPIDAN GENÇLER)', { rows: rowsOf([row('Çıkış tarihi', ulk.regenTarih), row('Kulüp başına yıllık', ulk.regenSayi), row('Kalite', ulk.regenKalite ? ulk.regenKalite + ' / 20' : null), row('Yaş', ulk.regenYas)]) })
       ].filter(cd => cd.rows.length || cd.items.length || cd.chips.length);
+    } else if (v === 'turn' && (st.tmode || 'tur') !== 'tur') {
+      const DUN = window.VE_DUN || {}; const mode = st.tmode; const recs = DUN[mode] || []; const LB = (DUN._lbl && DUN._lbl[mode]) || {};
+      const lab = (k) => { const l = LB[k] || k; return l.replace(/\s*\(.*?\)\s*$/, '').toLocaleLowerCase('tr-TR').replace(/^./, c => c.toLocaleUpperCase('tr-TR')); };
+      const q = (st.tq || '').toLocaleLowerCase('tr-TR');
+      const nm = (r) => r.ad || r.baslik || '';
+      let hit = recs.map((r, i) => i); if (q) hit = hit.filter(i => JSON.stringify(recs[i]).toLocaleLowerCase('tr-TR').indexOf(q) >= 0);
+      else if (mode === 'derbi' || mode === 'sehir' || mode === 'bolge') hit.sort((a, b) => ((recs[b].ulke === p.c) - (recs[a].ulke === p.c)));
+      const sel = (st.dsel !== undefined && st.dsel >= 0 && st.dsel < recs.length && st.dmode === mode) ? st.dsel : (hit[0] !== undefined ? hit[0] : -1);
+      out.tList = hit.slice(0, 120).map(i => { const r = recs[i]; const on = i === sel; return { isHead: false, isItem: true, title: '', name: nm(r), sub: [r.tur, r.ulke, r.kapsam].filter(Boolean).join(' · '), pressed: on ? 'true' : 'false', bar: on ? 'var(--td-accent,#C8102E)' : 'transparent', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.12)' : 'transparent', pick: () => this.setState({ dsel: i, dmode: mode }) }; });
+      if (sel >= 0) {
+        const r = recs[sel]; out.tTitle = nm(r); const rows = []; const items = [];
+        Object.keys(r).forEach(k => { if (k === 'ad' || k === 'baslik' || k === 'kaynakNot') return; const val = r[k]; if (k === 'gecmisKazananlar' || String(val).indexOf('\n') >= 0) { String(val).split('\n').filter(Boolean).forEach(l2 => { const qq = l2.split(' · '); items.push(it(qq[0] || '', qq[1] || '', qq[2] || '')); }); } else rows.push({ k: lab(k), v: String(val) }); });
+        out.tCards = [card('GENEL', { rows }), card('KAYITLAR', { items: items.slice(0, 150), note: items.length > 150 ? '+' + (items.length - 150) : '' }), card('KAYNAK', { note: r.kaynakNot || '' })].filter(cd => cd.rows.length || cd.items.length || cd.note);
+      } else out.tCards = [card('GENEL', { note: 'Kayıt yok.' })];
     } else if (v === 'turn') {
       const q = (st.tq || '').toLocaleLowerCase('tr-TR'); const idxs = tur.map((t, i) => i);
       const KIT = { 'Avrupa kupası': 1, 'Kıtasal kulüp kupası': 1, 'Dünya kulüp turnuvası': 1, 'Milli takım turnuvası': 1 };
@@ -320,6 +375,15 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
           card('KATILAN TAKIMLAR', { chips: (t.katilanKulup || []).slice(0, 80).map(n => ({ t: n, bg: n === p.n ? 'rgba(var(--td-accent-rgb,200,16,46),0.25)' : neutral, fg })), note: (t.katilanKulup || []).length > 80 ? '+' + ((t.katilanKulup || []).length - 80) : '' })
         ].filter(cd => cd.rows.length || cd.items.length || cd.chips.length);
         if (!out.tCards.length) out.tCards = [card('GENEL', { note: 'Bu turnuva için ayrıntılı bilgi yok.' })];
+      }
+    }
+    if (v === 'kulup' || v === 'ulke') {
+      const DUN = window.VE_DUN || {};
+      if (v === 'kulup') { const ds = (DUN.derbi || []).filter(d => d.takim1 === p.n || d.takim2 === p.n); if (ds.length) out.cards.push(card('DERBİLER', { items: ds.map(d => it(d.takim1 === p.n ? d.takim2 : d.takim1, d.ad, String(d.onem || '—'))) })); }
+      else {
+        const ds = (DUN.derbi || []).filter(d => d.ulke === p.c); if (ds.length) out.cards.push(card('DERBİLER', { items: ds.slice(0, 12).map(d => it(d.takim1, d.takim2, String(d.onem || '—'))), note: ds.length > 12 ? '+' + (ds.length - 12) : '' }));
+        const bs = (DUN.bolge || []).filter(d => d.ulke === p.c); if (bs.length) out.cards.push(card('BÖLGELER', { items: bs.slice(0, 12).map(d => it(d.ad, '', '')), note: bs.length > 12 ? '+' + (bs.length - 12) : '' }));
+        const ss = (DUN.sehir || []).filter(d => d.ulke === p.c); if (ss.length) out.cards.push(card('ŞEHİRLER', { chips: ss.slice(0, 40).map(d => ({ t: d.ad, bg: neutral, fg })), note: ss.length > 40 ? '+' + (ss.length - 40) : '' }));
       }
     }
     return out;
