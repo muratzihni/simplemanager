@@ -68,6 +68,10 @@ function rowsOfClub(kd, club, name) { const o = []; ['clubs', 'res', 'yth'].forE
 function dropRows(kd, club, name) { ['clubs', 'res', 'yth'].forEach(sec => { const l = kd[sec] && kd[sec][club]; if (!l) return; for (let i = l.length - 1; i >= 0; i--) if (l[i][0] === name) l.splice(i, 1); }); }
 function putRow(kd, club, sec, row) { kd[sec] = kd[sec] || {}; kd[sec][club] = kd[sec][club] || []; if (!kd[sec][club].some(r => r[0] === row[0])) kd[sec][club].push(row.slice()); }
 const NAV_ICON = {"pano": "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10", "inbox": "M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6", "kadro": "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75", "heyet": "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", "fikstur": "M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18", "tablo": "M8 6h13 M8 12h13 M8 18h13 M3 6h.01 M3 12h.01 M3 18h.01", "finans": "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 6v12 M15 9.5a3 2.5 0 0 0-3-1.5c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 2.5 0 0 1-3-1.5", "kulup": "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", "lig": "M6 9H4.5a2.5 2.5 0 0 1 0-5H6 M18 9h1.5a2.5 2.5 0 0 0 0-5H18 M4 22h16 M10 14.66V17c0 .55-.47.98-1.21 1.21C7.85 18.75 7 20.24 7 22 M14 14.66V17c0 .55.47.98 1.21 1.21C16.15 18.75 17 20.24 17 22 M18 2H6v7a6 6 0 0 0 12 0V2z", "ulke": "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z", "turn": "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z", "taktik": "M3 3h7v7H3z M14 3h7v7h-7z M14 14h7v7h-7z M3 14h7v7H3z", "antrenman": "M22 12h-4l-3 9L9 3l-3 9H2", "transfer": "M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"};
+const KO_SLOTS = [900, 1020, 1140, 1200];
+const koOf = (i) => KO_SLOTS[Math.floor(u01('ko|' + i) * 4)];
+const hhmm = (m) => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+const DAY_START = 540;
 const KITSET = { 'Avrupa kupası': 1, 'Kıtasal kulüp kupası': 1, 'Dünya kulüp turnuvası': 1 };
 function contOf(name) { const tur = window.VE_TUR || []; const o = []; tur.forEach((t, i) => { if (KITSET[t.tur] && Array.isArray(t.katilanKulup) && t.katilanKulup.indexOf(name) >= 0) o.push({ t, i }); }); return o; }
 const GOALW = { 'Santrfor': 5, 'Sağ kanat': 3.2, 'Sol kanat': 3.2, 'Ofansif orta saha': 3, 'Merkez orta saha': 1.5, 'Ön libero': 0.7, 'Sağ bek': 0.7, 'Sol bek': 0.7, 'Stoper': 0.5, 'Kaleci': 0.02 };
@@ -177,7 +181,7 @@ class Component extends DCLogic {
     this.loadFor(0);
   }
   key() { const p = this.items[this.state.mi].pick; return p.n + '|' + p.c; }
-  gs() { const k = this.key(); if (!this.game.k[k] || this.game.k[k].lg !== this.items[this.state.mi].pick.lg) this.game.k[k] = { lg: this.items[this.state.mi].pick.lg, date: START, sim: {}, res: {}, read: {} }; return this.game.k[k]; }
+  gs() { const k = this.key(); if (!this.game.k[k] || this.game.k[k].lg !== this.items[this.state.mi].pick.lg) this.game.k[k] = { lg: this.items[this.state.mi].pick.lg, date: START, min: DAY_START, sim: {}, res: {}, read: {} }; return this.game.k[k]; }
   loadFor(mi) { this.setState({ loaded: false }); const p = this.items[mi].pick; loadKD(p.c, ok => { this.setState({ loaded: true, kdOk: ok, tick: this.state.tick + 1 }); }); }
   setState(p, cb) {
     try { const st = this.state; if (p && p.view && st && p.view !== st.view && !this._popping) { this._hist.push({ view: st.view, vp: st.vp, psel: st.psel, psrc: st.psrc, pclub: st.pclub, fsel: st.fsel, ssel: st.ssel, cg: st.cg, tsel: st.tsel, tmode: st.tmode }); if (this._hist.length > 40) this._hist.shift(); } } catch (e) {}
@@ -267,22 +271,23 @@ class Component extends DCLogic {
   }
   myRound(M, from) { for (let i = from; i < M.rounds.length; i++) if (M.rounds[i].some(([h, a]) => h === M.p.n || a === M.p.n)) return i; return -1; }
   advance(days, untilMatch) {
-    const M = this.model(); const G = this.gs(); let guard = 0;
+    const M = this.model(); const G = this.gs(); let guard = 0; if (G.min === undefined) G.min = DAY_START;
+    { const my0 = this.nextMyRound(M, G); if (my0 >= 0 && M.dates[my0] === G.date && !G.sim[my0] && G.min < koOf(my0)) { G.min = koOf(my0); this.save(); this.setState({ tick: this.state.tick + 1 }); return; } }
     while (guard++ < MAX_DAYS) {
       const my = this.nextMyRound(M, G);
       const matchToday = my >= 0 && M.dates[my] === G.date;
       if (matchToday && !G.sim[my]) break;
-      G.date = addDays(G.date, 1);
+      G.date = addDays(G.date, 1); G.min = DAY_START;
       M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) { const mine = M.rounds[i].some(([h, a]) => h === M.p.n || a === M.p.n); if (!mine || G.sim[i] === undefined) this.simRound(M, G, i); } });
       if (!untilMatch && --days <= 0) break;
-      const nm = this.nextMyRound(M, G); if (untilMatch && nm >= 0 && M.dates[nm] === G.date) break;
+      const nm = this.nextMyRound(M, G); if (untilMatch && nm >= 0 && M.dates[nm] === G.date) { G.min = koOf(nm); break; }
     }
     this.save(); this.setState({ tick: this.state.tick + 1 });
   }
   nextMyRound(M, G) { for (let i = 0; i < M.rounds.length; i++) { if (G.sim[i]) continue; if (M.rounds[i].some(([h, a]) => h === M.p.n || a === M.p.n)) return i; } return -1; }
   renderVals() {
     const M = this.model(); const G = this.gs(); const { st, it, p, squad, league, rounds, dates } = M; const s = p.s; const has = s !== undefined;
-    const my = this.nextMyRound(M, G); const matchDay = my >= 0 && dates[my] === G.date && !G.sim[my];
+    const my = this.nextMyRound(M, G); const clock = G.min === undefined ? DAY_START : G.min; const matchDay = my >= 0 && dates[my] === G.date && !G.sim[my] && clock >= koOf(my);
     const hue = hash(p.n) % 360;
     const ages = squad.map(x => 2026 - x[1]); const top11 = squad.slice().sort((a, b) => b[5] - a[5]).slice(0, 11); const avg11 = top11.length ? top11.reduce((a, x) => a + x[5], 0) / top11.length : 0;
     const lineAvg = (names) => { const a = squad.filter(x => names.indexOf(x[3]) >= 0).sort((x, y) => y[5] - x[5]); const t = a.slice(0, names.length === 1 ? 1 : names[0] === 'Stoper' ? 4 : 3); return t.length ? t.reduce((q, x) => q + x[5], 0) / t.length : 0; };
@@ -332,7 +337,7 @@ class Component extends DCLogic {
     const clearF = () => this.setState({ fopen: '', kpos10: '', kpos: '', kage: '', knat: '', kcon: '', kpow: '', fq: '' });
     const squadRows = sorted.map(x => ({ pick: () => this.openPlayer(x, null), no: x[9] || '', name: x[0], pos: x[3], age: 2026 - x[1], nat: x[2], pow: x[5], pot: x[6], col: powCol(x[5]), val: x[7] ? money(x[7]) : '—', end: x[8] || '—' }));
     const fixKey = (f) => f.i + '|' + f.h + '|' + f.a;
-    const fixtures = myFix.map((f, i) => { const done = !!G.sim[f.i]; const r = G.res[fixKey(f)]; const mine = f.h === p.n ? 0 : 1; let res = '', col = 'var(--td-text3,#C9D0E2)', ico = '', icoBg = 'transparent'; if (done && r) { res = r[0] + ' – ' + r[1]; const d = mine === 0 ? r[0] - r[1] : r[1] - r[0]; col = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? 'var(--td-accent2,#FF6B76)' : 'var(--td-gold,#F2C14E)'; ico = d > 0 ? '✓' : d < 0 ? '✕' : '='; icoBg = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? '#E5484D' : '#E5B93C'; } const selI = st.fsel >= 0 ? st.fsel : -1; return { n: i + 1, date: fmtDate(f.date), lg: p.lg || '—', home: f.h, away: f.a, res, col, ico, icoBg, hasIco: !!ico, bg: i === selI ? 'rgba(var(--td-fg-rgb,255,255,255),0.10)' : f.i === my ? 'rgba(var(--td-accent-rgb,200,16,46),0.10)' : 'transparent', pick: () => this.setState({ fsel: i, rep: null }), goH: () => this.openClub(f.h, p.c, p.lg), goA: () => this.openClub(f.a, p.c, p.lg) }; });
+    const fixtures = myFix.map((f, i) => { const done = !!G.sim[f.i]; const r = G.res[fixKey(f)]; const mine = f.h === p.n ? 0 : 1; let res = '', col = 'var(--td-text3,#C9D0E2)', ico = '', icoBg = 'transparent'; if (done && r) { res = r[0] + ' – ' + r[1]; const d = mine === 0 ? r[0] - r[1] : r[1] - r[0]; col = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? 'var(--td-accent2,#FF6B76)' : 'var(--td-gold,#F2C14E)'; ico = d > 0 ? '✓' : d < 0 ? '✕' : '='; icoBg = d > 0 ? 'var(--td-green,#4FB286)' : d < 0 ? '#E5484D' : '#E5B93C'; } const selI = st.fsel >= 0 ? st.fsel : -1; return { n: i + 1, date: fmtDate(f.date), time: hhmm(koOf(f.i)), lg: p.lg || '—', home: f.h, away: f.a, res, col, ico, icoBg, hasIco: !!ico, bg: i === selI ? 'rgba(var(--td-fg-rgb,255,255,255),0.10)' : f.i === my ? 'rgba(var(--td-accent-rgb,200,16,46),0.10)' : 'transparent', pick: () => this.setState({ fsel: i, rep: null }), goH: () => this.openClub(f.h, p.c, p.lg), goA: () => this.openClub(f.a, p.c, p.lg) }; });
     const playedIdx = myFix.map((f, i) => i).filter(i => G.sim[myFix[i].i] && G.res[fixKey(myFix[i])]);
     const fsi = (st.fsel >= 0 && playedIdx.indexOf(st.fsel) >= 0) ? st.fsel : (playedIdx.length ? playedIdx[playedIdx.length - 1] : -1);
     let fd = { has: false, title: '', score: '', goals: [], stats: [], cards: [], motm: '', note: '' };
@@ -353,14 +358,14 @@ class Component extends DCLogic {
     const tabs = this.items.map((x, i) => { const on = i === st.mi; return { name: x.name, pressed: on ? 'true' : 'false', border: on ? 'var(--td-accent,#C8102E)' : 'rgba(var(--td-fg-rgb,255,255,255),0.14)', bg: on ? 'rgba(var(--td-accent-rgb,200,16,46),0.14)' : 'transparent', pick: () => { this.setState({ mi: i, msg: 0, view: 'inbox' }); this.loadFor(i); } }; });
     const out = {
       crestBg: 'hsl(' + hue + ' 52% 34%)', crestText: initialsOf(p.n), clubName: p.n, 
-      tabs, goPrev: () => this.goPrev(), mgrInit: String((this.items[st.mi].name || 'M')).trim().slice(0, 1).toLocaleUpperCase('tr-TR'), hasUnread: unread > 0, goInbox: () => this.setState({ view: 'inbox', vp: null, back: null }), mainBd: (st.view === 'pano' && !st.panoOld) ? 'none' : '1px solid rgba(var(--td-fg-rgb,255,255,255),0.12)', mainBg: (st.view === 'pano' && !st.panoOld) ? 'transparent' : 'rgba(var(--td-panel-rgb,15,21,41),0.78)', backOp: this._hist.length > 0 ? '1' : '0.4', hasTabs: this.items.length > 1, dateText: fmtDate(G.date), matchDay, notMatchDay: !matchDay,
-      simMatch: () => { this.simRound(M, G, my); G.date = addDays(G.date, 1); M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) this.simRound(M, G, i); }); this.save(); this.setState({ view: 'fikstur', tick: st.tick + 1 }); },
+      tabs, goPrev: () => this.goPrev(), mgrInit: String((this.items[st.mi].name || 'M')).trim().slice(0, 1).toLocaleUpperCase('tr-TR'), hasUnread: unread > 0, goInbox: () => this.setState({ view: 'inbox', vp: null, back: null }), mainBd: (st.view === 'pano' && !st.panoOld) ? 'none' : '1px solid rgba(var(--td-fg-rgb,255,255,255),0.12)', mainBg: (st.view === 'pano' && !st.panoOld) ? 'transparent' : 'rgba(var(--td-panel-rgb,15,21,41),0.78)', backOp: this._hist.length > 0 ? '1' : '0.4', hasTabs: this.items.length > 1, dateText: fmtDate(G.date), timeText: hhmm(clock), matchDay, notMatchDay: !matchDay,
+      simMatch: () => { this.simRound(M, G, my); G.date = addDays(G.date, 1); G.min = DAY_START; M.dates.forEach((d, i) => { if (d < G.date && !G.sim[i]) this.simRound(M, G, i); }); this.save(); this.setState({ view: 'fikstur', tick: st.tick + 1 }); },
       nextDay: () => this.advance(1, false), toMatch: () => this.advance(0, true),
       nav, noData: st.loaded && !squad.length, vInbox: st.view === 'inbox', vKadro: st.view === 'kadro', vFikstur: st.view === 'fikstur', vHeyet: st.view === 'heyet', vTablo: st.view === 'tablo', vFinans: st.view === 'finans',
       msgs: msgRows, hasMsg: !!cur, cur: cur || { from: '', subject: '', paras: [], facts: [], hasFacts: false },
       edit: this.edBuild(),
     edOpen: !!st.edOpen, edited: !!G.edited, edBtn: this.edOn(), openEd: () => this.openEditor(), fd, hasFd: fd.has, noFd: !fd.has, rep: st.rep && st.rep.open ? st.rep : null, hasRep: !!(st.rep && st.rep.open), closeRep: () => this.setState({ rep: null }), squad: squadRows, noSquad: !squadRows.length, heads, fgroups, anyF, clearF, fq: st.fq || '', setFq: (e) => this.setState({ fq: e.target.value }), shown: squadRows.length + ' / ' + pool.length, fixtures, noFix: !fixtures.length, table, fin: finRows, noFin: !has,
-      hasNext: !!nx, noNext: !nx, next: nx ? { opp: nx.opp, where: nx.home ? 'Ev sahibi' : 'Deplasman', date: fmtDate(nx.date), days: diffDays(G.date, nx.date) <= 0 ? 'Bugün' : diffDays(G.date, nx.date) + ' gün sonra' } : { opp: '', where: '', date: '', days: '' },
+      hasNext: !!nx, noNext: !nx, next: nx ? { opp: nx.opp, where: nx.home ? 'Ev sahibi' : 'Deplasman', date: fmtDate(nx.date) + ' · ' + hhmm(koOf(nx.i)), days: diffDays(G.date, nx.date) <= 0 ? 'Bugün' : diffDays(G.date, nx.date) + ' gün sonra' } : { opp: '', where: '', date: '', days: '' },
       summary: [{ k: 'Takım gücü (en iyi 11)', v: avg11 ? avg11.toFixed(1) : '—' }, { k: 'Lig sırası', v: myPos && league.length ? myPos + ' / ' + league.length : '—' }, { k: 'Kadro', v: squad.length ? String(squad.length) : '—' }, { k: 'Sezon hedefi', v: has ? EXP_LABEL[s.exp] : '—' }, { k: 'Kıtasal', v: (contOf(p.n).map(x => x.t.ad).slice(0, 2).join(', ')) || contProj((M.kd && M.kd.ulke) || {}, league.map(n => [n, M.strength(n)]).sort((a, b) => b[1] - a[1]).findIndex(x => x[0] === p.n) + 1) || '—' }]
     };
     return Object.assign(out, this.extra(M, G, { squad, table, myFix, avg11, lines, best, ages, has, s, my, myPos, league, rounds, dates }));
@@ -586,7 +591,7 @@ card('FİNANS', { rows: rowsOf([row('Mali durum', info.maliDurum), row('Kasa bak
       out.pano = {
         crestBg: 'hsl(' + (hash(p.n) % 360) + ' 52% 34%)', crestText: initialsOf(p.n), club: p.n, lg: p.lg || '—',
         kpis: [{ k: 'Kadro değeri', v: total ? money(total) : '—', c: 'rgba(104,80,210,0.55)', bd: 'rgba(150,130,255,0.65)', ic: '#B7A8FF', icon: NAV_ICON.kadro }, { k: 'Maaş gideri', v: wageTRY ? money(wageTRY / 55.93) + ' / ay' : '—', c: 'rgba(30,140,80,0.5)', bd: 'rgba(80,200,130,0.6)', ic: '#7FE0A8', icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 6v12 M15 9.5a3 2.5 0 0 0-3-1.5c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 2.5 0 0 1-3-1.5' }, { k: 'Bütçe', v: has ? money(s.tr) : (info.transfer ? fin(info.transfer) : '—'), c: 'rgba(30,110,214,0.5)', bd: 'rgba(100,170,255,0.65)', ic: '#8FC0FF', icon: 'M18 20V10 M12 20V4 M6 20v-6' }, { k: 'Kulüp itibarı', v: '★'.repeat(stars) + '☆'.repeat(5 - stars), c: 'rgba(224,176,80,0.38)', bd: 'rgba(224,176,80,0.75)', ic: '#F3DB9C', icon: NAV_ICON.lig }],
-        venue: (info.stadyum ? info.stadyum : '') + (info.kapasite ? ' (' + Number(info.kapasite).toLocaleString() + ')' : ''), hasVenue: !!info.stadyum, incPct: (incTRY || wageTRY) ? Math.round(incTRY / Math.max(incTRY, wageTRY) * 100) + '%' : '0%', expPct: (incTRY || wageTRY) ? Math.round(wageTRY / Math.max(incTRY, wageTRY) * 100) + '%' : '0%', hasNext: !!nx, noNext: !nx, opp, oppBg: crestOf(opp || '?').bg, oppT: crestOf(opp || '?').t, nextWhen: nx ? fmtDate(nx.date) : '', nextWhere: nx ? (nx.h === p.n ? 'Ev sahibi' : 'Deplasman') : '', nextRound: nx ? String(c.myFix.indexOf(nx) + 1) : '', goFix: go('fikstur'),
+        venue: (info.stadyum ? info.stadyum : '') + (info.kapasite ? ' (' + Number(info.kapasite).toLocaleString() + ')' : ''), hasVenue: !!info.stadyum, incPct: (incTRY || wageTRY) ? Math.round(incTRY / Math.max(incTRY, wageTRY) * 100) + '%' : '0%', expPct: (incTRY || wageTRY) ? Math.round(wageTRY / Math.max(incTRY, wageTRY) * 100) + '%' : '0%', hasNext: !!nx, noNext: !nx, opp, oppBg: crestOf(opp || '?').bg, oppT: crestOf(opp || '?').t, nextWhen: nx ? fmtDate(nx.date) + ' · ' + hhmm(koOf(nx.i)) : '', nextWhere: nx ? (nx.h === p.n ? 'Ev sahibi' : 'Deplasman') : '', nextRound: nx ? String(c.myFix.indexOf(nx) + 1) : '', goFix: go('fikstur'),
         lrows, goTab: go('tablo'),
         form: info.tk_dizilis || '4-3-3', dots, style: info.tk_stil || '—', pres: lvl(Number(info.tk_pres)), tempo: lvl(Number(info.tk_tempo)), goClub: go('kulup'),
         ready: String(squad.length), total: String(squad.length), goKadro: go('kadro'),
