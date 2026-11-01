@@ -29,10 +29,10 @@ def build() -> None:
     man = {
         "id": "varsayilan-v1",
         "ad": "Varsayılan Veritabanı",
-        "surum": "1.0",
+        "surum": "1.1",
         "durum": "kesin",
         "tarih": "2026-11-01",
-        "icerik": {"kulup": 7053, "oyuncu": 174038, "personel": 81959, "temsilci": 77},
+        "icerik": {"kulup": 7053, "oyuncu": 367052, "personel": 85606, "temsilci": 77},
         "not": "Oyuncu/personel üretilmiş (kurgusal) kayıtlardır; Süper Lig'de bellekten yazılan gerçek kişiler ayrıca işaretlidir. "
                "Web aramasıyla toplanan ve bellekten yazılan alanlar doğrulanmamıştır.",
         "ozet": top,
